@@ -1,6 +1,6 @@
 export const Footer = () => {
     return (
-        <div className="container px-5 md sm:px-14 mx-auto py-5 max-h-20 ">
+        <div className="container px-5 md sm:px-14 mx-auto pb-5 max-h-20 ">
             <div className="flex items-center gap-2">
                 <div className="text-3xl font-extrabold">
                     BarberPro
