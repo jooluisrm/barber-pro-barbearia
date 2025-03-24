@@ -10,6 +10,8 @@ import { House, LogOut, NotebookPen, Package, PanelBottom, Store, Users } from "
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import Image from "next/image";
+import imgIcon from "../../../public/assets/BarberProIcone-removebg-preview.png";
 
 export const Deshboard = () => {
     return (
@@ -18,8 +20,8 @@ export const Deshboard = () => {
             <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 border-r bg-background sm:flex flex-col">
                 <nav className="flex flex-col items-center gap-4 px-2 py-5">
                     <TooltipProvider>
-                        <Link href={"#"} className="flex h-9 w-9 shrink-0 items-center justify-center bg-primary text-primary-foreground rounded-full">
-                            <Package className="h-4 w-4" />
+                        <Link href={"#"} className="flex h-12 w-12 shrink-0 items-center justify-center bg-primary text-primary-foreground rounded-full">
+                            <Image src={imgIcon} alt="icone"/>
                             <span className="sr-only">Deshboard Avatar</span>
                         </Link>
 
@@ -111,10 +113,10 @@ export const Deshboard = () => {
                             <nav className="grid gap-6 text-lg font-medium">
                                 <Link
                                     href={"#"}
-                                    className="flex h-10 w-10 bg-primary rounded-full text-lg items-center justify-center text-primary-foreground md:text-base gap-2"
+                                    className="flex h-14 w-14 bg-primary rounded-full text-lg items-center justify-center text-primary-foreground md:text-base gap-2"
                                     prefetch={false}
                                 >
-                                    <Package className="h-5 w-5 transition-all" />
+                                    <Image src={imgIcon} alt="icone" className="transition-all"/>
                                     <span className="sr-only">Logo do projeto</span>
                                 </Link>
 
