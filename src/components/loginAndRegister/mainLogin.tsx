@@ -5,18 +5,11 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useState } from "react";
 import { TitlePage } from "./titlePage";
+import { ocultarMostrarSenha } from "@/utils/ocultarMostrarSenha";
 
 export const MainLogin = () => {
 
     const [mostrarSenha, setMostrarSenha] = useState(false);
-
-    const VerSenha = () => {
-        if (!mostrarSenha){
-            setMostrarSenha(true);
-        } else {
-            setMostrarSenha(false);
-        }
-    }
 
     return (
         <main className="min-w-[450px] mt-20 flex flex-col items-center">
@@ -35,7 +28,7 @@ export const MainLogin = () => {
                             placeholder="Digite sua senha"
                             className="flex-1 pr-10"
                         />
-                        <div className="absolute right-3" onClick={() => VerSenha()}>
+                        <div className="absolute right-3" onClick={() => ocultarMostrarSenha(setMostrarSenha, mostrarSenha)}>
                             {!mostrarSenha ? <EyeClosed  /> : <Eye  />}
                         </div>
                     </div>
