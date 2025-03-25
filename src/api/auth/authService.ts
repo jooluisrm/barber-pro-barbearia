@@ -10,32 +10,35 @@ export interface RegisterData {
     telefone: string;
     endereco: string;
     latitude: string;
-    lontitude: string;
+    longitude: string;
 }
 
 export const registerUser = async (data: RegisterData) => {
     try {
-        const response = await axiosInstance.post('/barbearia/register', data);
-        return (
-            toast(response.data.message, {
-                action: {
-                    label: "Fechar",
-                    onClick: () => console.log("Undo")
-                }
-            })
-        ); // Retorna a resposta de sucesso
-
+      const response = await axiosInstance.post("/barbearia/registrar", data);
+  
+      toast.success(response.data.message, {
+        action: {
+          label: "Fechar",
+          onClick: () => console.log("Fechar"),
+        },
+      });
+  
+      return response.data;
     } catch (error: any) {
-        // Verificando se a resposta do erro existe e acessando de forma segura
-        const errorMessage = error.response?.data?.error || 'Erro ao registrar usuário';
-        toast(errorMessage, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Undo")
-            }
-        });
+      const errorMessage = error.response?.data?.error || "Erro ao registrar usuário";
+  
+      toast.error(errorMessage, {
+        action: {
+          label: "Fechar",
+          onClick: () => console.log("Fechar"),
+        },
+      });
+  
+      throw new Error(errorMessage);
     }
-};
+  };
+  
 
 export interface LoginData {
     email: string;
