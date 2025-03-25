@@ -1,26 +1,26 @@
 "use client"
 
-import { Eye, EyeClosed } from "lucide-react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { useState } from "react";
+import { Eye, EyeClosed } from "lucide-react";
 import { TitlePage } from "./titlePage";
 
-export const MainLogin = () => {
+export const MainRegister = () => {
 
     const [mostrarSenha, setMostrarSenha] = useState(false);
-
-    const VerSenha = () => {
-        if (!mostrarSenha){
-            setMostrarSenha(true);
-        } else {
-            setMostrarSenha(false);
+    
+        const VerSenha = () => {
+            if (!mostrarSenha){
+                setMostrarSenha(true);
+            } else {
+                setMostrarSenha(false);
+            }
         }
-    }
 
     return (
         <main className="min-w-[450px] mt-20 flex flex-col items-center">
-            <TitlePage title="BarberPro" subtitle="Entrar na plataforma"/>
+            <TitlePage title="BarberPro" subtitle="Registre sua barbearia"/>
             <form className="flex flex-col gap-5">
                 <div>
                     <label htmlFor="email">E-mail:</label>
