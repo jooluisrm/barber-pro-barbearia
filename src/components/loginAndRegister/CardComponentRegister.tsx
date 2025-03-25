@@ -9,7 +9,7 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
-export const CardComponent = () => {
+export const CardComponentRegister = () => {
     return (
         <Card>
             <CardHeader>

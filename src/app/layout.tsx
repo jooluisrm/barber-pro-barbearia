@@ -37,11 +37,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-
           <Deshboard />
           {children}
           <Footer />
-
         </ThemeProvider>
       </body>
     </html>
