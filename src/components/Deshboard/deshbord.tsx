@@ -1,3 +1,5 @@
+"use client"
+
 import {
     Sheet,
     SheetContent,
@@ -12,8 +14,12 @@ import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import Image from "next/image";
 import imgIcon from "../../../public/assets/BarberProIcone-removebg-preview.png";
+import { AlertLogout } from "../loginAndRegister/alertLogout";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Deshboard = () => {
+    const { token } = useAuth();
+
     return (
         <div className="flex w-full flex-col bg-muted/40">
 
@@ -21,7 +27,7 @@ export const Deshboard = () => {
                 <nav className="flex flex-col items-center gap-4 px-2 py-5">
                     <TooltipProvider>
                         <Link href={"#"} className="flex h-12 w-12 shrink-0 items-center justify-center bg-primary text-primary-foreground rounded-full">
-                            <Image src={imgIcon} alt="icone"/>
+                            <Image src={imgIcon} alt="icone" />
                             <span className="sr-only">Deshboard Avatar</span>
                         </Link>
 
@@ -80,22 +86,26 @@ export const Deshboard = () => {
                     </TooltipProvider>
                 </nav>
 
-                <nav className="mt-auto flex flex-col items-center gap-4 px-2 py-5">
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Link
-                                    href={"#"}
-                                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                    <LogOut className="h-5 w-5 text-red-500" />
-                                    <span className="sr-only">Sair</span>
-                                </Link>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">Sair</TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                </nav>
+                {
+                    token && (
+                        <nav className="mt-auto flex flex-col items-center gap-4 px-2 py-5">
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Link
+                                            href={"#"}
+                                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                                        >
+                                            <AlertLogout />
+                                            <span className="sr-only">Sair</span>
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">Sair</TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        </nav>
+                    )
+                }
 
             </aside>
 
@@ -116,7 +126,7 @@ export const Deshboard = () => {
                                     className="flex h-14 w-14 bg-primary rounded-full text-lg items-center justify-center text-primary-foreground md:text-base gap-2"
                                     prefetch={false}
                                 >
-                                    <Image src={imgIcon} alt="icone" className="transition-all"/>
+                                    <Image src={imgIcon} alt="icone" className="transition-all" />
                                     <span className="sr-only">Logo do projeto</span>
                                 </Link>
 
@@ -156,8 +166,14 @@ export const Deshboard = () => {
                                     Barbearia
                                 </Link>
 
+                                {
+                                    token && (
+                                        <AlertLogout />
+                                    )
+                                }
 
                             </nav>
+
                         </SheetContent>
                     </Sheet>
                     <h2>Menu</h2>

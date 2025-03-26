@@ -22,20 +22,28 @@ export const MainLogin = () => {
 
     const fazerLogin = async (email: string, senha: string) => {
         try {
-            const userData = await loginUser({email, senha});
+            const userData = await loginUser({ email, senha });
             login(userData);
-            return (
-                toast("Login realizado com sucesso!", {
-                    action: {
-                        label: "Fechar",
-                        onClick: () => console.log("Undo")
-                    }
-                })
-            )
-        } catch (error) {
-            alert(error)
+    
+            toast.success("Login realizado com sucesso!", {
+                action: {
+                    label: "Fechar",
+                    onClick: () => console.log("Fechar"),
+                }
+            });
+    
+        } catch (error: any) {
+            const errorMessage = error.message || "Erro ao fazer login";
+    
+            toast.error(errorMessage, {
+                action: {
+                    label: "Fechar",
+                    onClick: () => console.log("Fechar"),
+                }
+            });
         }
-    }
+    };
+    
 
     return (
         <main className="min-w-[450px] mt-20 flex flex-col items-center">
@@ -45,6 +53,7 @@ export const MainLogin = () => {
                     <label htmlFor="email">E-mail:</label>
                     <Input
                         id="email"
+                        type="email"
                         placeholder="Digite seu email"
                         value={inputEmail}
                         onChange={(e) => setInputEmail(e.target.value)}
