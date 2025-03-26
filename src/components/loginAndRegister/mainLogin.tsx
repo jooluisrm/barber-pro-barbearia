@@ -24,14 +24,14 @@ export const MainLogin = () => {
         try {
             const userData = await loginUser({ email, senha });
             login(userData);
-    
+            
             toast.success("Login realizado com sucesso!", {
                 action: {
                     label: "Fechar",
                     onClick: () => console.log("Fechar"),
                 }
             });
-    
+
         } catch (error: any) {
             const errorMessage = error.message || "Erro ao fazer login";
     

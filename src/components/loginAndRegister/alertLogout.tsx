@@ -31,12 +31,11 @@ export const AlertLogout = () => {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-
                 <div
                     className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground transition-all cursor-pointer"
                 >
                     <LogOut className="h-5 w-5 text-red-500 cursor-pointer" />
-                    Sair
+                    <div className="md:hidden">Sair</div>
                 </div>
             </AlertDialogTrigger>
             <AlertDialogContent>
