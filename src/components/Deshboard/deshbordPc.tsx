@@ -7,9 +7,10 @@ import { AlertLogout } from "../loginAndRegister/alertLogout";
 
 type Props = {
     token: string | null;
+    rotaAtual: string;
 }
 
-export const DeshboardPc = ({ token }: Props) => {
+export const DeshboardPc = ({ token, rotaAtual }: Props) => {
     return (
         <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 border-r bg-background sm:flex flex-col">
             <nav className="flex flex-col items-center gap-4 px-2 py-5">
@@ -23,7 +24,10 @@ export const DeshboardPc = ({ token }: Props) => {
                         <TooltipTrigger asChild>
                             <Link
                                 href={"/"}
-                                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                                className={`
+                                    flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground 
+                                    ${rotaAtual === "/" && "dark:text-white text-black"}
+                                    `}
                             >
                                 <House className="h-5 w-5" />
                                 <span className="sr-only">Início</span>
