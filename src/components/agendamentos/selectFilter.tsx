@@ -10,9 +10,13 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-export const SelectFilter = () => {
+type Props = {
+    handleSelect: (value: string) => void;
+}
+
+export const SelectFilter = ({handleSelect}: Props) => {
     return (
-        <Select>
+        <Select onValueChange={handleSelect} defaultValue="confirmado">
             <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Filtar Agendamentos" />
             </SelectTrigger>
