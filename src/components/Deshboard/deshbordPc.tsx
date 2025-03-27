@@ -15,7 +15,7 @@ export const DeshboardPc = ({ token, rotaAtual }: Props) => {
         <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 border-r bg-background sm:flex flex-col">
             <nav className="flex flex-col items-center gap-4 px-2 py-5">
                 <TooltipProvider>
-                    <Link href={"#"} className="flex h-12 w-12 shrink-0 items-center justify-center bg-primary text-primary-foreground rounded-full">
+                    <Link href={"#"} className="flex h-12 w-12 shrink-0 items-center dark:bg-primary justify-center text-primary-foreground rounded-full border">
                         <Image src={imgIcon} alt="icone" />
                         <span className="sr-only">Deshboard Avatar</span>
                     </Link>
