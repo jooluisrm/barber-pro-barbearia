@@ -1,10 +1,12 @@
 import { ModeToggle } from "@/components/buttonTheme";
+import { MainHome } from "@/components/home/mainHome";
 
 const Home = () => {
   return (
-    <main className="sm:ml-14 p-4 min-h-screen">
+    <section className="sm:ml-14 p-4 min-h-screen">
       <ModeToggle />
-    </main>
+      <MainHome />
+    </section>
   );
 }
 
