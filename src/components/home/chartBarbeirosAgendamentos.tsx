@@ -40,7 +40,7 @@ export function ChartBarbeirosAgendamentos({ barbeiros, agendamentos }: Props) {
 
     return (
         <div className="w-full flex justify-center flex-col items-center">
-            <h2 className="text-2xl font-semibold dark:text-white text-gray-800 mb-4">
+            <h2 className="text-2xl text-center font-semibold dark:text-white text-gray-800 mb-4">
                 Desempenho Mensal dos Barbeiros
             </h2>
             <p className="text-center text-gray-600 mb-6">

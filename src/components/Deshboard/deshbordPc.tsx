@@ -4,6 +4,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/
 import Image from "next/image";
 import imgIcon from "../../../public/assets/BarberProIcone-removebg-preview.png";
 import { AlertLogout } from "../loginAndRegister/alertLogout";
+import { ModeToggle } from "../buttonTheme";
 
 type Props = {
     token: string | null;
@@ -98,6 +99,7 @@ export const DeshboardPc = ({ token, rotaAtual }: Props) => {
                     </nav>
                 )
             }
+            <ModeToggle />
 
         </aside>
     );

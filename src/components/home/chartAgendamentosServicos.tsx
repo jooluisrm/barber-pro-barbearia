@@ -28,7 +28,7 @@ export const ChartAgendamentosServicos = ({ agendamentos }: Props) => {
 
     return (
         <div className="w-full flex justify-center flex-col items-center">
-            <h2 className="text-2xl font-semibold dark:text-white text-gray-800 mb-4">
+            <h2 className="text-2xl font-semibold text-center dark:text-white text-gray-800 mb-4">
                 Agendamentos de Serviços por Mês
             </h2>
             <p className="text-center text-gray-600 mb-6">
