@@ -47,8 +47,11 @@ export const DeshboardMobile = ({ token, rotaAtual }: Props) => {
                             </Link>
 
                             <Link
-                                href={"#"}
-                                className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground transition-all"
+                                href={"/agendamentos"}
+                                className={`
+                                    flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground transition-all
+                                    ${rotaAtual === "/agendamentos" && "dark:text-white text-black"}
+                                    `}
                                 prefetch={false}
                             >
                                 <NotebookPen className="h-5 w-5" />
@@ -56,8 +59,11 @@ export const DeshboardMobile = ({ token, rotaAtual }: Props) => {
                             </Link>
 
                             <Link
-                                href={"#"}
-                                className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground transition-all"
+                                href={"/barbeiros"}
+                                className={`
+                                    flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground transition-all
+                                    ${rotaAtual === "/barbeiros" && "dark:text-white text-black"}
+                                    `}
                                 prefetch={false}
                             >
                                 <Users className="h-5 w-5" />

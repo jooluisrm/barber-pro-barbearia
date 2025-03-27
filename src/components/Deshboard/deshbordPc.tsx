@@ -40,8 +40,11 @@ export const DeshboardPc = ({ token, rotaAtual }: Props) => {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Link
-                                href={"#"}
-                                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                                href={"/agendamentos"}
+                                className={`
+                                    flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground 
+                                    ${rotaAtual === "/agendamentos" && "dark:text-white text-black"}
+                                    `}
                             >
                                 <NotebookPen className="h-5 w-5" />
                                 <span className="sr-only">Agendamentos</span>
@@ -53,8 +56,11 @@ export const DeshboardPc = ({ token, rotaAtual }: Props) => {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Link
-                                href={"#"}
-                                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                                href={"/barbeiros"}
+                                className={`
+                                    flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground 
+                                    ${rotaAtual === "/barbeiros" && "dark:text-white text-black"}
+                                    `}
                             >
                                 <Users className="h-5 w-5" />
                                 <span className="sr-only">Barbeiros</span>
@@ -67,7 +73,10 @@ export const DeshboardPc = ({ token, rotaAtual }: Props) => {
                         <TooltipTrigger asChild>
                             <Link
                                 href={"#"}
-                                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                                className={`
+                                    flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground 
+                                    ${rotaAtual === "/barbearia" && "dark:text-white text-black"}
+                                    `}
                             >
                                 <Store className="h-5 w-5" />
                                 <span className="sr-only">Barbearia</span>
