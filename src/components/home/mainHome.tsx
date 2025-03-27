@@ -1,10 +1,13 @@
 "use client"
 
-import { useAuth } from "@/contexts/AuthContext";
+import { Barbearia, useAuth } from "@/contexts/AuthContext";
 import { ChartFaturamentoAgendamento } from "./chartFaturamentoAgendamento";
 import { useEffect, useState } from "react";
 import { Agendamentos } from "@/types/agendamentos";
 import { getAgendamentos } from "@/api/agendamentos/agendamentoServices";
+import { ChartBarbeirosAgendamentos } from "./chartBarbeirosAgendamentos";
+import { getBarbeiros } from "@/api/barbeiros/barbeirosServices";
+import { Barbeiro } from "@/types/barbeiros";
 
 export const MainHome = () => {
 
@@ -12,6 +15,7 @@ export const MainHome = () => {
         const [agendamentos, setAgendamentos] = useState<Agendamentos[] | null>(null);
         const [faturamentoPorMes, setFaturamentoPorMes] = useState<{ [key: string]: number }>({});
         const [agendamentosPorMes, setAgendamentosPorMes] = useState<{ [key: string]: number }>({});
+        const [barbeiros, setBarbeiros] = useState<Barbeiro[] | null>(null);
     
         useEffect(() => {
             const carregarAgendamentos = async () => {
@@ -40,12 +44,21 @@ export const MainHome = () => {
                     setAgendamentosPorMes(agendamentosMensal);
                 }
             };
-    
+            const carregarBarbeiros = async () => {
+                if (barbearia) {
+                    const dados = await getBarbeiros(barbearia.id);
+                    setBarbeiros(dados);
+                    console.log(dados)
+                }
+            }
+            
+            carregarBarbeiros();
             carregarAgendamentos();
         }, [barbearia]);
 
     return (
         <main>
+            <ChartBarbeirosAgendamentos barbeiros={barbeiros} agendamentos={agendamentos}/>
             <ChartFaturamentoAgendamento agendamentosPorMes={agendamentosPorMes} faturamentoPorMes={faturamentoPorMes}/>
         </main>
     );
