@@ -8,6 +8,7 @@ import { getAgendamentos } from "@/api/agendamentos/agendamentoServices";
 import { ChartBarbeirosAgendamentos } from "./chartBarbeirosAgendamentos";
 import { getBarbeiros } from "@/api/barbeiros/barbeirosServices";
 import { Barbeiro } from "@/types/barbeiros";
+import { ChartAgendamentosServicos } from "./chartAgendamentosServicos";
 
 export const MainHome = () => {
 
@@ -59,6 +60,7 @@ export const MainHome = () => {
     return (
         <main>
             <ChartBarbeirosAgendamentos barbeiros={barbeiros} agendamentos={agendamentos}/>
+            <ChartAgendamentosServicos agendamentos={agendamentos}/>
             <ChartFaturamentoAgendamento agendamentosPorMes={agendamentosPorMes} faturamentoPorMes={faturamentoPorMes}/>
         </main>
     );
