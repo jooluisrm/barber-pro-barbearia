@@ -4,7 +4,7 @@ export type Agendamentos = {
     barbeariaId: string;
     barbeiroId: string;
     servicoId: string;
-    data: string; // ou Date se preferir usar tipo Date
+    data: Date; // ou Date se preferir usar tipo Date
     hora: string;
     status: "Confirmado" | "Feito" | "Cancelado"; // enum de status possíveis
     usuario: {

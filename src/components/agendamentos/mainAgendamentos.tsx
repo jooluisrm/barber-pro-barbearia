@@ -6,6 +6,7 @@ import { Agendamentos } from "@/types/agendamentos";
 import { useAuth } from "@/contexts/AuthContext";
 import { getAgendamentos } from "@/api/agendamentos/agendamentoServices";
 import { SelectFilter } from "./selectFilter";
+import { CalendarioFilter } from "./calendarioFilter";
 
 export const MainAgendamentos = () => {
     const { barbearia } = useAuth();
@@ -13,6 +14,7 @@ export const MainAgendamentos = () => {
     const [agendamentos, setAgendamentos] = useState<Agendamentos[] | null>(null);
     const [agendamentosFiltrados, setAgendamentosFiltrados] = useState<Agendamentos[] | null>(null);
     const [filtroSelecionado, setFiltroSelecionado] = useState("confirmado");
+    const [date, setDate] = useState<Date>()
 
 
     useEffect(() => {
@@ -34,22 +36,26 @@ export const MainAgendamentos = () => {
     useEffect(() => {
         const filtrarAgendamentos = () => {
             if (!agendamentos) return;
-
+            let agendamentosPorData = agendamentos;
+            
+            if(!date) return;
+            agendamentosPorData = agendamentos.filter((item) => item.data == date)
+            
             let filtrados = agendamentos;
 
             switch (filtroSelecionado) {
                 case "confirmado":
-                    filtrados = agendamentos.filter((item) => item.status === "Confirmado");
+                    filtrados = agendamentosPorData.filter((item) => item.status === "Confirmado");
                     break;
                 case "feito":
-                    filtrados = agendamentos.filter((item) => item.status === "Feito");
+                    filtrados = agendamentosPorData.filter((item) => item.status === "Feito");
                     break;
                 case "cancelado":
-                    filtrados = agendamentos.filter((item) => item.status === "Cancelado");
+                    filtrados = agendamentosPorData.filter((item) => item.status === "Cancelado");
                     break;
                 case "todos":
                 default:
-                    filtrados = agendamentos;
+                    filtrados = agendamentosPorData;
                     break;
             }
 
@@ -57,12 +63,13 @@ export const MainAgendamentos = () => {
         };
 
         filtrarAgendamentos();
-    }, [filtroSelecionado, agendamentos]);
+    }, [filtroSelecionado, agendamentos, date]);
 
     return (
         <main>
             <div>
-                <div className="flex justify-end my-5">
+                <div className="flex justify-end gap-3 my-5">
+                    <CalendarioFilter date={date} setDate={setDate}/>
                     <SelectFilter handleSelect={handleSelect} />
                 </div>
                 <TableAgendamentos agendamentosFiltrados={agendamentosFiltrados} />
