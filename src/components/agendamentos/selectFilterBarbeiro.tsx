@@ -17,7 +17,7 @@ type Props = {
 export const SelectFilterBarbeiro = ({ handleSelect, barbeiros }: Props) => {
     return (
         <Select onValueChange={handleSelect} defaultValue="todos">
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="min-w-[180px]">
                 <SelectValue placeholder="Filtar Barbeiros" />
             </SelectTrigger>
             <SelectContent>

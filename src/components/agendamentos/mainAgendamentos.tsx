@@ -10,6 +10,8 @@ import { CalendarioFilter } from "./calendarioFilter";
 import { SelectFilterBarbeiro } from "./selectFilterBarbeiro";
 import { getBarbeiros } from "@/api/barbeiros/barbeirosServices";
 import { Barbeiro } from "@/types/barbeiros";
+import { Button } from "../ui/button";
+import { DialogNovoAgendamento } from "./dialogNovoAgendamento";
 
 export const MainAgendamentos = () => {
     const { barbearia } = useAuth();
@@ -56,17 +58,17 @@ export const MainAgendamentos = () => {
         const filtrarAgendamentos = () => {
             if (!agendamentos) return;
             let agendamentosFiltrados = agendamentos;
-    
+
             // 🔹 Filtrar por data, se uma data estiver selecionada
             if (date) {
                 agendamentosFiltrados = agendamentosFiltrados.filter((item) => item.data === date);
             }
-    
+
             // 🔹 Filtrar por barbeiro, se um barbeiro estiver selecionado e diferente de "todos"
             if (filtroSelecionadoBarbeiro && filtroSelecionadoBarbeiro !== "todos") {
                 agendamentosFiltrados = agendamentosFiltrados.filter((item) => item.barbeiroId === filtroSelecionadoBarbeiro);
             }
-    
+
             // 🔹 Filtrar por status
             switch (filtroSelecionadoStatus) {
                 case "confirmado":
@@ -82,27 +84,45 @@ export const MainAgendamentos = () => {
                 default:
                     break;
             }
-    
+
             setAgendamentosFiltrados(agendamentosFiltrados);
         };
-    
+
         filtrarAgendamentos();
     }, [filtroSelecionadoStatus, filtroSelecionadoBarbeiro, agendamentos, date]);
 
     return (
         <main>
-            <div className="pb-10 pt-5">
-                <h1 className="text-xl md:text-3xl">Painel de <span className="font-bold text-blue-500">Agendamentos</span></h1>
-                <p className="text-muted-foreground">Visualize, filtre e gerencie todos os agendamentos da sua barbearia.</p>
+            {/* Título e descrição */}
+            <div className="pb-6 pt-5 text-center sm:text-left">
+                <h1 className="text-2xl sm:text-3xl font-semibold">
+                    Painel de <span className="text-blue-500">Agendamentos</span>
+                </h1>
+                <p className="text-muted-foreground text-sm sm:text-base">
+                    Visualize, filtre e gerencie todos os agendamentos da sua barbearia.
+                </p>
             </div>
-            <div>
-                <div className="flex justify-end gap-3 my-5">
-                    <CalendarioFilter date={date} setDate={setDate}/>
-                    <SelectFilterBarbeiro handleSelect={handleSelectBarbeiro} barbeiros={barbeiros}/>
-                    <SelectFilterStatus handleSelect={handleSelectStatus} />
+
+            {/* Container principal */}
+            <div className="space-y-4">
+                {/* 🔹 Botão de Novo Agendamento e Filtros */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <DialogNovoAgendamento />
+
+                    {/* 🔹 Filtros - Organiza responsivamente */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-center gap-4">
+                        <CalendarioFilter date={date} setDate={setDate} />
+                        <SelectFilterBarbeiro handleSelect={handleSelectBarbeiro} barbeiros={barbeiros} />
+                        <SelectFilterStatus handleSelect={handleSelectStatus} />
+                    </div>
                 </div>
-                <TableAgendamentos agendamentosFiltrados={agendamentosFiltrados} />
+
+                {/* 🔹 Tabela de Agendamentos */}
+                <div className="overflow-x-auto">
+                    <TableAgendamentos agendamentosFiltrados={agendamentosFiltrados} />
+                </div>
             </div>
         </main>
+
     );
 }

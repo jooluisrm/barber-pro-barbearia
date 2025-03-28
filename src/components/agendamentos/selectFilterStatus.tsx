@@ -15,7 +15,7 @@ type Props = {
 export const SelectFilterStatus = ({ handleSelect }: Props) => {
     return (
         <Select onValueChange={handleSelect} defaultValue="confirmado">
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="min-w-[180px]">
                 <SelectValue placeholder="Filtar Agendamentos" />
             </SelectTrigger>
             <SelectContent>
