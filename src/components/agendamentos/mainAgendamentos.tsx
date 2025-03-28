@@ -5,7 +5,7 @@ import { TableAgendamentos } from "./tableAgendamentos";
 import { Agendamentos } from "@/types/agendamentos";
 import { useAuth } from "@/contexts/AuthContext";
 import { getAgendamentos } from "@/api/agendamentos/agendamentoServices";
-import { SelectFilter } from "./selectFilter";
+import { SelectFilterStatus } from "./selectFilterStatus";
 import { CalendarioFilter } from "./calendarioFilter";
 
 export const MainAgendamentos = () => {
@@ -67,11 +67,14 @@ export const MainAgendamentos = () => {
 
     return (
         <main>
-            
+            <div className="pb-10 pt-5">
+                <h1 className="text-xl md:text-2xl">Bem-vindo(a) ao <span className="font-bold">BarberPro</span>, <span className="font-bold text-blue-500 text-nowrap">{barbearia?.nome}</span>!</h1>
+                <p className="text-muted-foreground">Seu resumo mensal está pronto abaixo.</p>
+            </div>
             <div>
                 <div className="flex justify-end gap-3 my-5">
                     <CalendarioFilter date={date} setDate={setDate}/>
-                    <SelectFilter handleSelect={handleSelect} />
+                    <SelectFilterStatus handleSelect={handleSelect} />
                 </div>
                 <TableAgendamentos agendamentosFiltrados={agendamentosFiltrados} />
             </div>

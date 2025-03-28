@@ -14,7 +14,7 @@ type Props = {
     handleSelect: (value: string) => void;
 }
 
-export const SelectFilter = ({handleSelect}: Props) => {
+export const SelectFilterStatus = ({ handleSelect }: Props) => {
     return (
         <Select onValueChange={handleSelect} defaultValue="confirmado">
             <SelectTrigger className="w-[180px]">

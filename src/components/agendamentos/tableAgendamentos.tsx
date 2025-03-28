@@ -44,7 +44,7 @@ export function TableAgendamentos({ agendamentosFiltrados }: Props) {
                         <TableCell>{item.servico.nome}</TableCell>
                         <TableCell className="text-blue-500 font-bold">{formatarData(item.data)}</TableCell>
                         <TableCell className="text-blue-500 font-bold">{item.hora}</TableCell>
-                        <TableCell className="text-right text-green-600">{formatarPreco(item.servico.preco)}</TableCell>
+                        <TableCell className="text-right text-green-600 font-bold">{formatarPreco(item.servico.preco)}</TableCell>
                     </TableRow>
                 ))}
             </TableBody>
