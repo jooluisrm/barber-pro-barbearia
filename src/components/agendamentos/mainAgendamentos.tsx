@@ -7,13 +7,19 @@ import { useAuth } from "@/contexts/AuthContext";
 import { getAgendamentos } from "@/api/agendamentos/agendamentoServices";
 import { SelectFilterStatus } from "./selectFilterStatus";
 import { CalendarioFilter } from "./calendarioFilter";
+import { SelectFilterBarbeiro } from "./selectFilterBarbeiro";
+import { getBarbeiros } from "@/api/barbeiros/barbeirosServices";
+import { Barbeiro } from "@/types/barbeiros";
 
 export const MainAgendamentos = () => {
     const { barbearia } = useAuth();
 
     const [agendamentos, setAgendamentos] = useState<Agendamentos[] | null>(null);
+    const [barbeiros, setBarbeiros] = useState<Barbeiro[] | null>(null);
     const [agendamentosFiltrados, setAgendamentosFiltrados] = useState<Agendamentos[] | null>(null);
-    const [filtroSelecionado, setFiltroSelecionado] = useState("confirmado");
+    const [filtroSelecionadoStatus, setFiltroSelecionadoStatus] = useState("confirmado");
+    const [filtroSelecionadoBarbeiro, setFiltroSelecionadoBarbeiro] = useState("todos");
+
     const [date, setDate] = useState<Date>()
 
 
@@ -24,46 +30,64 @@ export const MainAgendamentos = () => {
                 setAgendamentos(dados);
             }
         }
+        const carregarBarbeiros = async () => {
+            if (barbearia) {
+                const dados = await getBarbeiros(barbearia.id);
+                setBarbeiros(dados);
+            }
+        }
+
+        carregarBarbeiros();
         carregarAgendamentos();
     }, [barbearia]);
 
-    const handleSelect = (value: string) => {
+    const handleSelectStatus = (value: string) => {
         if (value) {
-            setFiltroSelecionado(value);
+            setFiltroSelecionadoStatus(value);
+        }
+    }
+    const handleSelectBarbeiro = (value: string) => {
+        if (value) {
+            setFiltroSelecionadoBarbeiro(value);
         }
     }
 
     useEffect(() => {
         const filtrarAgendamentos = () => {
             if (!agendamentos) return;
-            let agendamentosPorData = agendamentos;
-            
-            if(!date) return;
-            agendamentosPorData = agendamentos.filter((item) => item.data == date)
-            
-            let filtrados = agendamentos;
-
-            switch (filtroSelecionado) {
+            let agendamentosFiltrados = agendamentos;
+    
+            // 🔹 Filtrar por data, se uma data estiver selecionada
+            if (date) {
+                agendamentosFiltrados = agendamentosFiltrados.filter((item) => item.data === date);
+            }
+    
+            // 🔹 Filtrar por barbeiro, se um barbeiro estiver selecionado e diferente de "todos"
+            if (filtroSelecionadoBarbeiro && filtroSelecionadoBarbeiro !== "todos") {
+                agendamentosFiltrados = agendamentosFiltrados.filter((item) => item.barbeiroId === filtroSelecionadoBarbeiro);
+            }
+    
+            // 🔹 Filtrar por status
+            switch (filtroSelecionadoStatus) {
                 case "confirmado":
-                    filtrados = agendamentosPorData.filter((item) => item.status === "Confirmado");
+                    agendamentosFiltrados = agendamentosFiltrados.filter((item) => item.status === "Confirmado");
                     break;
                 case "feito":
-                    filtrados = agendamentosPorData.filter((item) => item.status === "Feito");
+                    agendamentosFiltrados = agendamentosFiltrados.filter((item) => item.status === "Feito");
                     break;
                 case "cancelado":
-                    filtrados = agendamentosPorData.filter((item) => item.status === "Cancelado");
+                    agendamentosFiltrados = agendamentosFiltrados.filter((item) => item.status === "Cancelado");
                     break;
                 case "todos":
                 default:
-                    filtrados = agendamentosPorData;
                     break;
             }
-
-            setAgendamentosFiltrados(filtrados);
+    
+            setAgendamentosFiltrados(agendamentosFiltrados);
         };
-
+    
         filtrarAgendamentos();
-    }, [filtroSelecionado, agendamentos, date]);
+    }, [filtroSelecionadoStatus, filtroSelecionadoBarbeiro, agendamentos, date]);
 
     return (
         <main>
@@ -74,7 +98,8 @@ export const MainAgendamentos = () => {
             <div>
                 <div className="flex justify-end gap-3 my-5">
                     <CalendarioFilter date={date} setDate={setDate}/>
-                    <SelectFilterStatus handleSelect={handleSelect} />
+                    <SelectFilterBarbeiro handleSelect={handleSelectBarbeiro} barbeiros={barbeiros}/>
+                    <SelectFilterStatus handleSelect={handleSelectStatus} />
                 </div>
                 <TableAgendamentos agendamentosFiltrados={agendamentosFiltrados} />
             </div>
