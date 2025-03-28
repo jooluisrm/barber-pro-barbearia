@@ -92,8 +92,8 @@ export const MainAgendamentos = () => {
     return (
         <main>
             <div className="pb-10 pt-5">
-                <h1 className="text-xl md:text-2xl">Bem-vindo(a) ao <span className="font-bold">BarberPro</span>, <span className="font-bold text-blue-500 text-nowrap">{barbearia?.nome}</span>!</h1>
-                <p className="text-muted-foreground">Seu resumo mensal está pronto abaixo.</p>
+                <h1 className="text-xl md:text-3xl">Painel de <span className="font-bold text-blue-500">Agendamentos</span></h1>
+                <p className="text-muted-foreground">Visualize, filtre e gerencie todos os agendamentos da sua barbearia.</p>
             </div>
             <div>
                 <div className="flex justify-end gap-3 my-5">
