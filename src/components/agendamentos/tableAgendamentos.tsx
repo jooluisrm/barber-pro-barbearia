@@ -11,6 +11,7 @@ import {
 import { Agendamentos } from "@/types/agendamentos";
 import { formatarData, formatarPreco } from "@/utils/formatarValores";
 import { EditIcon } from "lucide-react";
+import { DialogEdit } from "./dialogEdit";
 
 type Props = {
     agendamentosFiltrados: Agendamentos[] | null;
@@ -47,7 +48,7 @@ export function TableAgendamentos({ agendamentosFiltrados }: Props) {
                         <TableCell className="text-blue-500 font-bold">{formatarData(item.data)}</TableCell>
                         <TableCell className="text-blue-500 font-bold">{item.hora}</TableCell>
                         <TableCell className="text-green-600 font-bold">{formatarPreco(item.servico.preco)}</TableCell>
-                        <TableCell className="flex justify-end items-center pt-4"><EditIcon  className="cursor-pointer"/></TableCell>
+                        <TableCell className="flex justify-end items-center pt-4"><DialogEdit agendamentoSelecionado={item}/></TableCell>
                     </TableRow>
                 ))}
             </TableBody>
