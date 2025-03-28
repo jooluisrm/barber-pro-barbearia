@@ -3,8 +3,6 @@ import { Barbeiro } from "@/types/barbeiros";
 import { useEffect, useState } from "react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 
-
-
 type Props = {
     barbeiros: Barbeiro[] | null;
     agendamentos: Agendamentos[] | null;
@@ -16,12 +14,15 @@ export function ChartBarbeirosAgendamentos({ barbeiros, agendamentos }: Props) {
     useEffect(() => {
         if (!barbeiros || !agendamentos) return;
 
+        // 🔹 Filtramos apenas os agendamentos com status "Feito"
+        const agendamentosFeitos = agendamentos.filter((agendamento) => agendamento.status === "Feito");
+
         // 🔹 Criando estrutura base tipada corretamente
         const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
         const dadosBase: Record<string, any>[] = meses.map((mes) => ({ month: mes }));
 
         // 🔹 Criamos um mapa para contar os agendamentos por barbeiro e mês
-        agendamentos.forEach((agendamento) => {
+        agendamentosFeitos.forEach((agendamento) => {
             const data = new Date(agendamento.data);
             const mesIndex = data.getMonth();
             const barbeiro = barbeiros.find((b) => b.id === agendamento.barbeiroId);
@@ -44,7 +45,7 @@ export function ChartBarbeirosAgendamentos({ barbeiros, agendamentos }: Props) {
                 Desempenho Mensal dos Barbeiros
             </h2>
             <p className="text-center text-gray-600 mb-6">
-                Este gráfico exibe o número de <strong>agendamentos feitos</strong> por cada barbeiro ao longo dos meses.
+                Este gráfico exibe o número de <strong>agendamentos concluídos</strong> por cada barbeiro ao longo dos meses.
             </p>
 
             <ResponsiveContainer width="95%" height={400}>
