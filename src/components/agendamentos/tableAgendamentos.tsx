@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table"
 import { Agendamentos } from "@/types/agendamentos";
 import { formatarData, formatarPreco } from "@/utils/formatarValores";
+import { EditIcon } from "lucide-react";
 
 type Props = {
     agendamentosFiltrados: Agendamentos[] | null;
@@ -28,7 +29,8 @@ export function TableAgendamentos({ agendamentosFiltrados }: Props) {
                     <TableHead>Serviço</TableHead>
                     <TableHead>Data</TableHead>
                     <TableHead>Hora</TableHead>
-                    <TableHead className="text-right">Preço</TableHead>
+                    <TableHead>Preço</TableHead>
+                    <TableHead className="text-right"></TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -44,13 +46,14 @@ export function TableAgendamentos({ agendamentosFiltrados }: Props) {
                         <TableCell>{item.servico.nome}</TableCell>
                         <TableCell className="text-blue-500 font-bold">{formatarData(item.data)}</TableCell>
                         <TableCell className="text-blue-500 font-bold">{item.hora}</TableCell>
-                        <TableCell className="text-right text-green-600 font-bold">{formatarPreco(item.servico.preco)}</TableCell>
+                        <TableCell className="text-green-600 font-bold">{formatarPreco(item.servico.preco)}</TableCell>
+                        <TableCell className="flex justify-end items-center pt-4"><EditIcon  className="cursor-pointer"/></TableCell>
                     </TableRow>
                 ))}
             </TableBody>
             <TableFooter>
                 <TableRow>
-                    <TableCell colSpan={6}>Total de Agendamentos</TableCell>
+                    <TableCell colSpan={7}>Total de Agendamentos</TableCell>
                     <TableCell className="text-right">{agendamentosFiltrados?.length}</TableCell>
                 </TableRow>
             </TableFooter>
