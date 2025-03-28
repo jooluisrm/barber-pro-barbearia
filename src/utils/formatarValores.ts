@@ -1,5 +1,7 @@
-export const formatarData = (data: string) => {
-    const [ano, mes, dia] = data.split("-");
+export const formatarData = (data: Date) => {
+    let dataString = data.toString();
+
+    const [ano, mes, dia] = dataString.split("-");
     return `${dia}/${mes}/${ano}`;
 }
 

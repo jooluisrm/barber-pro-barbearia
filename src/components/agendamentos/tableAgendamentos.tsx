@@ -36,11 +36,15 @@ export function TableAgendamentos({ agendamentosFiltrados }: Props) {
                     <TableRow key={item.id}>
                         <TableCell className="font-medium">{item.usuario.nome}</TableCell>
                         <TableCell>{item.barbeiro.nome}</TableCell>
-                        <TableCell>{item.status}</TableCell>
+                        <TableCell
+                            className={`font-bold ${item.status === "Confirmado" ? "text-yellow-500" : item.status === "Feito" ? "text-green-500" : item.status === "Cancelado" ? "text-red-500" : ""}`}
+                        >
+                            {item.status}
+                        </TableCell>
                         <TableCell>{item.servico.nome}</TableCell>
-                        <TableCell>{formatarData(item.data)}</TableCell>
-                        <TableCell>{item.hora}</TableCell>
-                        <TableCell className="text-right">{formatarPreco(item.servico.preco)}</TableCell>
+                        <TableCell className="text-blue-500 font-bold">{formatarData(item.data)}</TableCell>
+                        <TableCell className="text-blue-500 font-bold">{item.hora}</TableCell>
+                        <TableCell className="text-right text-green-600">{formatarPreco(item.servico.preco)}</TableCell>
                     </TableRow>
                 ))}
             </TableBody>
