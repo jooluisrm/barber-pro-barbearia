@@ -39,7 +39,7 @@ export const MainAgendamentos = () => {
 
         carregarBarbeiros();
         carregarAgendamentos();
-    }, [barbearia]);
+    }, [barbearia, barbeiros, date]);
 
     const handleSelectStatus = (value: string) => {
         if (value) {

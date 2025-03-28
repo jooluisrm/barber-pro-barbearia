@@ -39,10 +39,7 @@ export function DialogEdit({ agendamentoSelecionado }: Props) {
                         label: "Fechar",
                         onClick: () => console.log("Fechar"),
                     }
-                });
-                setInterval(() => {
-                    window.location.reload();
-                }, 300);
+                });            
             } catch (error: any) {
                 const errorMessage = error.message || "Erro ao trocar status";
 

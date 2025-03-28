@@ -10,7 +10,7 @@ export function middleware(req: NextRequest) {
     }
 
     // 🔐 Se o usuário NÃO estiver autenticado, não pode acessar áreas protegidas
-    const protectedRoutes = ["/dashboard", "/perfil"];
+    const protectedRoutes = ["/dashboard", "/perfil", "/agendamentos", "/barbeiros"];
     if (!token && protectedRoutes.some(route => url.pathname.startsWith(route))) {
         return NextResponse.redirect(new URL("/login", req.url)); // Redireciona para o login
     }
@@ -25,5 +25,5 @@ export function middleware(req: NextRequest) {
 
 // 🛠 Define em quais rotas o middleware será aplicado
 export const config = {
-    matcher: ["/", "/dashboard/:path*", "/perfil/:path*", "/login", "/register"], // Protege essas rotas
+    matcher: ["/", "/dashboard/:path*", "/perfil/:path*", "/login", "/register", "/agendamentos", "/barbeiros"], // Protege essas rotas
 };
