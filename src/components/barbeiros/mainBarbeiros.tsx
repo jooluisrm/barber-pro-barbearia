@@ -1,3 +1,5 @@
+import { UserPlus } from "lucide-react";
+import { Button } from "../ui/button";
 import { TableBarbeiros } from "./tableBarbeiros";
 
 export const MainBarbeiros = () => {
@@ -14,11 +16,9 @@ export const MainBarbeiros = () => {
 
             <div className="space-y-4">
                 
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex justify-start gap-4">
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-center gap-4">
-
-                    </div>
+                    <Button><UserPlus/></Button>
                 </div>
 
                 <div>
