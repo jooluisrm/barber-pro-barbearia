@@ -10,6 +10,7 @@ import { loginUser } from "@/api/auth/authService";
 import { useAuth } from "@/contexts/AuthContext";
 import Link from "next/link";
 import { toast } from "sonner";
+import { handleConfetti } from "@/utils/confetti";
 
 
 export const MainLogin = () => {
@@ -24,7 +25,7 @@ export const MainLogin = () => {
         try {
             const userData = await loginUser({ email, senha });
             login(userData);
-            
+            handleConfetti(); // efeito de confetti
             toast.success("Login realizado com sucesso!", {
                 action: {
                     label: "Fechar",

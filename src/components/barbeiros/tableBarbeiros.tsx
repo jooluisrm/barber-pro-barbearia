@@ -9,14 +9,15 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Agendamentos } from "@/types/agendamentos";
+import { Barbeiro } from "@/types/barbeiros";
 import { formatarData, formatarPreco } from "@/utils/formatarValores";
 import { EditIcon } from "lucide-react";
 
 type Props = {
-    
+    barbeiros: Barbeiro[] | null;
 }
 
-export function TableBarbeiros() {
+export function TableBarbeiros({ barbeiros }: Props) {
 
     return (
         <Table>
@@ -30,19 +31,21 @@ export function TableBarbeiros() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                
-                    <TableRow >
-                        <TableCell className="font-medium">Ricardo</TableCell>
-                        <TableCell>ricardo@gmail.com</TableCell>
-                        <TableCell>(11) 9999-9999</TableCell>
+
+                {barbeiros && barbeiros.map((item) => (
+                    <TableRow key={item.id}>
+                        <TableCell className="font-medium">{item.nome}</TableCell>
+                        <TableCell>{item.email}</TableCell>
+                        <TableCell>{item.telefone}</TableCell>
                         <TableCell className="flex justify-end items-center pt-4"><EditIcon /></TableCell>
                     </TableRow>
-               
+                ))}
+
             </TableBody>
             <TableFooter>
                 <TableRow>
                     <TableCell colSpan={3}>Total de Barbeiros</TableCell>
-                    <TableCell className="text-right">1</TableCell>
+                    <TableCell className="text-right">{barbeiros?.length}</TableCell>
                 </TableRow>
             </TableFooter>
         </Table>

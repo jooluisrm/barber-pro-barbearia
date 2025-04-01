@@ -1,8 +1,28 @@
+"use client"
+
 import { UserPlus } from "lucide-react";
 import { Button } from "../ui/button";
 import { TableBarbeiros } from "./tableBarbeiros";
+import { useEffect, useState } from "react";
+import { Barbeiro } from "@/types/barbeiros";
+import { getBarbeiros } from "@/api/barbeiros/barbeirosServices";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const MainBarbeiros = () => {
+    const {barbearia} = useAuth();
+
+    const [barbeiros, setBarbeiros] = useState<Barbeiro[] | null>(null);
+
+    useEffect(() => {
+        if(barbearia) {
+            const carregarBarbeiros = async () => {
+                const dados = await getBarbeiros(barbearia.id);
+                setBarbeiros(dados);
+            }
+            carregarBarbeiros();
+        }
+    }, [barbearia]);
+
     return (
         <main>
             <div className="pb-6 pt-5 text-center sm:text-left">
@@ -22,7 +42,7 @@ export const MainBarbeiros = () => {
                 </div>
 
                 <div>
-                    <TableBarbeiros />
+                    <TableBarbeiros barbeiros={barbeiros}/>
                 </div>
             </div>
         </main>
