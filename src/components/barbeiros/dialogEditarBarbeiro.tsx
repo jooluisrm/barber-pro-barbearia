@@ -11,6 +11,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Barbeiro } from "@/types/barbeiros";
 import { useState } from "react";
+import { AlertDeletar } from "./alertDeletar";
 
 type Props = {
     barbeiro: Barbeiro;
@@ -65,7 +66,7 @@ export const DialogEditarBarbeiro = ({ barbeiro }: Props) => {
                         />
                     </div>
                     <div className="mt-5 flex justify-between">
-                        <Button variant={"destructive"} className="font-bold">Deletar</Button>
+                        <AlertDeletar barbeiro={barbeiro}/>
                         <Button className="font-bold">Salvar Alterações</Button>
                     </div>
                 </main>
