@@ -30,11 +30,15 @@ export const DialogAddBarbeiro = () => {
                 <main className="flex flex-col gap-5">
                     <div>
                         <label htmlFor="nome">Nome Completo:</label>
-                        <Input id="nome" placeholder="Digite seu nome completo"/>
+                        <Input id="nome" placeholder="Digite seu nome completo" />
+                    </div>
+                    <div>
+                        <label htmlFor="telefone">Telefone/Celular:</label>
+                        <Input id="telefone" type="tel" placeholder="Digite seu numero" />
                     </div>
                     <div>
                         <label htmlFor="email">E-mail:</label>
-                        <Input id="email" type="email" placeholder="Digite seu email"/>
+                        <Input id="email" type="email" placeholder="Digite seu email" />
                     </div>
                     <div>
                         <label htmlFor="senha">Senha:</label>
@@ -47,16 +51,12 @@ export const DialogAddBarbeiro = () => {
                                 value={inputSenha}
                                 onChange={(e) => setInputSenha(e.target.value)}
                             />
-                            <div className="absolute right-3" onClick={() => ocultarMostrarSenha(setMostrarSenha, mostrarSenha)}>
+                            <div className="absolute right-3 cursor-pointer" onClick={() => ocultarMostrarSenha(setMostrarSenha, mostrarSenha)}>
                                 {!mostrarSenha ? <EyeClosed /> : <Eye />}
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <label htmlFor="telefone">Telefone/Celular:</label>
-                        <Input id="telefone" type="tel" placeholder="Digite seu numero"/>
-                    </div>
-                    <Button className="mt-5 font-bold">Criar</Button>
+                    <Button className="mt-5 font-bold">Cadastrar</Button>
                 </main>
             </DialogContent>
         </Dialog>

@@ -38,7 +38,7 @@ export function TableBarbeiros({ barbeiros }: Props) {
                         <TableCell className="font-medium">{item.nome}</TableCell>
                         <TableCell>{item.email}</TableCell>
                         <TableCell>{item.telefone}</TableCell>
-                        <TableCell className="flex justify-end items-center pt-4"><DialogEditarBarbeiro /></TableCell>
+                        <TableCell className="flex justify-end items-center pt-4"><DialogEditarBarbeiro barbeiro={item}/></TableCell>
                     </TableRow>
                 ))}
 
