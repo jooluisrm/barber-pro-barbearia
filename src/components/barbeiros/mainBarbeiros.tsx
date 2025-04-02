@@ -7,14 +7,16 @@ import { useEffect, useState } from "react";
 import { Barbeiro } from "@/types/barbeiros";
 import { getBarbeiros } from "@/api/barbeiros/barbeirosServices";
 import { useAuth } from "@/contexts/AuthContext";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { DialogAddBarbeiro } from "./dialogAddBarbeiro";
 
 export const MainBarbeiros = () => {
-    const {barbearia} = useAuth();
+    const { barbearia } = useAuth();
 
     const [barbeiros, setBarbeiros] = useState<Barbeiro[] | null>(null);
 
     useEffect(() => {
-        if(barbearia) {
+        if (barbearia) {
             const carregarBarbeiros = async () => {
                 const dados = await getBarbeiros(barbearia.id);
                 setBarbeiros(dados);
@@ -35,14 +37,22 @@ export const MainBarbeiros = () => {
             </div>
 
             <div className="space-y-4">
-                
-                <div className="flex justify-start gap-4">
 
-                    <Button><UserPlus/></Button>
+                <div className="flex justify-start gap-4">
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <DialogAddBarbeiro />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                Criar Barbeiro
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
                 </div>
 
                 <div>
-                    <TableBarbeiros barbeiros={barbeiros}/>
+                    <TableBarbeiros barbeiros={barbeiros} />
                 </div>
             </div>
         </main>

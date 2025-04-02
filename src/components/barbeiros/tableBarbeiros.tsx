@@ -12,6 +12,7 @@ import { Agendamentos } from "@/types/agendamentos";
 import { Barbeiro } from "@/types/barbeiros";
 import { formatarData, formatarPreco } from "@/utils/formatarValores";
 import { EditIcon } from "lucide-react";
+import { DialogEditarBarbeiro } from "./dialogEditarBarbeiro";
 
 type Props = {
     barbeiros: Barbeiro[] | null;
@@ -37,7 +38,7 @@ export function TableBarbeiros({ barbeiros }: Props) {
                         <TableCell className="font-medium">{item.nome}</TableCell>
                         <TableCell>{item.email}</TableCell>
                         <TableCell>{item.telefone}</TableCell>
-                        <TableCell className="flex justify-end items-center pt-4"><EditIcon /></TableCell>
+                        <TableCell className="flex justify-end items-center pt-4"><DialogEditarBarbeiro /></TableCell>
                     </TableRow>
                 ))}
 
