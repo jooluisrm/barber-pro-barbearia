@@ -23,7 +23,7 @@ export const MainBarbeiros = () => {
             }
             carregarBarbeiros();
         }
-    }, [barbearia]);
+    }, [barbearia, barbeiros]);
 
     return (
         <main>

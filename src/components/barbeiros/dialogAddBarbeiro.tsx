@@ -11,8 +11,15 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useState } from "react";
 import { ocultarMostrarSenha } from "@/utils/ocultarMostrarSenha";
+import { RegisterBarbeiro, registerBarbeiro } from "@/api/barbeiros/barbeirosServices";
+import { useAuth } from "@/contexts/AuthContext";
+import { handleConfetti } from "@/utils/confetti";
 
 export const DialogAddBarbeiro = () => {
+
+    const { barbearia } = useAuth();
+
+    const [isOpen, setIsOpen] = useState(false);
     const [mostrarSenha, setMostrarSenha] = useState(false);
 
     const [inputNome, setInputNome] = useState("");
@@ -20,10 +27,34 @@ export const DialogAddBarbeiro = () => {
     const [inputEmail, setInputEmail] = useState("");
     const [inputSenha, setInputSenha] = useState("");
 
+    const handleCadastarBarbeiro = async () => {
+        if (!barbearia) return;
+
+        const data: RegisterBarbeiro = {
+            nome: inputNome,
+            telefone: inputTelefone,
+            email: inputEmail,
+            senha: inputSenha,
+            barbeariaId: barbearia?.id
+        }
+        const sucesso = await registerBarbeiro(data);
+
+        if (sucesso) {
+            handleConfetti();
+            setInputNome("");
+            setInputTelefone("");
+            setInputEmail("");
+            setInputSenha("");
+            setIsOpen(false);
+        }
+    }
+
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button><UserPlus /></Button>
+                <Button onClick={() => setIsOpen(true)}>
+                    <UserPlus />
+                </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
@@ -78,7 +109,7 @@ export const DialogAddBarbeiro = () => {
                             </div>
                         </div>
                     </div>
-                    <Button className="mt-5 font-bold">Cadastrar</Button>
+                    <Button disabled={!inputNome || !inputEmail || !inputTelefone || !inputSenha} className="mt-5 font-bold" onClick={handleCadastarBarbeiro}>Cadastrar</Button>
                 </main>
             </DialogContent>
         </Dialog>
