@@ -16,7 +16,7 @@ type Props = {
     barbeiro: Barbeiro;
 }
 
-export const AlertDeletar = ({barbeiro}: Props) => {
+export const AlertDeletar = ({ barbeiro }: Props) => {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>

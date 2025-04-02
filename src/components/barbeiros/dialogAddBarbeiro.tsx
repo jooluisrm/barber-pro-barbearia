@@ -14,7 +14,12 @@ import { ocultarMostrarSenha } from "@/utils/ocultarMostrarSenha";
 
 export const DialogAddBarbeiro = () => {
     const [mostrarSenha, setMostrarSenha] = useState(false);
+
+    const [inputNome, setInputNome] = useState("");
+    const [inputTelefone, setInputTelefone] = useState("");
+    const [inputEmail, setInputEmail] = useState("");
     const [inputSenha, setInputSenha] = useState("");
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -30,15 +35,32 @@ export const DialogAddBarbeiro = () => {
                 <main className="flex flex-col gap-5">
                     <div>
                         <label htmlFor="nome">Nome Completo:</label>
-                        <Input id="nome" placeholder="Digite seu nome completo" />
+                        <Input
+                            id="nome"
+                            placeholder="Digite seu nome completo"
+                            value={inputNome}
+                            onChange={(e) => setInputNome(e.target.value)}
+                        />
                     </div>
                     <div>
                         <label htmlFor="telefone">Telefone/Celular:</label>
-                        <Input id="telefone" type="tel" placeholder="Digite seu numero" />
+                        <Input
+                            id="telefone"
+                            type="tel"
+                            placeholder="Digite seu numero"
+                            value={inputTelefone}
+                            onChange={(e) => setInputTelefone(e.target.value)}
+                        />
                     </div>
                     <div>
                         <label htmlFor="email">E-mail:</label>
-                        <Input id="email" type="email" placeholder="Digite seu email" />
+                        <Input
+                            id="email"
+                            type="email"
+                            placeholder="Digite seu email"
+                            value={inputEmail}
+                            onChange={(e) => setInputEmail(e.target.value)}
+                        />
                     </div>
                     <div>
                         <label htmlFor="senha">Senha:</label>
