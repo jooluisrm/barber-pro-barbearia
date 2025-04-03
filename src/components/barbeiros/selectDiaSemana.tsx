@@ -6,10 +6,13 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
+type Props = {
+    handleSelectDia: (value: string) => void
+}
 
-export const SelectDiaSemana = () => {
+export const SelectDiaSemana = ({ handleSelectDia }: Props) => {
     return (
-        <Select>
+        <Select onValueChange={handleSelectDia}>
             <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Dia da Semana" />
             </SelectTrigger>
