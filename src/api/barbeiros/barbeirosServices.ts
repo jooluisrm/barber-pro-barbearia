@@ -43,3 +43,25 @@ export const getBarbeiros = async (barbeariaId: string) => {
         throw error.response?.data?.error;
     }
 }
+
+export const deleteBarbeiro = async (barbeiroId: string) => {
+    try {
+        const response = await axiosInstance.delete(`/barbearia/barbeiro/${barbeiroId}`);
+        toast.success(response.data.message, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+        return response.data;
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao deletar barbeiro";
+
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}

@@ -11,12 +11,36 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "../ui/button";
 import { Barbeiro } from "@/types/barbeiros";
+import { deleteBarbeiro } from "@/api/barbeiros/barbeirosServices";
+import { useEffect, useState } from "react";
 
 type Props = {
     barbeiro: Barbeiro;
 }
 
 export const AlertDeletar = ({ barbeiro }: Props) => {
+    const [desabilitar, setDesabilitar] = useState(true);
+    const [cont, setCont] = useState(5);
+
+    const handleDeleteBarbeiro = () => {
+        deleteBarbeiro(barbeiro.id);
+    }
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCont((prev) => {
+                if (prev <= 1) {
+                    clearInterval(timer); 
+                    setDesabilitar(false); 
+                    return 0;
+                }
+                return prev - 1; 
+            });
+        }, 1000);
+
+        return () => clearInterval(timer); 
+    }, []);
+
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -45,8 +69,10 @@ export const AlertDeletar = ({ barbeiro }: Props) => {
                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
                     <AlertDialogAction
                         className="bg-destructive hover:bg-destructive/90 text-white"
+                        onClick={handleDeleteBarbeiro}
+                        disabled={desabilitar}
                     >
-                        Confirmar Exclusão
+                        Confirmar Exclusão {desabilitar && `em 0${cont}`}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
