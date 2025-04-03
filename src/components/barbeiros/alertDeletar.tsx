@@ -21,12 +21,14 @@ type Props = {
 export const AlertDeletar = ({ barbeiro }: Props) => {
     const [desabilitar, setDesabilitar] = useState(true);
     const [cont, setCont] = useState(5);
+    const [click, setClick] = useState(false);
 
     const handleDeleteBarbeiro = () => {
         deleteBarbeiro(barbeiro.id);
     }
 
     useEffect(() => {
+        if(!click) return;
         const timer = setInterval(() => {
             setCont((prev) => {
                 if (prev <= 1) {
@@ -39,12 +41,12 @@ export const AlertDeletar = ({ barbeiro }: Props) => {
         }, 1000);
 
         return () => clearInterval(timer); 
-    }, []);
+    }, [click]);
 
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant={"destructive"} className="font-bold">
+                <Button variant={"destructive"} className="font-bold" onClick={() => setClick(true)}>
                     Excluir Barbeiro
                 </Button>
             </AlertDialogTrigger>
