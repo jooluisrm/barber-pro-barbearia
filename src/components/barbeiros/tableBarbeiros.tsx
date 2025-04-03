@@ -27,7 +27,7 @@ export function TableBarbeiros({ barbeiros }: Props) {
                 <TableRow>
                     <TableHead>Barbeiro</TableHead>
                     <TableHead>E-mail</TableHead>
-                    <TableHead>Celular</TableHead>
+                    <TableHead>Telefone/Celular</TableHead>
                     <TableHead className="text-right"></TableHead>
                 </TableRow>
             </TableHeader>

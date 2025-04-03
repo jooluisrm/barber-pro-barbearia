@@ -68,7 +68,7 @@ export const DialogAddBarbeiro = () => {
                         <label htmlFor="nome">Nome Completo:</label>
                         <Input
                             id="nome"
-                            placeholder="Digite seu nome completo"
+                            placeholder="Nome do barbeiro"
                             value={inputNome}
                             onChange={(e) => setInputNome(e.target.value)}
                         />
@@ -78,7 +78,7 @@ export const DialogAddBarbeiro = () => {
                         <Input
                             id="telefone"
                             type="tel"
-                            placeholder="Digite seu numero"
+                            placeholder="Numero do barbeiro"
                             value={inputTelefone}
                             onChange={(e) => setInputTelefone(e.target.value)}
                         />
@@ -88,7 +88,7 @@ export const DialogAddBarbeiro = () => {
                         <Input
                             id="email"
                             type="email"
-                            placeholder="Digite seu email"
+                            placeholder="Email do barbeiro"
                             value={inputEmail}
                             onChange={(e) => setInputEmail(e.target.value)}
                         />
@@ -99,7 +99,7 @@ export const DialogAddBarbeiro = () => {
                             <Input
                                 id="senha"
                                 type={`${mostrarSenha ? "text" : "password"}`}
-                                placeholder="Digite sua senha"
+                                placeholder="Criar senha para o barbeiro"
                                 className="flex-1 pr-10"
                                 value={inputSenha}
                                 onChange={(e) => setInputSenha(e.target.value)}
