@@ -65,3 +65,30 @@ export const deleteBarbeiro = async (barbeiroId: string) => {
         });
     }
 }
+
+type DataEdit = {
+    nome: string;
+    telefone: string;
+    email: string;
+}
+
+export const editBarbeiro = async (barbeiroId: string, data: DataEdit) => {
+    try {
+        const response = await axiosInstance.put(`/barbearia/barbeiro/${barbeiroId}`, data);
+        toast.success(response.data.message, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+        return response.data;
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao editar barbeiro";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}

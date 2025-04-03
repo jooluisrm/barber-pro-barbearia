@@ -12,6 +12,7 @@ import { Button } from "../ui/button";
 import { Barbeiro } from "@/types/barbeiros";
 import { useState } from "react";
 import { AlertDeletar } from "./alertDeletar";
+import { editBarbeiro } from "@/api/barbeiros/barbeirosServices";
 
 type Props = {
     barbeiro: Barbeiro;
@@ -22,6 +23,10 @@ export const DialogEditarBarbeiro = ({ barbeiro }: Props) => {
     const [inputNome, setInputNome] = useState(barbeiro.nome);
     const [inputEmail, setInputEmail] = useState(barbeiro.email);
     const [inputTelefone, setInputTelefone] = useState(barbeiro.telefone);
+
+    const handleEdit = async () => {
+        editBarbeiro(barbeiro.id, {nome: inputNome, email: inputEmail, telefone: inputTelefone});
+    }
 
     return (
         <Dialog>
@@ -67,7 +72,7 @@ export const DialogEditarBarbeiro = ({ barbeiro }: Props) => {
                     </div>
                     <div className="mt-5 flex justify-between">
                         <AlertDeletar barbeiro={barbeiro}/>
-                        <Button className="font-bold">Salvar Alterações</Button>
+                        <Button className="font-bold" onClick={handleEdit}>Salvar Alterações</Button>
                     </div>
                 </main>
             </DialogContent>
