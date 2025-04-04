@@ -6,7 +6,7 @@ import { AlertSelectDiaSemana } from "./alertSelectDiaSemana";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Plus, Trash2 } from "lucide-react";
-import { getHorarioTrabalho } from "@/api/barbeiros/barbeirosServices";
+import { addNewHorarioTrabalho, getHorarioTrabalho } from "@/api/barbeiros/barbeirosServices";
 import { ItemHorariosTrabalho } from "./itemHorariosTrabalho";
 import { SelectHorarioAdd } from "./selectHorarioAdd";
 import { gerarHorarios } from "@/utils/gerarHorarios";
@@ -21,8 +21,20 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
     const [selectDia, setSelectDia] = useState<string | null>(null);
     const [horariosTrabalho, setHorariosTrabalho] = useState<null | HorariosDeTrabalho[]>(null);
 
+    const [selectNovoHorario, setSelectNovoHorario] = useState(""); 
+
     const handleSelectDia = (value: string) => {
         setSelectDia(value);
+        setSelectNovoHorario("");
+    }
+
+    const handleAddNewHorario = async () => {
+        if(!selectDia || selectNovoHorario === "") return;
+        const data = {
+            diaSemana: Number(selectDia),
+            hora: selectNovoHorario
+        }
+        addNewHorarioTrabalho(barbeiro.id, data);
     }
 
     useEffect(() => {
@@ -33,7 +45,7 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
             console.log(dados.horarios)
         }
         carregarHorarioTrabalho();
-    }, [selectDia]);
+    }, [selectDia, horariosTrabalho]);
 
     return (
         <>
@@ -50,9 +62,9 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
                     <div className={`flex pb-5 ${!selectDia ? "justify-end" : "justify-between"}`}>
                         <div className="flex gap-2">
                             <div className={`${!selectDia ? "hidden" : "flex"}`}>
-                                <SelectHorarioAdd />
+                                <SelectHorarioAdd setValue={setSelectNovoHorario} value={selectNovoHorario}/>
                             </div>
-                            <Button className={`${!selectDia ? "hidden" : "flex"}`}>
+                            <Button className={`${!selectDia ? "hidden" : "flex"}`} onClick={handleAddNewHorario}>
                                 <Plus />
                             </Button>
                         </div>
@@ -63,7 +75,7 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
                         {
                             !selectDia && <AlertSelectDiaSemana />
                         }
-                        <div className="flex gap-3">
+                        <div className="flex gap-2 flex-wrap">
 
                             {selectDia && horariosTrabalho && horariosTrabalho.length > 0 ? (
                                 horariosTrabalho.map((item) => (

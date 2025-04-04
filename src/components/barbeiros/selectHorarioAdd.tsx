@@ -1,6 +1,4 @@
 "use client"
-
-import * as React from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -19,13 +17,18 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { gerarHorarios } from "@/utils/gerarHorarios"
+import { useState } from "react"
 
 
 const horariosDisponiveis = gerarHorarios("08:00", "18:00", 30);
 
-export const SelectHorarioAdd = () => {
-    const [open, setOpen] = React.useState(false)
-    const [value, setValue] = React.useState("")
+type Props = {
+    value: string;
+    setValue: (value: string) => void;
+}
+
+export const SelectHorarioAdd = ({ value, setValue }: Props) => {
+    const [open, setOpen] = useState(false);
 
     return (
         <Popover open={open} onOpenChange={setOpen}>

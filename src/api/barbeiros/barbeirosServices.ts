@@ -107,3 +107,29 @@ export const getHorarioTrabalho = async (barbeiroId: string, diaSemana: string) 
         });
     }
 }
+
+type DataAddHorario = {
+    diaSemana: number;
+    hora: string;
+}
+
+export const addNewHorarioTrabalho = async (barbeiroId: string, data: DataAddHorario) => {
+    try {
+        const response = await axiosInstance.post(`/barbeiro/${barbeiroId}/horarios`, data);
+        toast.success(response.data.message, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+        return response.data;
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao adicionar horario novo!";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}
