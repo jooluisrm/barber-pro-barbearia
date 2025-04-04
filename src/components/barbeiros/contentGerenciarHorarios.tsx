@@ -10,6 +10,7 @@ import { addNewHorarioTrabalho, getHorarioTrabalho } from "@/api/barbeiros/barbe
 import { ItemHorariosTrabalho } from "./itemHorariosTrabalho";
 import { SelectHorarioAdd } from "./selectHorarioAdd";
 import { gerarHorarios } from "@/utils/gerarHorarios";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
 type Props = {
     barbeiro: Barbeiro;
@@ -21,7 +22,7 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
     const [selectDia, setSelectDia] = useState<string | null>(null);
     const [horariosTrabalho, setHorariosTrabalho] = useState<null | HorariosDeTrabalho[]>(null);
 
-    const [selectNovoHorario, setSelectNovoHorario] = useState(""); 
+    const [selectNovoHorario, setSelectNovoHorario] = useState("");
 
     const handleSelectDia = (value: string) => {
         setSelectDia(value);
@@ -29,7 +30,7 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
     }
 
     const handleAddNewHorario = async () => {
-        if(!selectDia || selectNovoHorario === "") return;
+        if (!selectDia || selectNovoHorario === "") return;
         const data = {
             diaSemana: Number(selectDia),
             hora: selectNovoHorario
@@ -62,13 +63,21 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
                     <div className={`flex pb-5 ${!selectDia ? "justify-end" : "justify-between"}`}>
                         <div className="flex gap-2">
                             <div className={`${!selectDia ? "hidden" : "flex"}`}>
-                                <SelectHorarioAdd setValue={setSelectNovoHorario} value={selectNovoHorario}/>
+                                <SelectHorarioAdd setValue={setSelectNovoHorario} value={selectNovoHorario} />
                             </div>
-                            <Button className={`${!selectDia ? "hidden" : "flex"}`} onClick={handleAddNewHorario}>
-                                <Plus />
-                            </Button>
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button className={`${!selectDia ? "hidden" : "flex"}`} onClick={handleAddNewHorario} disabled={!selectDia || !selectNovoHorario}>
+                                            <Plus />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        Adicionar Horário
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
                         </div>
-
                         <SelectDiaSemana handleSelectDia={handleSelectDia} />
                     </div>
                     <div>

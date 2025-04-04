@@ -13,7 +13,7 @@ type Props = {
 export const SelectDiaSemana = ({ handleSelectDia }: Props) => {
     return (
         <Select onValueChange={handleSelectDia}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder="Dia da Semana" />
             </SelectTrigger>
             <SelectContent>
