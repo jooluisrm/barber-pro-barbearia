@@ -1,11 +1,13 @@
-import { Barbeiro } from "@/types/barbeiros";
+import { Barbeiro, HorariosDeTrabalho } from "@/types/barbeiros";
 import { AlertDialogHeader } from "../ui/alert-dialog";
 import { DialogDescription, DialogTitle } from "../ui/dialog";
 import { SelectDiaSemana } from "./selectDiaSemana";
 import { AlertSelectDiaSemana } from "./alertSelectDiaSemana";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
+import { getHorarioTrabalho } from "@/api/barbeiros/barbeirosServices";
+import { ItemHorariosTrabalho } from "./itemHorariosTrabalho";
 
 type Props = {
     barbeiro: Barbeiro;
@@ -15,10 +17,21 @@ type Props = {
 export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
 
     const [selectDia, setSelectDia] = useState<string | null>(null);
+    const [horariosTrabalho, setHorariosTrabalho] = useState<null | HorariosDeTrabalho[]>(null);
 
     const handleSelectDia = (value: string) => {
         setSelectDia(value);
     }
+
+    useEffect(() => {
+        if (!selectDia) return;
+        const carregarHorarioTrabalho = async () => {
+            const dados = await getHorarioTrabalho(barbeiro.id, selectDia);
+            setHorariosTrabalho(dados.horarios);
+            console.log(dados.horarios)
+        }
+        carregarHorarioTrabalho();
+    }, [selectDia]);
 
     return (
         <>
@@ -42,11 +55,23 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
                         {
                             !selectDia && <AlertSelectDiaSemana />
                         }
+                        <div className="flex gap-3">
+
+                            {selectDia && horariosTrabalho && horariosTrabalho.length > 0 ? (
+                                horariosTrabalho.map((item) => (
+                                    <ItemHorariosTrabalho key={item.id} item={item} />
+                                ))
+                            ) : (
+                                selectDia && <p>Não há horários cadastrados</p>
+                            )}
+
+                        </div>
                     </div>
                 </div>
 
-                <div>
+                <div className={`flex ${!selectDia ? "justify-start" : "justify-between"}`}>
                     <Button variant="ghost" onClick={backPage}>Voltar</Button>
+                    <Button variant="destructive" className={`${!selectDia ? "hidden" : "flex"}`}><Trash2 /></Button>
                 </div>
             </main>
         </>

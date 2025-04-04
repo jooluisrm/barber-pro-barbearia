@@ -92,3 +92,18 @@ export const editBarbeiro = async (barbeiroId: string, data: DataEdit) => {
         });
     }
 }
+
+export const getHorarioTrabalho = async (barbeiroId: string, diaSemana: string) => {
+    try {
+        const response = await axiosInstance.get(`/barbearia/barbeiro/${barbeiroId}/horarios/${diaSemana}`);
+        return response.data;
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao carregar horários";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}
