@@ -30,17 +30,23 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
                     Estabeleça os horários disponíveis para agendamentos dos seus serviços
                 </DialogDescription>
             </AlertDialogHeader>
-            <main>
-                <div className={`flex pb-5 ${!selectDia ? "justify-end" : "justify-between"}`}>
-                    <Button className={`${!selectDia ? "hidden" : "flex"}`}>
-                        <Plus />
-                    </Button>
-                    <SelectDiaSemana handleSelectDia={handleSelectDia}/>
-                </div>
+            <main className="flex flex-col gap-5">
                 <div>
-                    {
-                        !selectDia && <AlertSelectDiaSemana />
-                    }
+                    <div className={`flex pb-5 ${!selectDia ? "justify-end" : "justify-between"}`}>
+                        <Button className={`${!selectDia ? "hidden" : "flex"}`}>
+                            <Plus />
+                        </Button>
+                        <SelectDiaSemana handleSelectDia={handleSelectDia} />
+                    </div>
+                    <div>
+                        {
+                            !selectDia && <AlertSelectDiaSemana />
+                        }
+                    </div>
+                </div>
+
+                <div>
+                    <Button variant="ghost" onClick={backPage}>Voltar</Button>
                 </div>
             </main>
         </>
