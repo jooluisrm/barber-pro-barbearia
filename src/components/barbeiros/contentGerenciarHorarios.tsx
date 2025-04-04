@@ -8,6 +8,8 @@ import { Button } from "../ui/button";
 import { Plus, Trash2 } from "lucide-react";
 import { getHorarioTrabalho } from "@/api/barbeiros/barbeirosServices";
 import { ItemHorariosTrabalho } from "./itemHorariosTrabalho";
+import { SelectHorarioAdd } from "./selectHorarioAdd";
+import { gerarHorarios } from "@/utils/gerarHorarios";
 
 type Props = {
     barbeiro: Barbeiro;
@@ -46,9 +48,15 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
             <main className="flex flex-col gap-5">
                 <div>
                     <div className={`flex pb-5 ${!selectDia ? "justify-end" : "justify-between"}`}>
-                        <Button className={`${!selectDia ? "hidden" : "flex"}`}>
-                            <Plus />
-                        </Button>
+                        <div className="flex gap-2">
+                            <div className={`${!selectDia ? "hidden" : "flex"}`}>
+                                <SelectHorarioAdd />
+                            </div>
+                            <Button className={`${!selectDia ? "hidden" : "flex"}`}>
+                                <Plus />
+                            </Button>
+                        </div>
+
                         <SelectDiaSemana handleSelectDia={handleSelectDia} />
                     </div>
                     <div>
