@@ -24,6 +24,15 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
 
     const [selectNovoHorario, setSelectNovoHorario] = useState("");
 
+    const [selectItemTime, setSelectItemTime] = useState<any>([]);
+    
+    const carregarHorarioTrabalho = async () => {
+        if (!selectDia) return;
+        const dados = await getHorarioTrabalho(barbeiro.id, selectDia);
+        setHorariosTrabalho(dados.horarios);
+        console.log(dados.horarios)
+    }
+
     const handleSelectDia = (value: string) => {
         setSelectDia(value);
         setSelectNovoHorario("");
@@ -35,18 +44,23 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
             diaSemana: Number(selectDia),
             hora: selectNovoHorario
         }
-        addNewHorarioTrabalho(barbeiro.id, data);
+        
+        try {
+            await addNewHorarioTrabalho(barbeiro.id, data);
+            await carregarHorarioTrabalho();
+        } catch (error) {
+            console.error("Erro ao adicionar horário:", error);
+        }
+    }
+
+    const deleteSelectTime = (itemTime: any) => {
+        
+        setSelectItemTime([...selectItemTime, itemTime]);
     }
 
     useEffect(() => {
-        if (!selectDia) return;
-        const carregarHorarioTrabalho = async () => {
-            const dados = await getHorarioTrabalho(barbeiro.id, selectDia);
-            setHorariosTrabalho(dados.horarios);
-            console.log(dados.horarios)
-        }
         carregarHorarioTrabalho();
-    }, [selectDia, horariosTrabalho]);
+    }, [selectDia]);
 
     return (
         <>
@@ -88,7 +102,7 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
 
                             {selectDia && horariosTrabalho && horariosTrabalho.length > 0 ? (
                                 horariosTrabalho.map((item) => (
-                                    <ItemHorariosTrabalho key={item.id} item={item} />
+                                    <ItemHorariosTrabalho key={item.id} item={item} deleteSelectTime={deleteSelectTime}/>
                                 ))
                             ) : (
                                 selectDia && <p>Não há horários cadastrados</p>
