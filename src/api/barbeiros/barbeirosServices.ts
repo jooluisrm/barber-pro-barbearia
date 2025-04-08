@@ -133,3 +133,36 @@ export const addNewHorarioTrabalho = async (barbeiroId: string, data: DataAddHor
         });
     }
 }
+
+type DataDeleteWorkTime = {
+    horarios: {
+      diaSemana: number;
+      hora: string;
+    }[];
+  };
+  
+  export const deleteWorkTime = async (barbeiroId: string, data: DataDeleteWorkTime) => {
+    try {
+      const response = await axiosInstance.delete(`/barbeiro/${barbeiroId}/horarios`, {
+        data,
+      });
+  
+      toast.success(response.data.message, {
+        action: {
+          label: "Fechar",
+          onClick: () => console.log("Fechar"),
+        },
+      });
+  
+      return response.data;
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error || "Erro ao deletar horários";
+      toast.error(errorMessage, {
+        action: {
+          label: "Fechar",
+          onClick: () => console.log("Fechar"),
+        },
+      });
+    }
+  };
+  

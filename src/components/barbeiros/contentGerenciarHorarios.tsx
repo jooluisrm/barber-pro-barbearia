@@ -6,11 +6,12 @@ import { AlertSelectDiaSemana } from "./alertSelectDiaSemana";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Plus, Trash2 } from "lucide-react";
-import { addNewHorarioTrabalho, getHorarioTrabalho } from "@/api/barbeiros/barbeirosServices";
+import { addNewHorarioTrabalho, deleteWorkTime, getHorarioTrabalho } from "@/api/barbeiros/barbeirosServices";
 import { ItemHorariosTrabalho } from "./itemHorariosTrabalho";
 import { SelectHorarioAdd } from "./selectHorarioAdd";
 import { gerarHorarios } from "@/utils/gerarHorarios";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { AlertDialogDeleteTime } from "./alertDialogDeleteTime";
 
 type Props = {
     barbeiro: Barbeiro;
@@ -24,13 +25,12 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
 
     const [selectNovoHorario, setSelectNovoHorario] = useState("");
 
-    const [selectItemTime, setSelectItemTime] = useState<any>([]);
-    
+    const [selectItemTime, setSelectItemTime] = useState<HorariosDeTrabalho[]>([]);
+
     const carregarHorarioTrabalho = async () => {
         if (!selectDia) return;
         const dados = await getHorarioTrabalho(barbeiro.id, selectDia);
         setHorariosTrabalho(dados.horarios);
-        console.log(dados.horarios)
     }
 
     const handleSelectDia = (value: string) => {
@@ -44,7 +44,7 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
             diaSemana: Number(selectDia),
             hora: selectNovoHorario
         }
-        
+
         try {
             await addNewHorarioTrabalho(barbeiro.id, data);
             await carregarHorarioTrabalho();
@@ -53,10 +53,34 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
         }
     }
 
-    const deleteSelectTime = (itemTime: any) => {
-        
-        setSelectItemTime([...selectItemTime, itemTime]);
-    }
+    const toggleSelectTime = (itemTime: HorariosDeTrabalho) => {
+        setSelectItemTime((prev) => {
+            const jaSelecionado = prev.some((i) => i.id === itemTime.id);
+            if (jaSelecionado) {
+                // Remove da lista
+                return prev.filter((i) => i.id !== itemTime.id);
+            } else {
+                // Adiciona na lista
+                return [...prev, itemTime];
+            }
+        });
+    };
+
+    const handleDeleteWorkTime = async () => {
+        const horariosFormatados = selectItemTime.map((item) => ({
+          diaSemana: item.diaSemana,
+          hora: item.hora,
+        }));
+      
+        try {
+            await deleteWorkTime(barbeiro.id, { horarios: horariosFormatados });
+            await carregarHorarioTrabalho();
+        } catch (error) {
+            console.error("Erro ao deletar horário:", error);
+        }
+      };
+      
+    
 
     useEffect(() => {
         carregarHorarioTrabalho();
@@ -102,7 +126,13 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
 
                             {selectDia && horariosTrabalho && horariosTrabalho.length > 0 ? (
                                 horariosTrabalho.map((item) => (
-                                    <ItemHorariosTrabalho key={item.id} item={item} deleteSelectTime={deleteSelectTime}/>
+                                    <ItemHorariosTrabalho
+                                        key={item.id}
+                                        item={item}
+                                        toggleSelectTime={toggleSelectTime}
+                                        selected={selectItemTime.some((i) => i.id === item.id)}
+                                    />
+
                                 ))
                             ) : (
                                 selectDia && <p>Não há horários cadastrados</p>
@@ -114,7 +144,7 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
 
                 <div className={`flex ${!selectDia ? "justify-start" : "justify-between"}`}>
                     <Button variant="ghost" onClick={backPage}>Voltar</Button>
-                    <Button variant="destructive" className={`${!selectDia ? "hidden" : "flex"}`}><Trash2 /></Button>
+                    <AlertDialogDeleteTime selectDia={selectDia} handleDeleteWorkTime={handleDeleteWorkTime} selectItemTime={selectItemTime}/>
                 </div>
             </main>
         </>
