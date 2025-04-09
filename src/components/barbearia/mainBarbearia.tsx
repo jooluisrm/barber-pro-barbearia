@@ -12,7 +12,7 @@ export const MainBarbearia = () => {
                     Visualize, crie e gerencie todos os barbeiros da sua barbearia.
                 </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <CardServices />
                 <CardProducts />
             </div>

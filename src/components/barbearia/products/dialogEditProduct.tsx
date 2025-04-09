@@ -30,17 +30,21 @@ export const DialogEditProduct = () => {
                 </DialogHeader>
                 <div className="flex flex-col gap-4">
                     <div className="">
-                        <label htmlFor="">Serviço</label>
-                        <Input placeholder="Nome do serviço" />
+                        <label htmlFor="nome">Produto</label>
+                        <Input id="nome" placeholder="Nome do produto" />
+                    </div>
+                    <div className="">
+                        <label htmlFor="descricao">Descriçao</label>
+                        <Input id="descricao" min={5} placeholder="Descrição do produto" />
                     </div>
                     <div className="flex justify-between gap-5">
                         <div className="">
-                            <label htmlFor="">Duração</label>
-                            <Input type="number" min={5} placeholder="Minutos" />
+                            <label htmlFor="tipo">Tipo</label>
+                            <Input id="tipo" type="number" min={0} placeholder="ex: Bebida" />
                         </div>
                         <div className="">
-                            <label htmlFor="">Preço</label>
-                            <Input type="number" min={0} placeholder="R$" />
+                            <label htmlFor="preco">Preço</label>
+                            <Input id="preco" type="number" min={0} placeholder="R$" />
                         </div>
                     </div>
                 </div>
