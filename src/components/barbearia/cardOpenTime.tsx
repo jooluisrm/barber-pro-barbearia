@@ -8,6 +8,7 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { TableServices } from "./tableServices"
+import { DialogNewService } from "./dialogNewService";
 
 export const CardWithForm = () => {
     return (
@@ -20,7 +21,7 @@ export const CardWithForm = () => {
                 <TableServices /> {/*Tabela para carregar serviços*/}
             </CardContent>
             <CardFooter className="flex justify-between">
-                <Button>Novo Serviço</Button>
+                <DialogNewService />
             </CardFooter>
         </Card>
     );
