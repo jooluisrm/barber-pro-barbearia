@@ -71,7 +71,7 @@ export const DeshboardMobile = ({ token, rotaAtual }: Props) => {
                             </Link>
 
                             <Link
-                                href={"#"}
+                                href={"/barbearia"}
                                 className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground transition-all"
                                 prefetch={false}
                             >

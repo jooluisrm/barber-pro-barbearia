@@ -72,7 +72,7 @@ export const DeshboardPc = ({ token, rotaAtual }: Props) => {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Link
-                                href={"#"}
+                                href={"/barbearia"}
                                 className={`
                                     flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground 
                                     ${rotaAtual === "/barbearia" && "dark:text-white text-black"}
