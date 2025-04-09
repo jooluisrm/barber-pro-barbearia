@@ -1,3 +1,4 @@
+import { CardProducts } from "./products/cardProducts";
 import { CardServices } from "./services/cardServices";
 
 export const MainBarbearia = () => {
@@ -13,6 +14,7 @@ export const MainBarbearia = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2">
                 <CardServices />
+                <CardProducts />
             </div>
         </main>
     );
