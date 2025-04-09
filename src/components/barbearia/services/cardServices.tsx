@@ -10,9 +10,9 @@ import {
 import { TableServices } from "./tableServices"
 import { DialogNewService } from "./dialogNewService";
 
-export const CardWithForm = () => {
+export const CardServices = () => {
     return (
-        <Card className="">
+        <Card>
             <CardHeader>
                 <CardTitle>Serviços</CardTitle>
                 <CardDescription>Adicione os Serviços prestados em sua barbearia.</CardDescription>

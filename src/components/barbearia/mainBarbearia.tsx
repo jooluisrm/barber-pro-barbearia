@@ -1,4 +1,4 @@
-import { CardWithForm } from "./cardOpenTime";
+import { CardServices } from "./services/cardServices";
 
 export const MainBarbearia = () => {
     return (
@@ -12,8 +12,7 @@ export const MainBarbearia = () => {
                 </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2">
-                <CardWithForm />
-                <CardWithForm />
+                <CardServices />
             </div>
         </main>
     );

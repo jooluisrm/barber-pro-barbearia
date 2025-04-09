@@ -8,6 +8,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { DialogEditService } from "./dialogEditService";
 
 export const TableServices = () => {
     return (
@@ -18,6 +19,7 @@ export const TableServices = () => {
                     <TableHead className="w-[150px]">Serviço</TableHead>
                     <TableHead>Duração</TableHead>
                     <TableHead className="text-right">Preço</TableHead>
+                    <TableHead className="text-right"></TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -26,12 +28,16 @@ export const TableServices = () => {
                     <TableCell className="font-medium">Corte Premio</TableCell>
                     <TableCell>60 min</TableCell>
                     <TableCell className="text-right">50,00</TableCell>
+                    <TableCell  className="flex justify-end items-center">
+                        <DialogEditService />
+                    </TableCell>
                 </TableRow>
+
             </TableBody>
             <TableFooter>
                 <TableRow>
-                    <TableCell colSpan={2}>Total</TableCell>
-                    <TableCell className="text-right">$2,500.00</TableCell>
+                    <TableCell colSpan={3}>Total de Serviços</TableCell>
+                    <TableCell className="text-right">01</TableCell>
                 </TableRow>
             </TableFooter>
         </Table>
