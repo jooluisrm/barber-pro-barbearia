@@ -68,19 +68,20 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
 
     const handleDeleteWorkTime = async () => {
         const horariosFormatados = selectItemTime.map((item) => ({
-          diaSemana: item.diaSemana,
-          hora: item.hora,
+            diaSemana: item.diaSemana,
+            hora: item.hora,
         }));
-      
+
         try {
             await deleteWorkTime(barbeiro.id, { horarios: horariosFormatados });
             await carregarHorarioTrabalho();
+            await setSelectItemTime([]);
         } catch (error) {
             console.error("Erro ao deletar horário:", error);
         }
-      };
-      
-    
+    };
+
+
 
     useEffect(() => {
         carregarHorarioTrabalho();
@@ -144,7 +145,10 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
 
                 <div className={`flex ${!selectDia ? "justify-start" : "justify-between"}`}>
                     <Button variant="ghost" onClick={backPage}>Voltar</Button>
-                    <AlertDialogDeleteTime selectDia={selectDia} handleDeleteWorkTime={handleDeleteWorkTime} selectItemTime={selectItemTime}/>
+                    <div className={`${selectItemTime.length === 0 ? "hidden" : "flex items-center gap-2"}`}>
+                        <p className="text-sm dark:text-gray-400 text-gray-700">items selecionados: <span className="font-bold">{selectItemTime.length}</span></p>
+                        <AlertDialogDeleteTime selectDia={selectDia} handleDeleteWorkTime={handleDeleteWorkTime} selectItemTime={selectItemTime} />
+                    </div>
                 </div>
             </main>
         </>

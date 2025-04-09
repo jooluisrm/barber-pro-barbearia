@@ -24,7 +24,7 @@ export const AlertDialogDeleteTime = ({ selectDia, handleDeleteWorkTime, selectI
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="destructive" className={`${!selectDia ? "hidden" : "flex"}`}>
+                <Button disabled={selectItemTime.length === 0} variant="destructive" className={`${!selectDia ? "hidden" : "flex"}`}>
                     <Trash2 className="h-4 w-4" />
                 </Button>
             </AlertDialogTrigger>
