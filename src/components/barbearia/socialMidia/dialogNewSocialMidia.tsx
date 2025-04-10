@@ -39,8 +39,8 @@ export const DialogNewSocialMidia = () => {
                         </div>
                     </div>
                     <div className="">
-                        <label htmlFor="">Link</label>
-                        <Input placeholder="Link da rede social" />
+                        <label htmlFor="link">Link</label>
+                        <Input id="link" placeholder="Link da rede social" />
                     </div>
                 </div>
                 <DialogFooter>

@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { EditIcon, Scissors, Trash } from "lucide-react"
+import { SelectSocialMidia } from "./selectSocialMidia"
 
 export const DialogEditSocialMidia = () => {
     return (
@@ -22,29 +23,25 @@ export const DialogEditSocialMidia = () => {
                 <DialogHeader className="border-b pb-4">
                     <DialogTitle className="text-2xl font-bold flex items-center gap-2">
                         <Scissors className="w-6 h-6" />
-                        Editar Serviço
+                        Editar Rede Social
                     </DialogTitle>
                     <DialogDescription className="text-muted-foreground mt-2">
-                        Atualize os detalhes deste serviço oferecido pela barbearia
+                        Atualize os detalhes desta rede social.
                         <span className="block text-sm text-primary/80 mt-1">
-                            As alterações afetarão todos os agendamentos.
+                            As alterações afetará a exibição na barbearia.
                         </span>
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex flex-col gap-4">
-                    <div className="">
-                        <label htmlFor="">Serviço</label>
-                        <Input placeholder="Nome do serviço" />
+                    <div className="flex gap-5">
+                        <div className="">
+                            <label htmlFor="" className="">Rede Social</label>
+                            <SelectSocialMidia />
+                        </div>
                     </div>
-                    <div className="flex justify-between gap-5">
-                        <div className="">
-                            <label htmlFor="">Duração</label>
-                            <Input type="number" min={5} placeholder="Minutos" />
-                        </div>
-                        <div className="">
-                            <label htmlFor="">Preço</label>
-                            <Input type="number" min={0} placeholder="R$" />
-                        </div>
+                    <div className="">
+                        <label htmlFor="link">Link</label>
+                        <Input id="link" placeholder="Link da rede social" />
                     </div>
                 </div>
                 <DialogFooter className="gap-3">

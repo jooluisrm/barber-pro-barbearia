@@ -16,18 +16,16 @@ export const TableSocialMidia = () => {
             <TableCaption>Lista de Redes Sociais</TableCaption>
             <TableHeader>
                 <TableRow>
-                    <TableHead className="w-[150px]">Serviço</TableHead>
-                    <TableHead>Duração</TableHead>
-                    <TableHead className="text-right">Preço</TableHead>
+                    <TableHead className="w-[150px]">Rede Social</TableHead>
+                    <TableHead>Link</TableHead>
                     <TableHead className="text-right"></TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
 
                 <TableRow >
-                    <TableCell className="font-medium">Corte Premio</TableCell>
-                    <TableCell>60 min</TableCell>
-                    <TableCell className="text-right">50,00</TableCell>
+                    <TableCell className="font-medium">Instagram</TableCell>
+                    <TableCell>https://www.instagram.com/barbearias_prates_/</TableCell>
                     <TableCell  className="flex justify-end items-center">
                         <DialogEditSocialMidia />
                     </TableCell>
@@ -36,7 +34,7 @@ export const TableSocialMidia = () => {
             </TableBody>
             <TableFooter>
                 <TableRow>
-                    <TableCell colSpan={3}>Total de Serviços</TableCell>
+                    <TableCell colSpan={2}>Total de Redes Sociais</TableCell>
                     <TableCell className="text-right">01</TableCell>
                 </TableRow>
             </TableFooter>
