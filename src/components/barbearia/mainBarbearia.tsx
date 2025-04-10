@@ -1,3 +1,4 @@
+import { CardPaymentMethod } from "./paymentMethod/cardPaymentMethod";
 import { CardProducts } from "./products/cardProducts";
 import { CardServices } from "./services/cardServices";
 import { CardSocialMidia } from "./socialMidia/cardSocialMidia";
@@ -10,13 +11,14 @@ export const MainBarbearia = () => {
                     Painel da <span className="text-blue-500">Barbearia</span>
                 </h1>
                 <p className="text-muted-foreground text-sm sm:text-base">
-                    Visualize, crie e gerencie todos os barbeiros da sua barbearia.
+                    Visualize, crie e gerencie todos os elementos da sua barbearia.
                 </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <CardServices />
                 <CardProducts />
                 <CardSocialMidia />
+                <CardPaymentMethod />
             </div>
         </main>
     );
