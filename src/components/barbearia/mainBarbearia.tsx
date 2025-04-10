@@ -1,3 +1,4 @@
+import { CardOpeningHours } from "./openingHours/cardOpeningHours";
 import { CardPaymentMethod } from "./paymentMethod/cardPaymentMethod";
 import { CardProducts } from "./products/cardProducts";
 import { CardServices } from "./services/cardServices";
@@ -19,6 +20,7 @@ export const MainBarbearia = () => {
                 <CardProducts />
                 <CardSocialMidia />
                 <CardPaymentMethod />
+                <CardOpeningHours />
             </div>
         </main>
     );
