@@ -1,5 +1,6 @@
 import { CardProducts } from "./products/cardProducts";
 import { CardServices } from "./services/cardServices";
+import { CardSocialMidia } from "./socialMidia/cardSocialMidia";
 
 export const MainBarbearia = () => {
     return (
@@ -15,6 +16,7 @@ export const MainBarbearia = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <CardServices />
                 <CardProducts />
+                <CardSocialMidia />
             </div>
         </main>
     );
