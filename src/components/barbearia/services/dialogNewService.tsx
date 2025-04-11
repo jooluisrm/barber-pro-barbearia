@@ -1,3 +1,4 @@
+import { postService } from "@/api/barbearia/barbeariaServices"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -9,19 +10,47 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { useAuth } from "@/contexts/AuthContext"
 import { PlusCircle } from "lucide-react"
 import { useState } from "react"
 
-export const DialogNewService = () => {
+type Props = {
+    loadServices: () => void
+}
+
+export const DialogNewService = ({ loadServices }: Props) => {
+    const { barbearia } = useAuth();
+
+    const [open, setOpen] = useState(false);
 
     const [inputNome, setInputNome] = useState("");
     const [inputDuracao, setInputDuracao] = useState(5);
     const [inputPreco, setInputPreco] = useState("");
 
+    const handleAddService = async () => {
+        if (!barbearia) return;
+        try {
+            const data = {
+                nome: inputNome,
+                duracao: inputDuracao,
+                preco: inputPreco
+            }
+            await postService(barbearia.id, data);
+            await loadServices();
+            setOpen(false);
+            setInputNome("");
+            setInputDuracao(5);
+            setInputPreco("")
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+
+    
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button>Novo Serviço</Button>
+                <Button onClick={() => setOpen(true)}>Novo Serviço</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">
@@ -56,7 +85,7 @@ export const DialogNewService = () => {
                             />
                         </div>
                         <div className="">
-                            <label htmlFor="">Preço</label>
+                            <label htmlFor="">Preço (Opcional)</label>
                             <Input
                                 type="number"
                                 min={0}
@@ -68,7 +97,7 @@ export const DialogNewService = () => {
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button type="submit">Criar</Button>
+                    <Button disabled={!inputNome || inputDuracao < 5} onClick={handleAddService}>Criar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

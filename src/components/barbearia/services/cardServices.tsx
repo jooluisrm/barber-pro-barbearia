@@ -40,7 +40,7 @@ export const CardServices = () => {
                 <TableServices services={services}/> {/*Tabela para carregar serviços*/}
             </CardContent>
             <CardFooter className="flex justify-between">
-                <DialogNewService />
+                <DialogNewService loadServices={loadServices}/>
             </CardFooter>
         </Card>
     );

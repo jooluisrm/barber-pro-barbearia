@@ -33,13 +33,12 @@ export const TableServices = ({ services }: Props) => {
                     <TableRow key={item.id}>
                         <TableCell className="font-medium">{item.nome}</TableCell>
                         <TableCell>{item.duracao} min</TableCell>
-                        <TableCell className="text-right">{item.preco}</TableCell>
+                        <TableCell className="text-right">{!item.preco ? "0,00" : item.preco}</TableCell>
                         <TableCell className="flex justify-end items-center">
                             <DialogEditService itemService={item}/>
                         </TableCell>
                     </TableRow>
                 ))}
-
 
             </TableBody>
             <TableFooter>
