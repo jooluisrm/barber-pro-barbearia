@@ -9,8 +9,13 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { DialogEditService } from "./dialogEditService";
+import { Services } from "@/types/services";
 
-export const TableServices = () => {
+type Props = {
+    services: Services[] | null;
+}
+
+export const TableServices = ({ services }: Props) => {
     return (
         <Table>
             <TableCaption>Lista de Serviços prestados</TableCaption>
@@ -24,20 +29,23 @@ export const TableServices = () => {
             </TableHeader>
             <TableBody>
 
-                <TableRow >
-                    <TableCell className="font-medium">Corte Premio</TableCell>
-                    <TableCell>60 min</TableCell>
-                    <TableCell className="text-right">50,00</TableCell>
-                    <TableCell  className="flex justify-end items-center">
-                        <DialogEditService />
-                    </TableCell>
-                </TableRow>
+                {services && services.map((item) => (
+                    <TableRow key={item.id}>
+                        <TableCell className="font-medium">{item.nome}</TableCell>
+                        <TableCell>{item.duracao} min</TableCell>
+                        <TableCell className="text-right">{item.preco}</TableCell>
+                        <TableCell className="flex justify-end items-center">
+                            <DialogEditService itemService={item}/>
+                        </TableCell>
+                    </TableRow>
+                ))}
+
 
             </TableBody>
             <TableFooter>
                 <TableRow>
                     <TableCell colSpan={3}>Total de Serviços</TableCell>
-                    <TableCell className="text-right">01</TableCell>
+                    <TableCell className="text-right">{services?.length}</TableCell>
                 </TableRow>
             </TableFooter>
         </Table>

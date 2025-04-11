@@ -9,10 +9,15 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { PlusCircle } from "lucide-react"
+import { useState } from "react"
 
 export const DialogNewService = () => {
+
+    const [inputNome, setInputNome] = useState("");
+    const [inputDuracao, setInputDuracao] = useState(5);
+    const [inputPreco, setInputPreco] = useState("");
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -33,16 +38,32 @@ export const DialogNewService = () => {
                 <div className="flex flex-col gap-4">
                     <div className="">
                         <label htmlFor="">Serviço</label>
-                        <Input placeholder="Nome do serviço" />
+                        <Input
+                            placeholder="Nome do serviço"
+                            onChange={(e) => setInputNome(e.target.value)}
+                            value={inputNome}
+                        />
                     </div>
                     <div className="flex justify-between gap-5">
                         <div className="">
-                            <label htmlFor="">Duração</label>
-                            <Input type="number" min={5} placeholder="Minutos" />
+                            <label htmlFor="">Duração (Minutos)</label>
+                            <Input
+                                type="number"
+                                min={5}
+                                placeholder="Minutos"
+                                onChange={(e) => setInputDuracao(Number(e.target.value))}
+                                value={inputDuracao}
+                            />
                         </div>
                         <div className="">
                             <label htmlFor="">Preço</label>
-                            <Input type="number" min={0} placeholder="R$" />
+                            <Input
+                                type="number"
+                                min={0}
+                                placeholder="R$"
+                                onChange={(e) => setInputPreco(e.target.value)}
+                                value={inputPreco}
+                            />
                         </div>
                     </div>
                 </div>

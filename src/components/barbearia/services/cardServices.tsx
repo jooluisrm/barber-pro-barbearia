@@ -28,7 +28,7 @@ export const CardServices = () => {
 
     useEffect(() => {
         loadServices();
-    }, [])
+    }, [barbearia])
 
     return (
         <Card>
@@ -37,7 +37,7 @@ export const CardServices = () => {
                 <CardDescription>Adicione os Serviços prestados em sua barbearia.</CardDescription>
             </CardHeader>
             <CardContent>
-                <TableServices /> {/*Tabela para carregar serviços*/}
+                <TableServices services={services}/> {/*Tabela para carregar serviços*/}
             </CardContent>
             <CardFooter className="flex justify-between">
                 <DialogNewService />
