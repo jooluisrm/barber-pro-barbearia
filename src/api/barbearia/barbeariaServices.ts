@@ -62,3 +62,23 @@ export const putService = async (barbeariaId: string, servicoId: string, data: D
         });
     }
 }
+
+export const deleteService = async (barbeariaId: string, servicoId: string) => {
+    try {
+        const response = await axiosInstance.delete(`/barbearia/${barbeariaId}/servicos/${servicoId}`);
+        toast.success(response.data.message, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao editar serviço";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}

@@ -1,4 +1,4 @@
-import { getServices, putService } from "@/api/barbearia/barbeariaServices"
+import { deleteService, getServices, putService } from "@/api/barbearia/barbeariaServices"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -34,7 +34,6 @@ export const DialogEditService = ({ itemService }: Props) => {
 
     const handleEditService = async () => {
         if (!barbearia) return;
-
         try {
             const data = {
                 nome: inputNome,
@@ -47,7 +46,16 @@ export const DialogEditService = ({ itemService }: Props) => {
         } catch (error: any) {
             console.log(error);
         }
+    }
 
+    const handleDeleteService = async () => {
+        if(!barbearia) return;
+        try {
+            await deleteService(barbearia.id, itemService.id);
+            await loadItems(barbearia, getServices, setServices);
+        } catch (error: any) {
+            console.log(error);
+        }
     }
 
     return (
@@ -101,7 +109,7 @@ export const DialogEditService = ({ itemService }: Props) => {
                     </div>
                 </div>
                 <DialogFooter className="gap-3">
-                    <Button variant={"destructive"}>
+                    <Button variant={"destructive"} onClick={handleDeleteService}>
                         <Trash />
                     </Button>
                     <Button onClick={handleEditService}>Salvar</Button>
