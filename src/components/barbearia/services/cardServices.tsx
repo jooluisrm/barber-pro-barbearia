@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button"
+"use client"
+
 import {
     Card,
     CardContent,
@@ -9,8 +10,26 @@ import {
 } from "@/components/ui/card"
 import { TableServices } from "./tableServices"
 import { DialogNewService } from "./dialogNewService";
+import { useEffect, useState } from "react";
+import { Services } from "@/types/services";
+import { getServices } from "@/api/barbearia/barbeariaServices";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const CardServices = () => {
+    const { barbearia } = useAuth();
+
+    const [services, setServices] = useState<Services[] | null>(null);
+
+    const loadServices = async () => {
+        if(!barbearia) return;
+        const dados = await getServices(barbearia.id);
+        setServices(dados);
+    }
+
+    useEffect(() => {
+        loadServices();
+    }, [])
+
     return (
         <Card>
             <CardHeader>
