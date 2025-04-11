@@ -17,6 +17,7 @@ import { Services } from "@/types/services"
 import { loadItems } from "@/utils/loadItems"
 import { EditIcon, Scissors, Trash } from "lucide-react"
 import { useState } from "react"
+import { AlertDeleteService } from "./alertDeleteService"
 
 type Props = {
     itemService: Services;
@@ -43,16 +44,6 @@ export const DialogEditService = ({ itemService }: Props) => {
             await putService(barbearia.id, itemService.id, data);
             await loadItems(barbearia, getServices, setServices);
             setOpen(false);
-        } catch (error: any) {
-            console.log(error);
-        }
-    }
-
-    const handleDeleteService = async () => {
-        if(!barbearia) return;
-        try {
-            await deleteService(barbearia.id, itemService.id);
-            await loadItems(barbearia, getServices, setServices);
         } catch (error: any) {
             console.log(error);
         }
@@ -109,9 +100,7 @@ export const DialogEditService = ({ itemService }: Props) => {
                     </div>
                 </div>
                 <DialogFooter className="gap-3">
-                    <Button variant={"destructive"} onClick={handleDeleteService}>
-                        <Trash />
-                    </Button>
+                    <AlertDeleteService itemService={itemService}/>
                     <Button onClick={handleEditService}>Salvar</Button>
                 </DialogFooter>
             </DialogContent>
