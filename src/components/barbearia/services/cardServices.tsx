@@ -11,23 +11,17 @@ import {
 import { TableServices } from "./tableServices"
 import { DialogNewService } from "./dialogNewService";
 import { useEffect, useState } from "react";
-import { Services } from "@/types/services";
 import { getServices } from "@/api/barbearia/barbeariaServices";
 import { useAuth } from "@/contexts/AuthContext";
+import { loadItems } from "@/utils/loadItems";
+import { useServiceContext } from "@/contexts/ServicesContext";
 
 export const CardServices = () => {
     const { barbearia } = useAuth();
-
-    const [services, setServices] = useState<Services[] | null>(null);
-
-    const loadServices = async () => {
-        if(!barbearia) return;
-        const dados = await getServices(barbearia.id);
-        setServices(dados);
-    }
+    const { setServices } = useServiceContext();
 
     useEffect(() => {
-        loadServices();
+        loadItems(barbearia, getServices, setServices);
     }, [barbearia])
 
     return (
@@ -37,10 +31,10 @@ export const CardServices = () => {
                 <CardDescription>Adicione os Serviços prestados em sua barbearia.</CardDescription>
             </CardHeader>
             <CardContent>
-                <TableServices services={services}/> {/*Tabela para carregar serviços*/}
+                <TableServices /> {/*Tabela para carregar serviços*/}
             </CardContent>
             <CardFooter className="flex justify-between">
-                <DialogNewService loadServices={loadServices}/>
+                <DialogNewService />
             </CardFooter>
         </Card>
     );

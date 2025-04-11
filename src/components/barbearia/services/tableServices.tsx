@@ -10,12 +10,16 @@ import {
 } from "@/components/ui/table"
 import { DialogEditService } from "./dialogEditService";
 import { Services } from "@/types/services";
+import { useServiceContext } from "@/contexts/ServicesContext";
 
 type Props = {
     services: Services[] | null;
 }
 
-export const TableServices = ({ services }: Props) => {
+export const TableServices = () => {
+
+    const { services } = useServiceContext();
+
     return (
         <Table>
             <TableCaption>Lista de Serviços prestados</TableCaption>
@@ -29,13 +33,13 @@ export const TableServices = ({ services }: Props) => {
             </TableHeader>
             <TableBody>
 
-                {services && services.map((item) => (
+                {services && services.map((item: Services) => (
                     <TableRow key={item.id}>
                         <TableCell className="font-medium">{item.nome}</TableCell>
                         <TableCell>{item.duracao} min</TableCell>
                         <TableCell className="text-right">{!item.preco ? "0,00" : item.preco}</TableCell>
                         <TableCell className="flex justify-end items-center">
-                            <DialogEditService itemService={item}/>
+                            <DialogEditService itemService={item} />
                         </TableCell>
                     </TableRow>
                 ))}

@@ -6,7 +6,7 @@ export const getServices = async (barbeariaId: string) => {
         const response = await axiosInstance.get(`/barbearia/${barbeariaId}/servicos`);
         return response.data;
     } catch (error: any) {
-        const errorMessage = error.response?.data?.error || "Erro ao deletar horários";
+        const errorMessage = error.response?.data?.error || "Erro ao Carregar Serviços";
         toast.error(errorMessage, {
             action: {
                 label: "Fechar",
@@ -16,13 +16,13 @@ export const getServices = async (barbeariaId: string) => {
     }
 }
 
-type DataPostService = {
+type DataService = {
     nome: string;
     duracao: number;
     preco?: string;
 }
 
-export const postService = async (barbeariaId: string, data: DataPostService) => {
+export const postService = async (barbeariaId: string, data: DataService) => {
     try {
         const response = await axiosInstance.post(`/barbearia/${barbeariaId}/servicos`, data);
         toast.success(response.data.message, {
@@ -33,7 +33,27 @@ export const postService = async (barbeariaId: string, data: DataPostService) =>
         });
         return response.data.servico
     } catch (error: any) {
-        const errorMessage = error.response?.data?.error || "Erro ao deletar horários";
+        const errorMessage = error.response?.data?.error || "Erro ao criar novo serviço";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}
+
+export const putService = async (barbeariaId: string, servicoId: string, data: DataService) => {
+    try {
+        const response = await axiosInstance.put(`/barbearia/${barbeariaId}/servicos/${servicoId}`, data);
+        toast.success(response.data.message, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao editar serviço";
         toast.error(errorMessage, {
             action: {
                 label: "Fechar",

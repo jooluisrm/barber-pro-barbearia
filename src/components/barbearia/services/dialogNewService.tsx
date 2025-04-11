@@ -1,4 +1,4 @@
-import { postService } from "@/api/barbearia/barbeariaServices"
+import { getServices, postService } from "@/api/barbearia/barbeariaServices"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { useAuth } from "@/contexts/AuthContext"
+import { useServiceContext } from "@/contexts/ServicesContext"
+import { loadItems } from "@/utils/loadItems"
 import { PlusCircle } from "lucide-react"
 import { useState } from "react"
 
@@ -18,14 +20,15 @@ type Props = {
     loadServices: () => void
 }
 
-export const DialogNewService = ({ loadServices }: Props) => {
+export const DialogNewService = () => {
     const { barbearia } = useAuth();
+    const { setServices } = useServiceContext();
 
     const [open, setOpen] = useState(false);
 
     const [inputNome, setInputNome] = useState("");
     const [inputDuracao, setInputDuracao] = useState(5);
-    const [inputPreco, setInputPreco] = useState("");
+    const [inputPreco, setInputPreco] = useState("0");
 
     const handleAddService = async () => {
         if (!barbearia) return;
@@ -36,11 +39,11 @@ export const DialogNewService = ({ loadServices }: Props) => {
                 preco: inputPreco
             }
             await postService(barbearia.id, data);
-            await loadServices();
+            await loadItems(barbearia, getServices, setServices);
             setOpen(false);
             setInputNome("");
             setInputDuracao(5);
-            setInputPreco("")
+            setInputPreco("");
         } catch (error: any) {
             console.log(error);
         }

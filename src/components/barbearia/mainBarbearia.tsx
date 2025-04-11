@@ -1,3 +1,6 @@
+"use client"
+
+import { ServiceContextProvider } from "@/contexts/ServicesContext";
 import { CardOpeningHours } from "./openingHours/cardOpeningHours";
 import { CardPaymentMethod } from "./paymentMethod/cardPaymentMethod";
 import { CardProducts } from "./products/cardProducts";
@@ -16,7 +19,9 @@ export const MainBarbearia = () => {
                 </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <CardServices />
+                <ServiceContextProvider>
+                    <CardServices />
+                </ServiceContextProvider>
                 <CardProducts />
                 <CardSocialMidia />
                 <CardPaymentMethod />
