@@ -9,8 +9,13 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { DialogEditProduct } from "./dialogEditProduct";
+import { useProductContext } from "@/contexts/ProductsContext";
+import { formatarPreco } from "@/utils/formatarValores";
 
 export const TableProducts = () => {
+
+    const { products } = useProductContext();
+
     return (
         <Table>
             <TableCaption>Lista de Produtos Vendidos</TableCaption>
@@ -25,21 +30,23 @@ export const TableProducts = () => {
             </TableHeader>
             <TableBody>
 
-                <TableRow >
-                    <TableCell className="font-medium">Cerveja Artesanal</TableCell>
-                    <TableCell>Garrafa 500ml</TableCell>
-                    <TableCell>Bebida</TableCell>
-                    <TableCell className="text-right">15,00</TableCell>
-                    <TableCell  className="flex justify-end items-center">
-                        <DialogEditProduct />
-                    </TableCell>
-                </TableRow>
+                {products != null && products.map((item) => (
+                    <TableRow >
+                        <TableCell className="font-medium">{item.nome}</TableCell>
+                        <TableCell>{item.descricao}</TableCell>
+                        <TableCell>{item.tipo}</TableCell>
+                        <TableCell className="text-right">{formatarPreco(item.preco.toString())}</TableCell>
+                        <TableCell className="flex justify-end items-center">
+                            <DialogEditProduct />
+                        </TableCell>
+                    </TableRow>
+                ))}
 
             </TableBody>
             <TableFooter>
                 <TableRow>
                     <TableCell colSpan={4}>Total de Produtos</TableCell>
-                    <TableCell className="text-right">01</TableCell>
+                    <TableCell className="text-right">{products?.length}</TableCell>
                 </TableRow>
             </TableFooter>
         </Table>

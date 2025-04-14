@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button"
 import {
     Card,
     CardContent,
@@ -9,8 +8,21 @@ import {
 } from "@/components/ui/card"
 import { TableProducts } from "./tableProducts"
 import { DialogNewProduct } from "./dialogNewProduct";
+import { useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { loadItems } from "@/utils/loadItems";
+import { getProducts } from "@/api/barbearia/barbeariaServices";
+import { useProductContext } from "@/contexts/ProductsContext";
 
 export const CardProducts = () => {
+    const { barbearia } = useAuth();
+    const { setProducts } = useProductContext();
+
+
+    useEffect(() => {
+        loadItems(barbearia, getProducts, setProducts);
+    }, [barbearia]);
+
     return (
         <Card>
             <CardHeader>

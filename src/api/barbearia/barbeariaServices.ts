@@ -82,3 +82,18 @@ export const deleteService = async (barbeariaId: string, servicoId: string) => {
         });
     }
 }
+
+export const getProducts = async (barbeariaId: string) => {
+    try {
+        const response = await axiosInstance.get(`/barbearia/${barbeariaId}/produtos`);
+        return response.data;
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao Carregar produtos";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}
