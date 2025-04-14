@@ -97,3 +97,33 @@ export const getProducts = async (barbeariaId: string) => {
         });
     }
 }
+
+type DataProducts = {
+    nome: string;
+    descricao?: string;
+    preco: number;
+    tipo: string;
+    imagemUr?: string | null;
+    estoque?: boolean;
+}
+
+export const postProduct = async (barbeariaId: string, data: DataProducts) => {
+    try {
+        const response = await axiosInstance.post(`/barbearia/${barbeariaId}/produtos`, data);
+        toast.success(response.data.message, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+        return response.data.produto;
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao criar novo produto";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}

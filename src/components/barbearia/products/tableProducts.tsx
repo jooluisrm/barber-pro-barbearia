@@ -31,9 +31,9 @@ export const TableProducts = () => {
             <TableBody>
 
                 {products != null && products.map((item) => (
-                    <TableRow >
+                    <TableRow key={item.id}>
                         <TableCell className="font-medium">{item.nome}</TableCell>
-                        <TableCell>{item.descricao}</TableCell>
+                        <TableCell>{item?.descricao}</TableCell>
                         <TableCell>{item.tipo}</TableCell>
                         <TableCell className="text-right">{formatarPreco(item.preco.toString())}</TableCell>
                         <TableCell className="flex justify-end items-center">
