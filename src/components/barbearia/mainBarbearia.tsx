@@ -9,6 +9,7 @@ import { CardSocialMidia } from "./socialMidia/cardSocialMidia";
 import { ProductContextProvider } from "@/contexts/ProductsContext";
 import { SocialContextProvider } from "@/contexts/SocialContext";
 import { PaymentContextProvider } from "@/contexts/PaymentContext";
+import { OpeningHoursContextProvider } from "@/contexts/OpeningHoursContext";
 
 export const MainBarbearia = () => {
     return (
@@ -38,7 +39,9 @@ export const MainBarbearia = () => {
                     <CardPaymentMethod />
                 </PaymentContextProvider>
 
-                <CardOpeningHours />
+                <OpeningHoursContextProvider>
+                    <CardOpeningHours />
+                </OpeningHoursContextProvider>
             </div>
         </main>
     );
