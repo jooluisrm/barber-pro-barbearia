@@ -148,3 +148,23 @@ export const putProduct = async (barbeariaId: string, produtoId: string, data: D
         });
     }
 }
+
+export const deleteProduct = async (barbeariaId: string, produtoId: string) => {
+    try {
+        const response = await axiosInstance.delete(`/barbearia/${barbeariaId}/produtos/${produtoId}`);
+        toast.success(response.data.message, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao editar produto";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}

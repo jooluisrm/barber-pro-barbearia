@@ -21,6 +21,8 @@ export const DialogNewProduct = () => {
     const { setProducts } = useProductContext();
     const { barbearia } = useAuth();
 
+    const [open, setOpen] = useState(false);
+
     const [inputNome, setInputNome] = useState("");
     const [inputDescricao, setInputDescricao] = useState("");
     const [inputTipo, setInputTipo] = useState("");
@@ -41,6 +43,7 @@ export const DialogNewProduct = () => {
             setInputNome("");
             setInputTipo("");
             setInputDescricao("");
+            setOpen(false);
         } catch (error: any) {
             console.log(error);
         }
@@ -48,9 +51,9 @@ export const DialogNewProduct = () => {
     }
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button>Novo Produto</Button>
+                <Button onClick={() => setOpen(true)} >Novo Produto</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">

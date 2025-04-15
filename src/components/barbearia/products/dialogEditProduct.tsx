@@ -1,4 +1,4 @@
-import { DataProducts, getProducts, putProduct } from "@/api/barbearia/barbeariaServices"
+import { DataProducts, deleteProduct, getProducts, putProduct } from "@/api/barbearia/barbeariaServices"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -44,6 +44,16 @@ export const DialogEditProduct = ({ itemProduct }: Props) => {
             await putProduct(barbearia.id, itemProduct.id, data);
             await loadItems(barbearia, getProducts, setProducts);
             setOpen(false);
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+
+    const handleDeleteProduct = async () => {
+        if(!barbearia) return;
+        try {
+            await deleteProduct(barbearia.id, itemProduct.id);
+            await loadItems(barbearia, getProducts, setProducts);
         } catch (error: any) {
             console.log(error);
         }
@@ -108,7 +118,7 @@ export const DialogEditProduct = ({ itemProduct }: Props) => {
                     </div>
                 </div>
                 <DialogFooter className="gap-3">
-                    <Button variant={"destructive"}>
+                    <Button variant={"destructive"} onClick={handleDeleteProduct}>
                         <Trash />
                     </Button>
                     <Button onClick={handleEditProduct} >Salvar</Button>
