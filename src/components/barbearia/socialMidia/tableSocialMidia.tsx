@@ -9,8 +9,12 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { DialogEditSocialMidia } from "./dialogEditSocialMidia";
+import { useSocialContext } from "@/contexts/SocialContext";
 
 export const TableSocialMidia = () => {
+
+    const { socialMedia } = useSocialContext();
+
     return (
         <Table>
             <TableCaption>Lista de Redes Sociais</TableCaption>
@@ -23,19 +27,21 @@ export const TableSocialMidia = () => {
             </TableHeader>
             <TableBody>
 
-                <TableRow >
-                    <TableCell className="font-medium">Instagram</TableCell>
-                    <TableCell>https://www.instagram.com/barbearias_prates_/</TableCell>
-                    <TableCell  className="flex justify-end items-center">
-                        <DialogEditSocialMidia />
-                    </TableCell>
-                </TableRow>
+                {socialMedia && socialMedia.map((item) => (
+                    <TableRow key={item.id}>
+                        <TableCell className="font-medium">{item.rede}</TableCell>
+                        <TableCell>{item.link}</TableCell>
+                        <TableCell className="flex justify-end items-center">
+                            <DialogEditSocialMidia />
+                        </TableCell>
+                    </TableRow>
+                ))}
 
             </TableBody>
             <TableFooter>
                 <TableRow>
                     <TableCell colSpan={2}>Total de Redes Sociais</TableCell>
-                    <TableCell className="text-right">01</TableCell>
+                    <TableCell className="text-right">{socialMedia?.length}</TableCell>
                 </TableRow>
             </TableFooter>
         </Table>

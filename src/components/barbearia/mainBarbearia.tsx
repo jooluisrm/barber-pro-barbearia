@@ -7,6 +7,7 @@ import { CardProducts } from "./products/cardProducts";
 import { CardServices } from "./services/cardServices";
 import { CardSocialMidia } from "./socialMidia/cardSocialMidia";
 import { ProductContextProvider } from "@/contexts/ProductsContext";
+import { SocialContextProvider } from "@/contexts/SocialContext";
 
 export const MainBarbearia = () => {
     return (
@@ -23,10 +24,15 @@ export const MainBarbearia = () => {
                 <ServiceContextProvider>
                     <CardServices />
                 </ServiceContextProvider>
+
                 <ProductContextProvider>
                     <CardProducts />
                 </ProductContextProvider>
-                <CardSocialMidia />
+
+                <SocialContextProvider>
+                    <CardSocialMidia />
+                </SocialContextProvider>
+
                 <CardPaymentMethod />
                 <CardOpeningHours />
             </div>

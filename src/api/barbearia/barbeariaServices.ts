@@ -168,3 +168,18 @@ export const deleteProduct = async (barbeariaId: string, produtoId: string) => {
         });
     }
 }
+
+export const getSocialMedia = async (barbeariaId: string) => {
+    try {
+        const response = await axiosInstance.get(`/barbearia/${barbeariaId}/redes-sociais`);
+        return response.data;
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao carregar Redes Sociais";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}
