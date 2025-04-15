@@ -186,7 +186,7 @@ export const getSocialMedia = async (barbeariaId: string) => {
 
 export type DataSocialMedia = {
     link: string;
-    rede: string;
+    rede?: string;
 }
 
 export const postSocialMedia = async (barbeariaId: string, data: DataSocialMedia) => {
@@ -201,6 +201,26 @@ export const postSocialMedia = async (barbeariaId: string, data: DataSocialMedia
         return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao criar Rede Social";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}
+
+export const putSocialMedia = async (barbeariaId: string, socialMediaId: string, data: DataSocialMedia) => {
+    try {
+        const response = await axiosInstance.put(`/barbearia/${barbeariaId}/redes-sociais/${socialMediaId}`, data);
+        toast.success(response.data.message, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao editar Rede Social";
         toast.error(errorMessage, {
             action: {
                 label: "Fechar",

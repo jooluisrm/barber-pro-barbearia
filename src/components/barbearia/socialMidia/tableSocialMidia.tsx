@@ -32,7 +32,7 @@ export const TableSocialMidia = () => {
                         <TableCell className="font-medium">{item.rede}</TableCell>
                         <TableCell>{item.link}</TableCell>
                         <TableCell className="flex justify-end items-center">
-                            <DialogEditSocialMidia />
+                            <DialogEditSocialMidia itemSocialMedia={item}/>
                         </TableCell>
                     </TableRow>
                 ))}

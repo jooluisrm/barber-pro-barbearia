@@ -1,3 +1,4 @@
+import { DataSocialMedia, getSocialMedia, putSocialMedia } from "@/api/barbearia/barbeariaServices"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -9,11 +10,36 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useAuth } from "@/contexts/AuthContext"
+import { useSocialContext } from "@/contexts/SocialContext"
+import { SocialMedia } from "@/types/socialMedia"
+import { loadItems } from "@/utils/loadItems"
 import { EditIcon, Scissors, Trash } from "lucide-react"
-import { SelectSocialMidia } from "./selectSocialMidia"
+import { useState } from "react"
 
-export const DialogEditSocialMidia = () => {
+type Props = {
+    itemSocialMedia: SocialMedia;
+}
+
+export const DialogEditSocialMidia = ({ itemSocialMedia }: Props) => {
+    const { setSocialMedia } = useSocialContext();
+    const { barbearia } = useAuth();
+
+    const [inputLink, setInputLink] = useState(itemSocialMedia.link);
+
+    const handleEditSocialMedia = async () => {
+        if (!barbearia) return;
+        try {
+            const data: DataSocialMedia = {
+                link: inputLink
+            }
+            await putSocialMedia(barbearia.id, itemSocialMedia.id, data);
+            await loadItems(barbearia, getSocialMedia, setSocialMedia);
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -33,22 +59,21 @@ export const DialogEditSocialMidia = () => {
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex flex-col gap-4">
-                    <div className="flex gap-5">
-                        <div className="">
-                            <label htmlFor="" className="">Rede Social</label>
-                            <SelectSocialMidia />
-                        </div>
-                    </div>
                     <div className="">
                         <label htmlFor="link">Link</label>
-                        <Input id="link" placeholder="Link da rede social" />
+                        <Input
+                            id="link"
+                            placeholder="Link da rede social"
+                            value={inputLink}
+                            onChange={(e) => setInputLink(e.target.value)}
+                        />
                     </div>
                 </div>
                 <DialogFooter className="gap-3">
                     <Button variant={"destructive"}>
                         <Trash />
                     </Button>
-                    <Button>Salvar</Button>
+                    <Button onClick={handleEditSocialMedia}>Salvar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
