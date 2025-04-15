@@ -183,3 +183,29 @@ export const getSocialMedia = async (barbeariaId: string) => {
         });
     }
 }
+
+export type DataSocialMedia = {
+    link: string;
+    rede: string;
+}
+
+export const postSocialMedia = async (barbeariaId: string, data: DataSocialMedia) => {
+    try {
+        const response = await axiosInstance.post(`/barbearia/${barbeariaId}/redes-sociais`, data);
+        toast.success(response.data.message, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+        return response.data;
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao criar Rede Social";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}

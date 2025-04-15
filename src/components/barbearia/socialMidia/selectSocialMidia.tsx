@@ -8,9 +8,13 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-export const SelectSocialMidia = () => {
+type Props = {
+    handleSelectSocialMedia: (value: string) => void;
+}
+
+export const SelectSocialMidia = ({handleSelectSocialMedia}: Props) => {
     return (
-        <Select>
+        <Select onValueChange={(value) => handleSelectSocialMedia(value)}>
             <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Selecionar" />
             </SelectTrigger>

@@ -9,15 +9,48 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { PlusCircle } from "lucide-react"
 import { SelectSocialMidia } from "./selectSocialMidia"
+import { useState } from "react"
+import { useAuth } from "@/contexts/AuthContext"
+import { DataSocialMedia, getSocialMedia, postSocialMedia } from "@/api/barbearia/barbeariaServices"
+import { loadItems } from "@/utils/loadItems"
+import { useSocialContext } from "@/contexts/SocialContext"
 
 export const DialogNewSocialMidia = () => {
+    const { barbearia } = useAuth();
+    const { setSocialMedia } = useSocialContext();
+
+    const [selectSocialMedia, setSelectSocialMedia] = useState("");
+    const [inputLink, setInputLink] = useState("");
+
+    const [open, setOpen] = useState(false);
+
+    const handleSelectSocialMedia = (value: string) => {
+        setSelectSocialMedia(value);
+    }
+
+    const handleAddSocialMedia = async () => {
+        if (!barbearia) return;
+        try {
+            const data: DataSocialMedia = {
+                link: inputLink,
+                rede: selectSocialMedia
+            }
+            await postSocialMedia(barbearia.id, data);
+            await loadItems(barbearia, getSocialMedia, setSocialMedia);
+            setOpen(false);
+            setInputLink("");
+            setSelectSocialMedia("");
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button>Nova Rede Social</Button>
+                <Button onClick={() => setOpen(true)} >Nova Rede Social</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">
@@ -35,16 +68,21 @@ export const DialogNewSocialMidia = () => {
                     <div className="flex gap-5">
                         <div className="">
                             <label htmlFor="" className="">Rede Social</label>
-                            <SelectSocialMidia />
+                            <SelectSocialMidia handleSelectSocialMedia={handleSelectSocialMedia} />
                         </div>
                     </div>
                     <div className="">
                         <label htmlFor="link">Link</label>
-                        <Input id="link" placeholder="Link da rede social" />
+                        <Input
+                            id="link"
+                            placeholder="Link da rede social"
+                            value={inputLink}
+                            onChange={(e) => setInputLink(e.target.value)}
+                        />
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button type="submit">Criar</Button>
+                    <Button onClick={handleAddSocialMedia}>Criar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
