@@ -37,7 +37,7 @@ export const TableProducts = () => {
                         <TableCell>{item.tipo}</TableCell>
                         <TableCell className="text-right">{formatarPreco(item.preco.toString())}</TableCell>
                         <TableCell className="flex justify-end items-center">
-                            <DialogEditProduct />
+                            <DialogEditProduct itemProduct={item}/>
                         </TableCell>
                     </TableRow>
                 ))}
