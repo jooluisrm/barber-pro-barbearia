@@ -229,3 +229,23 @@ export const putSocialMedia = async (barbeariaId: string, socialMediaId: string,
         });
     }
 }
+
+export const deleteSocialMedia = async (barbeariaId: string, socialMediaId: string) => {
+    try {
+        const response = await axiosInstance.delete(`/barbearia/${barbeariaId}/redes-sociais/${socialMediaId}`);
+        toast.success(response.data.message, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao deletar Rede Social";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}

@@ -1,4 +1,4 @@
-import { DataSocialMedia, getSocialMedia, putSocialMedia } from "@/api/barbearia/barbeariaServices"
+import { DataSocialMedia, deleteSocialMedia, getSocialMedia, putSocialMedia } from "@/api/barbearia/barbeariaServices"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -40,6 +40,16 @@ export const DialogEditSocialMidia = ({ itemSocialMedia }: Props) => {
         }
     }
 
+    const handleDeleteSocialMedia = async () => {
+        if(!barbearia) return;
+        try {
+            await deleteSocialMedia(barbearia.id, itemSocialMedia.id);
+            await loadItems(barbearia, getSocialMedia, setSocialMedia);
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -70,7 +80,7 @@ export const DialogEditSocialMidia = ({ itemSocialMedia }: Props) => {
                     </div>
                 </div>
                 <DialogFooter className="gap-3">
-                    <Button variant={"destructive"}>
+                    <Button variant={"destructive"} onClick={handleDeleteSocialMedia}>
                         <Trash />
                     </Button>
                     <Button onClick={handleEditSocialMedia}>Salvar</Button>
