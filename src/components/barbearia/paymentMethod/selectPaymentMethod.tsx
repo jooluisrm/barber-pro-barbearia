@@ -8,9 +8,14 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-export const SelectPaymentMethod = () => {
+type Props = {
+    handleSelectPayment: (value: string) => void;
+}
+
+
+export const SelectPaymentMethod = ({ handleSelectPayment }: Props) => {
     return (
-        <Select>
+        <Select onValueChange={handleSelectPayment}>
             <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Selecionar" />
             </SelectTrigger>

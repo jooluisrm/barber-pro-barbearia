@@ -8,12 +8,38 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { PlusCircle } from "lucide-react"
 import { SelectPaymentMethod } from "./selectPaymentMethod"
+import { useState } from "react"
+import { useAuth } from "@/contexts/AuthContext"
+import { getPayment, postPayment } from "@/api/barbearia/barbeariaServices"
+import { loadItems } from "@/utils/loadItems"
+import { usePaymentContext } from "@/contexts/PaymentContext"
 
 export const DialogNewPaymentMethod = () => {
+    const { barbearia } = useAuth();
+    const { setPayment } = usePaymentContext();
+
+    const [selectPayment, setSelectPayment] = useState("");
+
+    const handleSelectPayment = (value: string) => {
+        setSelectPayment(value);
+    }
+
+    const handleAddPaymentMethod = async () => {
+        if (!barbearia) return;
+        try {
+            const data = {
+                tipo: selectPayment
+            }
+            await postPayment(barbearia.id, data);
+            loadItems(barbearia, getPayment, setPayment);
+            setSelectPayment("");
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -34,11 +60,11 @@ export const DialogNewPaymentMethod = () => {
                 <div className="flex flex-col gap-4">
                     <div>
                         <label htmlFor="">Forma de Pagamento</label>
-                        <SelectPaymentMethod />
+                        <SelectPaymentMethod handleSelectPayment={handleSelectPayment} />
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button type="submit">Criar</Button>
+                    <Button onClick={handleAddPaymentMethod}>Criar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

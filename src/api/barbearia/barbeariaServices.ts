@@ -264,3 +264,27 @@ export const getPayment = async (barbeariaId: string) => {
         });
     }
 }
+
+type DataPayment = {
+    tipo: string;
+}
+
+export const postPayment = async (barbeariaId: string, data: DataPayment) => {
+    try {
+        const response = await axiosInstance.post(`/barbearia/${barbeariaId}/formas-pagamento`, data);
+        toast.success(response.data.message, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao carregar Forma de pagamento";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}
