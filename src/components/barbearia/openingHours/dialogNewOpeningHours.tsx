@@ -11,14 +11,17 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { PlusCircle } from "lucide-react"
 import { useState } from "react"
+import { SelectHourInit } from "./selectHourInit"
+import { SelectHourEnd } from "./selectHourEnd"
 
 
 export const DialogNewOpeningHours = () => {
     const [selectDia, setSelectDia] = useState<string | null>(null);
+
+    const [selectHourInitValue, setSelectInitValue] = useState("");
+    const [selectHourEndValue, setSelectEndValue] = useState("");
 
     const handleSelectDia = (value: string) => {
         setSelectDia(value);
@@ -44,19 +47,19 @@ export const DialogNewOpeningHours = () => {
                 <div className="grid grid-cols-3 gap-2">
                     <div>
                         <label htmlFor="">Dia da semana</label>
-                        <SelectDiaSemana handleSelectDia={handleSelectDia}/>
+                        <SelectDiaSemana handleSelectDia={handleSelectDia} />
                     </div>
                     <div>
-                        <label htmlFor="">Horário de Início</label>
-                        <Input />
+                        <label htmlFor="">Horário Início</label>
+                        <SelectHourInit setValue={setSelectInitValue} value={selectHourInitValue}/>
                     </div>
                     <div>
-                        <label htmlFor="">Horário de Fim</label>
-                        <Input />
+                        <label htmlFor="">Horário Fim</label>
+                        <SelectHourEnd setValue={setSelectEndValue} value={selectHourEndValue} />
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button type="submit">Criar</Button>
+                    <Button >Criar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

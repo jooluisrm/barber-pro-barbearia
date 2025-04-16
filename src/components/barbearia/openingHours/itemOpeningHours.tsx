@@ -22,7 +22,7 @@ export const ItemOpeningHours = () => {
         <div>
             {
                 openingHours && openingHours.map((Item) => (
-                    <div className={`flex justify-between items-center py-2 ${diaSemanaHoje === Item.diaSemana && "font-bold"}`}>
+                    <div className={`flex justify-between items-center py-2 ${diaSemanaHoje === Item.diaSemana && "font-bold"}`} key={Item.id}>
                         <div className="flex items-center gap-2">
                             <h2>{getNomeDiaSemana(Item.diaSemana)}</h2>
                             {
