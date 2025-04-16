@@ -249,3 +249,18 @@ export const deleteSocialMedia = async (barbeariaId: string, socialMediaId: stri
         });
     }
 }
+
+export const getPayment = async (barbeariaId: string) => {
+    try {
+        const response = await axiosInstance.get(`/barbearia/${barbeariaId}/formas-pagamento`);
+        return response.data;
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao carregar Forma de pagamento";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}

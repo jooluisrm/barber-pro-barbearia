@@ -10,8 +10,13 @@ import {
 } from "@/components/ui/dialog"
 import { EditIcon, Scissors, Trash } from "lucide-react"
 import { SelectPaymentMethod } from "./selectPaymentMethod"
+import { Payment } from "@/types/payment"
 
-export const DialogEditPaymentMethod = () => {
+type Props = {
+    itemPayment: Payment;
+}
+
+export const DialogEditPaymentMethod = ({ itemPayment }: Props) => {
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -27,17 +32,10 @@ export const DialogEditPaymentMethod = () => {
                         Atualize os detalhes desta Forma de Pagamento aceita pela barbearia
                     </DialogDescription>
                 </DialogHeader>
-                <div className="flex flex-col gap-4">
-                    <div>
-                        <label htmlFor="">Forma de Pagamento</label>
-                        <SelectPaymentMethod />
-                    </div>
-                </div>
                 <DialogFooter className="gap-3">
                     <Button variant={"destructive"}>
                         <Trash />
                     </Button>
-                    <Button>Salvar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
