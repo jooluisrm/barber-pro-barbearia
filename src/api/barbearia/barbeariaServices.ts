@@ -279,7 +279,27 @@ export const postPayment = async (barbeariaId: string, data: DataPayment) => {
             },
         });
     } catch (error: any) {
-        const errorMessage = error.response?.data?.error || "Erro ao carregar Forma de pagamento";
+        const errorMessage = error.response?.data?.error || "Erro ao criar Forma de pagamento";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}
+
+export const deletePayment = async (barbeariaId: string, formaPagamentoId: string) => {
+    try {
+        const response = await axiosInstance.delete(`/barbearia/${barbeariaId}/formas-pagamento/${formaPagamentoId}`);
+        toast.success(response.data.message, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao deletar Forma de pagamento";
         toast.error(errorMessage, {
             action: {
                 label: "Fechar",
