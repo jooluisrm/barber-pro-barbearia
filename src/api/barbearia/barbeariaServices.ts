@@ -308,3 +308,18 @@ export const deletePayment = async (barbeariaId: string, formaPagamentoId: strin
         });
     }
 }
+
+export const getOpeningHours = async (barbeariaId: string) => {
+    try {
+        const response = await axiosInstance.get(`/barbearia/${barbeariaId}/horarios-funcionamento`);
+        return response.data;
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao carregar Horario de funcionamento";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}
