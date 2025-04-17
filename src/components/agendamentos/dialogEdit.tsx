@@ -36,13 +36,10 @@ export function DialogEdit({ agendamentoSelecionado }: Props) {
     const editarStatusAgendamento = async (agendamentoId: string, novoStatus: "Confirmado" | "Feito" | "Cancelado") => {
         if (agendamentoId) {
             try {
-                await editarAgendamento(agendamentoId, novoStatus);
-                toast.success(`O status do agendamento foi atualizado para "${novoStatus}".`, {
-                    action: {
-                        label: "Fechar",
-                        onClick: () => console.log("Fechar"),
-                    }
-                });            
+                const done = await editarAgendamento(agendamentoId, novoStatus);
+                if(done) {
+                    setOpen(false);
+                }
             } catch (error: any) {
                 const errorMessage = error.message || "Erro ao trocar status";
 
@@ -57,9 +54,18 @@ export function DialogEdit({ agendamentoSelecionado }: Props) {
     }
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <EditIcon className="cursor-pointer hover:text-primary transition-colors" />
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant={"ghost"} onClick={(e) => setOpen(true)}><EditIcon /></Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Editar</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px] rounded-lg">
                 <DialogHeader>
@@ -94,7 +100,7 @@ export function DialogEdit({ agendamentoSelecionado }: Props) {
 
                         <div className="space-y-1">
                             <p className="text-muted-foreground">Valor</p>
-                            <p className="font-medium text-green-500">R$ {formatarPreco(agendamentoSelecionado.servico.preco)}</p>
+                            <p className="font-medium text-green-500">{formatarPreco(agendamentoSelecionado.servico.preco)}</p>
                         </div>
 
                         <div className="space-y-1 col-span-2">
