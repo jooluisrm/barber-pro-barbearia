@@ -37,11 +37,13 @@ export const DialogNewSocialMidia = () => {
                 link: inputLink,
                 rede: selectSocialMedia
             }
-            await postSocialMedia(barbearia.id, data);
-            await loadItems(barbearia, getSocialMedia, setSocialMedia);
-            setOpen(false);
-            setInputLink("");
-            setSelectSocialMedia("");
+            const done = await postSocialMedia(barbearia.id, data);
+            if (done) {
+                await loadItems(barbearia, getSocialMedia, setSocialMedia);
+                setOpen(false);
+                setInputLink("");
+                setSelectSocialMedia("");
+            }
         } catch (error: any) {
             console.log(error);
         }
@@ -82,7 +84,10 @@ export const DialogNewSocialMidia = () => {
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button onClick={handleAddSocialMedia}>Criar</Button>
+                    <Button
+                        onClick={handleAddSocialMedia}
+                        disabled={!inputLink || !selectSocialMedia}
+                    >Criar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

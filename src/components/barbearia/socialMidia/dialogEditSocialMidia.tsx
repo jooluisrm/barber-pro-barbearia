@@ -16,6 +16,7 @@ import { SocialMedia } from "@/types/socialMedia"
 import { loadItems } from "@/utils/loadItems"
 import { EditIcon, Scissors, Trash } from "lucide-react"
 import { useState } from "react"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 type Props = {
     itemSocialMedia: SocialMedia;
@@ -27,21 +28,26 @@ export const DialogEditSocialMidia = ({ itemSocialMedia }: Props) => {
 
     const [inputLink, setInputLink] = useState(itemSocialMedia.link);
 
+    const [open, setOpen] = useState(false);
+
     const handleEditSocialMedia = async () => {
         if (!barbearia) return;
         try {
             const data: DataSocialMedia = {
                 link: inputLink
             }
-            await putSocialMedia(barbearia.id, itemSocialMedia.id, data);
-            await loadItems(barbearia, getSocialMedia, setSocialMedia);
+            const done = await putSocialMedia(barbearia.id, itemSocialMedia.id, data);
+            if(done) {
+                await loadItems(barbearia, getSocialMedia, setSocialMedia);
+                setOpen(false);
+            }
         } catch (error: any) {
             console.log(error);
         }
     }
 
     const handleDeleteSocialMedia = async () => {
-        if(!barbearia) return;
+        if (!barbearia) return;
         try {
             await deleteSocialMedia(barbearia.id, itemSocialMedia.id);
             await loadItems(barbearia, getSocialMedia, setSocialMedia);
@@ -51,9 +57,18 @@ export const DialogEditSocialMidia = ({ itemSocialMedia }: Props) => {
     }
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant={"ghost"}><EditIcon /></Button>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant={"ghost"} onClick={(e) => setOpen(true)}><EditIcon /></Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Editar/Excluir</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">

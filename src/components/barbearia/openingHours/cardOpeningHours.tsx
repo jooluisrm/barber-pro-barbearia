@@ -27,8 +27,8 @@ export const CardOpeningHours = () => {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Horario de Atendimento</CardTitle>
-                <CardDescription>Adicione os horarios de funcionamento da sua barbearia durante a semana.</CardDescription>
+                <CardTitle>Horário de Atendimento</CardTitle>
+                <CardDescription>Adicione os horários de funcionamento da sua barbearia durante a semana.</CardDescription>
             </CardHeader>
             <CardContent className="">
                 <ItemOpeningHours />

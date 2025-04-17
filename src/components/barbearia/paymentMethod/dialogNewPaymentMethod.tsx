@@ -69,7 +69,10 @@ export const DialogNewPaymentMethod = () => {
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button onClick={handleAddPaymentMethod}>Criar</Button>
+                    <Button
+                        onClick={handleAddPaymentMethod}
+                        disabled={!selectPayment}
+                    >Criar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

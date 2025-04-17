@@ -16,6 +16,7 @@ import { Products } from "@/types/products"
 import { loadItems } from "@/utils/loadItems"
 import { EditIcon, Scissors, Trash } from "lucide-react"
 import { useState } from "react"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 type Props = {
     itemProduct: Products;
@@ -41,16 +42,18 @@ export const DialogEditProduct = ({ itemProduct }: Props) => {
                 tipo: inputTipo,
                 preco: inputPreco
             }
-            await putProduct(barbearia.id, itemProduct.id, data);
-            await loadItems(barbearia, getProducts, setProducts);
-            setOpen(false);
+            const done = await putProduct(barbearia.id, itemProduct.id, data);
+            if (done) {
+                await loadItems(barbearia, getProducts, setProducts);
+                setOpen(false);
+            }
         } catch (error: any) {
             console.log(error);
         }
     }
 
     const handleDeleteProduct = async () => {
-        if(!barbearia) return;
+        if (!barbearia) return;
         try {
             await deleteProduct(barbearia.id, itemProduct.id);
             await loadItems(barbearia, getProducts, setProducts);
@@ -62,7 +65,16 @@ export const DialogEditProduct = ({ itemProduct }: Props) => {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant={"ghost"} onClick={() => setOpen(true)} ><EditIcon /></Button>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant={"ghost"} onClick={() => setOpen(true)} ><EditIcon /></Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Editar/Excluir</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">

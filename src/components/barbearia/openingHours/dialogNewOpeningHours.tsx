@@ -92,7 +92,10 @@ export const DialogNewOpeningHours = () => {
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button onClick={handleAddOpeningHours}>Criar</Button>
+                    <Button
+                        onClick={handleAddOpeningHours}
+                        disabled={!selectDia || !selectHourEndValue || !selectHourInitValue}
+                    >Criar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

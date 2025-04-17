@@ -52,6 +52,7 @@ export const putService = async (barbeariaId: string, servicoId: string, data: D
                 onClick: () => console.log("Fechar"),
             },
         });
+        return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao editar serviço";
         toast.error(errorMessage, {
@@ -219,6 +220,7 @@ export const putSocialMedia = async (barbeariaId: string, socialMediaId: string,
                 onClick: () => console.log("Fechar"),
             },
         });
+        return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao editar Rede Social";
         toast.error(errorMessage, {

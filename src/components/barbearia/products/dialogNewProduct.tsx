@@ -111,7 +111,10 @@ export const DialogNewProduct = () => {
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button onClick={handleAddProduct}>Criar</Button>
+                    <Button 
+                    onClick={handleAddProduct}
+                    disabled={!inputNome || !inputTipo}
+                    >Criar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

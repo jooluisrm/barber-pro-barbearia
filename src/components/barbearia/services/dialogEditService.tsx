@@ -18,6 +18,7 @@ import { loadItems } from "@/utils/loadItems"
 import { EditIcon, Scissors, Trash } from "lucide-react"
 import { useState } from "react"
 import { AlertDeleteService } from "./alertDeleteService"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 type Props = {
     itemService: Services;
@@ -41,9 +42,11 @@ export const DialogEditService = ({ itemService }: Props) => {
                 duracao: inputDuracao,
                 preco: inputPreco
             }
-            await putService(barbearia.id, itemService.id, data);
-            await loadItems(barbearia, getServices, setServices);
-            setOpen(false);
+            const done = await putService(barbearia.id, itemService.id, data);
+            if (done) {
+                await loadItems(barbearia, getServices, setServices);
+                setOpen(false);
+            }
         } catch (error: any) {
             console.log(error);
         }
@@ -52,7 +55,16 @@ export const DialogEditService = ({ itemService }: Props) => {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant={"ghost"} onClick={() => setOpen(true)}><EditIcon /></Button>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant={"ghost"} onClick={() => setOpen(true)}><EditIcon /></Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Editar/Excluir</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">
@@ -100,7 +112,7 @@ export const DialogEditService = ({ itemService }: Props) => {
                     </div>
                 </div>
                 <DialogFooter className="gap-3">
-                    <AlertDeleteService itemService={itemService}/>
+                    <AlertDeleteService itemService={itemService} />
                     <Button onClick={handleEditService}>Salvar</Button>
                 </DialogFooter>
             </DialogContent>
