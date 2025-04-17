@@ -21,18 +21,18 @@ export const ItemOpeningHours = () => {
     return (
         <div>
             {
-                openingHours && openingHours.map((Item) => (
-                    <div className={`flex justify-between items-center py-2 ${diaSemanaHoje === Item.diaSemana && "font-bold"}`} key={Item.id}>
+                openingHours && openingHours.map((item) => (
+                    <div className={`flex justify-between items-center py-2 ${diaSemanaHoje === item.diaSemana && "font-bold"}`} key={item.id}>
                         <div className="flex items-center gap-2">
-                            <h2>{getNomeDiaSemana(Item.diaSemana)}</h2>
+                            <h2>{getNomeDiaSemana(item.diaSemana)}</h2>
                             {
-                                diaSemanaHoje === Item.diaSemana &&
+                                diaSemanaHoje === item.diaSemana &&
                                 <span className={`text-sm text-green-600 border-2 border-green-700 rounded-full py-1 px-2 font-bold`}>Hoje</span>
                             }
                         </div>
                         <div className="flex items-center gap-2">
-                            <span>{Item.horaInicio} - {Item.horaFim}</span>
-                            <DialogEditOpeningHours />
+                            <span>{item.horaInicio} - {item.horaFim}</span>
+                            <DialogEditOpeningHours itemOpeningHours={item}/>
                         </div>
                     </div>
                 ))

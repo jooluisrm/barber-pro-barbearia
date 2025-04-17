@@ -8,10 +8,21 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
 import { EditIcon, Scissors, Trash } from "lucide-react"
+import { SelectHourEnd } from "./selectHourEnd"
+import { SelectHourInit } from "./selectHourInit"
+import { useState } from "react"
+import { OpeningHours } from "@/types/openingHours"
 
-export const DialogEditOpeningHours = () => {
+type Props = {
+    itemOpeningHours: OpeningHours;
+}
+
+export const DialogEditOpeningHours = ({ itemOpeningHours }: Props) => {
+
+    const [selectHourInitValue, setSelectInitValue] = useState(itemOpeningHours.horaInicio);
+    const [selectHourEndValue, setSelectEndValue] = useState(itemOpeningHours.horaFim);
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -27,14 +38,14 @@ export const DialogEditOpeningHours = () => {
                         Atualize os detalhes deste Horário de Atendimento.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="flex text-center">
                     <div>
-                        <label htmlFor="">Horário de Início</label>
-                        <Input />
+                        <label htmlFor="">Horário Início</label>
+                        <SelectHourInit setValue={setSelectInitValue} value={selectHourInitValue} />
                     </div>
                     <div>
-                        <label htmlFor="">Horário de Fim</label>
-                        <Input />
+                        <label htmlFor="">Horário Fim</label>
+                        <SelectHourEnd setValue={setSelectEndValue} value={selectHourEndValue} />
                     </div>
                 </div>
                 <DialogFooter className="gap-3">
