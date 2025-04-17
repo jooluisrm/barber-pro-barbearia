@@ -15,10 +15,20 @@ import { PlusCircle } from "lucide-react"
 import { useState } from "react"
 import { SelectHourInit } from "./selectHourInit"
 import { SelectHourEnd } from "./selectHourEnd"
+import { useAuth } from "@/contexts/AuthContext"
+import { useOpeningHoursContext } from "@/contexts/OpeningHoursContext"
+import { DataOpeningHours, getOpeningHours, postOpeningHours } from "@/api/barbearia/barbeariaServices"
+import { loadItems } from "@/utils/loadItems"
 
 
 export const DialogNewOpeningHours = () => {
+
+    const { barbearia } = useAuth();
+    const { setOpeningHours } = useOpeningHoursContext();
+
     const [selectDia, setSelectDia] = useState<string | null>(null);
+
+    const [open, setOpen] = useState(false);
 
     const [selectHourInitValue, setSelectInitValue] = useState("");
     const [selectHourEndValue, setSelectEndValue] = useState("");
@@ -27,10 +37,33 @@ export const DialogNewOpeningHours = () => {
         setSelectDia(value);
     }
 
+    const handleAddOpeningHours = async () => {
+        if (!barbearia) return;
+        if (!selectDia) return;
+        try {
+            const data: DataOpeningHours = {
+                diaSemana: Number(selectDia),
+                horaFim: selectHourEndValue,
+                horaInicio: selectHourInitValue
+            }
+            const done = await postOpeningHours(barbearia.id, data);
+            if (done) {
+                await loadItems(barbearia, getOpeningHours, setOpeningHours);
+                setSelectEndValue("");
+                setSelectInitValue("");
+                setSelectDia(null);
+                setOpen(false);
+            }
+
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button>Novo Horário de Atendimento</Button>
+                <Button onClick={() => setOpen(true)}>Novo Horário de Atendimento</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">
@@ -51,7 +84,7 @@ export const DialogNewOpeningHours = () => {
                     </div>
                     <div>
                         <label htmlFor="">Horário Início</label>
-                        <SelectHourInit setValue={setSelectInitValue} value={selectHourInitValue}/>
+                        <SelectHourInit setValue={setSelectInitValue} value={selectHourInitValue} />
                     </div>
                     <div>
                         <label htmlFor="">Horário Fim</label>
@@ -59,7 +92,7 @@ export const DialogNewOpeningHours = () => {
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button >Criar</Button>
+                    <Button onClick={handleAddOpeningHours}>Criar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

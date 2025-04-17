@@ -323,3 +323,30 @@ export const getOpeningHours = async (barbeariaId: string) => {
         });
     }
 }
+
+export type DataOpeningHours = {
+    diaSemana: number;
+    horaInicio: string;
+    horaFim: string;
+}
+
+export const postOpeningHours = async (barbeariaId: string, data: DataOpeningHours) => {
+    try {
+        const response = await axiosInstance.post(`/barbearia/${barbeariaId}/horario-funcionamento`, data);
+        toast.success(response.data.message, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+        return response.data;
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao criar Horario de funcionamento";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}
