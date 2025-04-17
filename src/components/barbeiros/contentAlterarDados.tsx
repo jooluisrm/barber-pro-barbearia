@@ -20,16 +20,20 @@ import { Clock } from "lucide-react";
 type Props = {
     barbeiro: Barbeiro;
     nextPage: VoidFunction;
+    setOpen: (e: boolean) => void;
 }
 
-export const ContentAlterarDados = ({ barbeiro, nextPage }: Props) => {
+export const ContentAlterarDados = ({ barbeiro, nextPage, setOpen }: Props) => {
 
     const [inputNome, setInputNome] = useState(barbeiro.nome);
     const [inputEmail, setInputEmail] = useState(barbeiro.email);
     const [inputTelefone, setInputTelefone] = useState(barbeiro.telefone);
 
     const handleEdit = async () => {
-        editBarbeiro(barbeiro.id, {nome: inputNome, email: inputEmail, telefone: inputTelefone});
+        const done = await editBarbeiro(barbeiro.id, {nome: inputNome, email: inputEmail, telefone: inputTelefone});
+        if(done) {
+            setOpen(false);
+        }
     }
 
     return (

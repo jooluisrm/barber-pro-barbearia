@@ -17,6 +17,7 @@ import { SelectStatus } from "./selectStatus"
 import { useState } from "react"
 import { editarAgendamento } from "@/api/agendamentos/agendamentoServices"
 import { toast } from "sonner"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 type Props = {
     agendamentoSelecionado: Agendamentos;
@@ -25,6 +26,8 @@ type Props = {
 export function DialogEdit({ agendamentoSelecionado }: Props) {
 
     const [statusSelecionado, setStatusSelecionado] = useState(agendamentoSelecionado.status);
+
+    const [open, setOpen] = useState(false);
 
     const handleSelect = (value: "Confirmado" | "Feito" | "Cancelado") => {
         setStatusSelecionado(value);

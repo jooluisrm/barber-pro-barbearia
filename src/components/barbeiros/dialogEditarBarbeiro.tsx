@@ -6,15 +6,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Clock, EditIcon, LucideTimer, TimerIcon } from "lucide-react";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { EditIcon } from "lucide-react";
 import { Barbeiro } from "@/types/barbeiros";
 import { useState } from "react";
-import { AlertDeletar } from "./alertDeletar";
-import { editBarbeiro } from "@/api/barbeiros/barbeirosServices";
 import { ContentAlterarDados } from "./contentAlterarDados";
 import { ContentGerenciarHorarios } from "./contentGerenciarHorarios";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Button } from "../ui/button";
 
 
 type Props = {
@@ -24,6 +22,8 @@ type Props = {
 export const DialogEditarBarbeiro = ({ barbeiro }: Props) => {
 
     const [page, setPage] = useState(1);
+
+    const [open, setOpen] = useState(false);
 
     const handleNextPage = () => {
         if (page === 2) return;
@@ -35,12 +35,21 @@ export const DialogEditarBarbeiro = ({ barbeiro }: Props) => {
     }
 
     return (
-        <Dialog>
-            <DialogTrigger>
-                <EditIcon />
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant={"ghost"} onClick={(e) => setOpen(true)}><EditIcon /></Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Editar/Excluir</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </DialogTrigger>
             <DialogContent>
-                {page === 1 && <ContentAlterarDados barbeiro={barbeiro} nextPage={handleNextPage} />}
+                {page === 1 && <ContentAlterarDados barbeiro={barbeiro} nextPage={handleNextPage} setOpen={setOpen}/>}
                 {page === 2 && <ContentGerenciarHorarios barbeiro={barbeiro} backPage={handleBackPage} />}
             </DialogContent>
         </Dialog>
