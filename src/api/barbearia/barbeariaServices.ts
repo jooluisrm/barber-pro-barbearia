@@ -278,6 +278,7 @@ export const postPayment = async (barbeariaId: string, data: DataPayment) => {
                 onClick: () => console.log("Fechar"),
             },
         });
+        return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao criar Forma de pagamento";
         toast.error(errorMessage, {

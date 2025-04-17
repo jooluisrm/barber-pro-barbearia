@@ -14,6 +14,8 @@ import { useAuth } from "@/contexts/AuthContext"
 import { usePaymentContext } from "@/contexts/PaymentContext"
 import { deletePayment, getPayment } from "@/api/barbearia/barbeariaServices"
 import { loadItems } from "@/utils/loadItems"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useState } from "react"
 
 type Props = {
     itemPayment: Payment;
@@ -24,20 +26,32 @@ export const DialogEditPaymentMethod = ({ itemPayment }: Props) => {
     const { barbearia } = useAuth();
     const { setPayment } = usePaymentContext();
 
+    const [open, setOpen] = useState(false);
+
     const handleDeletePayment = async () => {
         if (!barbearia) return;
         try {
             await deletePayment(barbearia.id, itemPayment.id);
             await loadItems(barbearia, getPayment, setPayment);
+            setOpen(false);
         } catch (error: any) {
             console.log(error);
         }
     }
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant={"ghost"}><EditIcon /></Button>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button variant={"ghost"} onClick={(e) => setOpen(true)}><EditIcon /></Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Editar/Excluir</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">

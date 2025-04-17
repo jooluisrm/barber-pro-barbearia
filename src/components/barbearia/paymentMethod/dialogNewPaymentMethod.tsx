@@ -22,6 +22,8 @@ export const DialogNewPaymentMethod = () => {
 
     const [selectPayment, setSelectPayment] = useState("");
 
+    const [open, setOpen] = useState(false);
+
     const handleSelectPayment = (value: string) => {
         setSelectPayment(value);
     }
@@ -32,18 +34,21 @@ export const DialogNewPaymentMethod = () => {
             const data = {
                 tipo: selectPayment
             }
-            await postPayment(barbearia.id, data);
-            loadItems(barbearia, getPayment, setPayment);
-            setSelectPayment("");
+            const done = await postPayment(barbearia.id, data);
+            if (done) {
+                loadItems(barbearia, getPayment, setPayment);
+                setSelectPayment("");
+                setOpen(false);
+            }
         } catch (error: any) {
             console.log(error);
         }
     }
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button>Nova Forma de Pagamento</Button>
+                <Button onClick={(e) => setOpen(true)}>Nova Forma de Pagamento</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">
