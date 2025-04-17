@@ -15,7 +15,7 @@ import { useState } from "react"
 import { OpeningHours } from "@/types/openingHours"
 import { useAuth } from "@/contexts/AuthContext"
 import { useOpeningHoursContext } from "@/contexts/OpeningHoursContext"
-import { DataOpeningHours, getOpeningHours, putOpeningHours } from "@/api/barbearia/barbeariaServices"
+import { DataOpeningHours, deleteOpeningHours, getOpeningHours, putOpeningHours } from "@/api/barbearia/barbeariaServices"
 import { loadItems } from "@/utils/loadItems"
 
 type Props = {
@@ -48,6 +48,16 @@ export const DialogEditOpeningHours = ({ itemOpeningHours }: Props) => {
         }
     }
 
+    const handleDeleteOpeningHours = async () => {
+        if (!barbearia) return;
+        try {
+            await deleteOpeningHours(barbearia.id, itemOpeningHours.id);
+            await loadItems(barbearia, getOpeningHours, setOpeningHours);
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -74,7 +84,7 @@ export const DialogEditOpeningHours = ({ itemOpeningHours }: Props) => {
                     </div>
                 </div>
                 <DialogFooter className="gap-3">
-                    <Button variant={"destructive"}>
+                    <Button variant={"destructive"} onClick={handleDeleteOpeningHours}>
                         <Trash />
                     </Button>
                     <Button

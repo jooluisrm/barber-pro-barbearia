@@ -371,3 +371,23 @@ export const putOpeningHours = async (barbeariaId: string, horarioId: string, da
         });
     }
 }
+
+export const deleteOpeningHours = async (barbeariaId: string, horarioId: string) => {
+    try {
+        const response = await axiosInstance.delete(`/barbearia/${barbeariaId}/horario-funcionamento/${horarioId}`);
+        toast.success(response.data.message, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao deletar Horario de funcionamento";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}
