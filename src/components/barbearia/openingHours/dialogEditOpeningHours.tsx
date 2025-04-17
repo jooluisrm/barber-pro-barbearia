@@ -13,20 +13,45 @@ import { SelectHourEnd } from "./selectHourEnd"
 import { SelectHourInit } from "./selectHourInit"
 import { useState } from "react"
 import { OpeningHours } from "@/types/openingHours"
+import { useAuth } from "@/contexts/AuthContext"
+import { useOpeningHoursContext } from "@/contexts/OpeningHoursContext"
+import { DataOpeningHours, getOpeningHours, putOpeningHours } from "@/api/barbearia/barbeariaServices"
+import { loadItems } from "@/utils/loadItems"
 
 type Props = {
     itemOpeningHours: OpeningHours;
 }
 
 export const DialogEditOpeningHours = ({ itemOpeningHours }: Props) => {
+    const { barbearia } = useAuth();
+    const { setOpeningHours } = useOpeningHoursContext();
+
+    const [open, setOpen] = useState(false);
 
     const [selectHourInitValue, setSelectInitValue] = useState(itemOpeningHours.horaInicio);
     const [selectHourEndValue, setSelectEndValue] = useState(itemOpeningHours.horaFim);
 
+    const handleEditOpeningHours = async () => {
+        if (!barbearia) return;
+        try {
+            const data: DataOpeningHours = {
+                horaFim: selectHourEndValue,
+                horaInicio: selectHourInitValue
+            }
+            const done = await putOpeningHours(barbearia.id, itemOpeningHours.id, data);
+            if (done) {
+                await loadItems(barbearia, getOpeningHours, setOpeningHours);
+                setOpen(false);
+            }
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant={"ghost"}><EditIcon /></Button>
+                <Button variant={"ghost"} onClick={(e) => setOpen(true)}><EditIcon /></Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">
@@ -52,7 +77,12 @@ export const DialogEditOpeningHours = ({ itemOpeningHours }: Props) => {
                     <Button variant={"destructive"}>
                         <Trash />
                     </Button>
-                    <Button>Salvar</Button>
+                    <Button
+                        onClick={handleEditOpeningHours}
+                        disabled={selectHourEndValue === itemOpeningHours.horaFim && selectHourInitValue === itemOpeningHours.horaInicio}
+                    >
+                        Salvar
+                    </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

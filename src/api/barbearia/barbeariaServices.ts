@@ -325,7 +325,7 @@ export const getOpeningHours = async (barbeariaId: string) => {
 }
 
 export type DataOpeningHours = {
-    diaSemana: number;
+    diaSemana?: number;
     horaInicio: string;
     horaFim: string;
 }
@@ -342,6 +342,27 @@ export const postOpeningHours = async (barbeariaId: string, data: DataOpeningHou
         return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao criar Horario de funcionamento";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}
+
+export const putOpeningHours = async (barbeariaId: string, horarioId: string, data: DataOpeningHours) => {
+    try {
+        const response = await axiosInstance.put(`/barbearia/${barbeariaId}/horario-funcionamento/${horarioId}`, data);
+        toast.success(response.data.message, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+        return response.data;
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao editar Horario de funcionamento";
         toast.error(errorMessage, {
             action: {
                 label: "Fechar",
