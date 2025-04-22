@@ -15,12 +15,16 @@ import { loadItems } from "@/utils/loadItems"
 import { getServices } from "@/api/barbearia/barbeariaServices"
 import { Services } from "@/types/services"
 import { ItemService } from "./itemService"
+import { Barbeiro } from "@/types/barbeiros"
+import { getBarbeiros } from "@/api/barbeiros/barbeirosServices"
+import { ItemBarbeiro } from "./itemBarbeiro"
 
 export function DialogNovoAgendamento() {
     const { barbearia } = useAuth();
 
     const [date, setDate] = useState<Date>();
     const [services, setServices] = useState<Services[] | null>(null);
+    const [barbeiros, setBarbeiros] = useState<Barbeiro[] | null>(null);
 
     useEffect(() => {
         if (!barbearia) return;
@@ -28,9 +32,17 @@ export function DialogNovoAgendamento() {
             const dados = await getServices(barbearia.id);
             if (dados) {
                 setServices(dados);
-                console.log(dados)
             }
         }
+
+        const carregarBarbeiros = async () => {
+            const dados = await getBarbeiros(barbearia.id);
+            if (dados) {
+                setBarbeiros(dados);
+            }
+        }
+
+        carregarBarbeiros();
         carregarServicos();
     }, [barbearia]);
 
@@ -57,6 +69,21 @@ export function DialogNovoAgendamento() {
                                 ))
                             }
                         </div>
+                    </div>
+
+                    <div>
+                        <h1>Selecione um Barbeiro:</h1>
+                        <div className="flex flex-wrap gap-2 py-2">
+                            {
+                                barbeiros && barbeiros.map((item) => (
+                                    <ItemBarbeiro item={item} />
+                                ))
+                            }
+                        </div>
+                    </div>
+
+                    <div>
+                        <h1>Selecione um Horário:</h1>
                     </div>
 
                 </div>
