@@ -16,9 +16,10 @@ import { useEffect } from "react"
 type Props = {
     date: any;
     setDate: any;
+    setSelectHorario: (value: string) => void
 }
 
-export const CalendarioNovoAgendamento = ({ date, setDate }: Props) => {
+export const CalendarioNovoAgendamento = ({ date, setDate, setSelectHorario }: Props) => {
 
     useEffect(() => {
         if (!date) {
@@ -29,6 +30,7 @@ export const CalendarioNovoAgendamento = ({ date, setDate }: Props) => {
     const handleSelect = (selectedDate: Date | undefined) => {
         if (selectedDate) {
             setDate(format(selectedDate, "yyyy-MM-dd")); // Salva sempre no formato "yyyy-MM-dd"
+            setSelectHorario("");
         }
     };
 

@@ -24,7 +24,7 @@ import { ItemHorario } from "./itemHorario"
 export function DialogNovoAgendamento() {
     const { barbearia } = useAuth();
 
-    const [date, setDate] = useState<Date>();
+    const [date, setDate] = useState<string>("");
     const [services, setServices] = useState<Services[] | null>(null);
     const [barbeiros, setBarbeiros] = useState<Barbeiro[] | null>(null);
     const [horariosDisponiveis, setHorariosDisponiveis] = useState<HorariosDisponiveis[] | null>(null);
@@ -57,14 +57,13 @@ export function DialogNovoAgendamento() {
         if (selectBarbeiro) {
             carregarHorarios();
         }
-    }, [selectBarbeiro]);
+    }, [selectBarbeiro, date]);
 
 
     const carregarHorarios = async () => {
-        const dataAtual = getDataHoje();
         const horaAtual = getHoraAtual();
 
-        const dados = await getHorariosDisponiveis(selectBarbeiro, dataAtual, horaAtual);
+        const dados = await getHorariosDisponiveis(selectBarbeiro, date, horaAtual);
         if (dados) {
             setHorariosDisponiveis(dados);
             console.log(dados);
@@ -72,13 +71,6 @@ export function DialogNovoAgendamento() {
             setHorariosDisponiveis([]);
         }
     };
-
-
-    // Retorna a data de hoje no formato: "2025-04-23"
-    function getDataHoje(): string {
-        const hoje = new Date();
-        return hoje.toISOString().split("T")[0];
-    }
 
     // Retorna a hora atual no formato: "14:59"
     function getHoraAtual(): string {
@@ -129,7 +121,12 @@ export function DialogNovoAgendamento() {
                     </DialogDescription>
                 </DialogHeader>
                 <div>
-                    <CalendarioNovoAgendamento date={date} setDate={setDate} />
+                    <CalendarioNovoAgendamento
+                        date={date}
+                        setDate={setDate}
+                        setSelectHorario={setSelectHorario}
+                    />
+
                     <div className="py-3">
                         <h1>Selecione um Serviço:</h1>
                         <div className="flex flex-wrap gap-2 py-2">
@@ -179,7 +176,7 @@ export function DialogNovoAgendamento() {
 
                 </div>
                 <DialogFooter>
-                    <Button type="submit">Criar</Button>
+                    <Button >Criar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
