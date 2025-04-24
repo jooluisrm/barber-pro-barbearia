@@ -24,3 +24,31 @@ export const editarAgendamento = async (agendamentoId: string, status: "Confirma
         throw error.response?.data?.error || "Erro ao atualizar o agendamento";
     }
 };
+
+export type DataNewAgendamento = {
+    barbeariaId: string;
+    barbeiroId: string;
+    servicoId: string;
+    data: string;
+    hora: string;
+}
+
+export const postAgendamento = async (data: DataNewAgendamento) => {
+    try {
+        const response = await axiosInstance.post(`/barbearia/agendamentos/visitante`, data);
+        toast.success(`O agendamento foi feito com sucesso!.`, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            }
+        });
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao criar novo agendamento!";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}

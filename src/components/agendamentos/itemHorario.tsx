@@ -10,7 +10,7 @@ type Props = {
 export const ItemHorario = ({ item, onClick, isSelected }: Props) => {
     return (
         <Button
-            onClick={() => onClick(item.id)}
+            onClick={() => onClick(item.hora)}
             variant={isSelected ? "default" : "outline"}
             className={isSelected ? "bg-primary text-white dark:text-black" : ""}
         >

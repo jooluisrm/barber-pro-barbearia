@@ -20,6 +20,8 @@ import { getBarbeiros, getHorariosDisponiveis } from "@/api/barbeiros/barbeirosS
 import { ItemBarbeiro } from "./itemBarbeiro"
 import { AlertSelectBarber } from "./alertSelectBarber"
 import { ItemHorario } from "./itemHorario"
+import { DataNewAgendamento, postAgendamento } from "@/api/agendamentos/agendamentoServices"
+import { handleConfetti } from "@/utils/confetti"
 
 export function DialogNovoAgendamento() {
     const { barbearia } = useAuth();
@@ -32,6 +34,8 @@ export function DialogNovoAgendamento() {
     const [selectBarbeiro, setSelectBarbeiro] = useState("");
     const [selectService, setSelectService] = useState("");
     const [selectHorario, setSelectHorario] = useState("");
+
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         if (!barbearia) return;
@@ -107,11 +111,37 @@ export function DialogNovoAgendamento() {
         }
     }
 
+    const handleNewAgendamento = async () => {
+        if (!barbearia || !selectBarbeiro || !selectHorario || !selectService || !date) return;
+        try {
+            const data: DataNewAgendamento = {
+                barbeariaId: barbearia.id,
+                barbeiroId: selectBarbeiro,
+                data: date,
+                hora: selectHorario,
+                servicoId: selectService
+            }
+            await postAgendamento(data);
+            carregarHorarios();
+            setSelectHorario("");
+            setSelectService("");
+            setSelectBarbeiro("");
+            handleConfetti();
+            setOpen(false);
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="default" className="font-bold">Criar Agendamento</Button>
+                <Button
+                    variant="default"
+                    className="font-bold"
+                    onClick={() => setOpen(true)}
+                >Criar Agendamento</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
@@ -121,11 +151,14 @@ export function DialogNovoAgendamento() {
                     </DialogDescription>
                 </DialogHeader>
                 <div>
-                    <CalendarioNovoAgendamento
-                        date={date}
-                        setDate={setDate}
-                        setSelectHorario={setSelectHorario}
-                    />
+                    <div className="py-3">
+                        <h1>Selecione o dia:</h1>
+                        <CalendarioNovoAgendamento
+                            date={date}
+                            setDate={setDate}
+                            setSelectHorario={setSelectHorario}
+                        />
+                    </div>
 
                     <div className="py-3">
                         <h1>Selecione um Serviço:</h1>
@@ -167,7 +200,7 @@ export function DialogNovoAgendamento() {
                                     key={item.id}
                                     item={item}
                                     onClick={handleHorarioService}
-                                    isSelected={selectHorario === item.id}
+                                    isSelected={selectHorario === item.hora}
                                 />
                             ))}
                             {selectBarbeiro && horariosDisponiveis && horariosDisponiveis.length === 0 && <p className="dark:text-gray-400 text-gray-500">Sem horário disponível</p>}
@@ -176,7 +209,10 @@ export function DialogNovoAgendamento() {
 
                 </div>
                 <DialogFooter>
-                    <Button >Criar</Button>
+                    <Button
+                        onClick={handleNewAgendamento}
+                        disabled={!selectBarbeiro || !selectHorario || !selectService || !date}
+                    >Criar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
