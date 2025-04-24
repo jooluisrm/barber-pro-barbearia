@@ -15,9 +15,11 @@ import { loadItems } from "@/utils/loadItems"
 import { getServices } from "@/api/barbearia/barbeariaServices"
 import { Services } from "@/types/services"
 import { ItemService } from "./itemService"
-import { Barbeiro } from "@/types/barbeiros"
-import { getBarbeiros } from "@/api/barbeiros/barbeirosServices"
+import { Barbeiro, HorariosDeTrabalho, HorariosDisponiveis } from "@/types/barbeiros"
+import { getBarbeiros, getHorariosDisponiveis } from "@/api/barbeiros/barbeirosServices"
 import { ItemBarbeiro } from "./itemBarbeiro"
+import { AlertSelectBarber } from "./alertSelectBarber"
+import { ItemHorario } from "./itemHorario"
 
 export function DialogNovoAgendamento() {
     const { barbearia } = useAuth();
@@ -25,6 +27,9 @@ export function DialogNovoAgendamento() {
     const [date, setDate] = useState<Date>();
     const [services, setServices] = useState<Services[] | null>(null);
     const [barbeiros, setBarbeiros] = useState<Barbeiro[] | null>(null);
+    const [horariosDisponiveis, setHorariosDisponiveis] = useState<HorariosDisponiveis[] | null>(null);
+
+    const [selectBarbeiro, setSelectBarbeiro] = useState("");
 
     useEffect(() => {
         if (!barbearia) return;
@@ -46,6 +51,52 @@ export function DialogNovoAgendamento() {
         carregarServicos();
     }, [barbearia]);
 
+    useEffect(() => {
+        if (selectBarbeiro) {
+            carregarHorarios();
+        }
+    }, [selectBarbeiro]);
+
+
+    const carregarHorarios = async () => {
+        const dataAtual = getDataHoje();
+        const horaAtual = getHoraAtual();
+
+        const dados = await getHorariosDisponiveis(selectBarbeiro, dataAtual, horaAtual);
+        if (dados) {
+            setHorariosDisponiveis(dados);
+            console.log(dados);
+        } else {
+            setHorariosDisponiveis([]);
+        }
+    };
+
+
+    // Retorna a data de hoje no formato: "2025-04-23"
+    function getDataHoje(): string {
+        const hoje = new Date();
+        return hoje.toISOString().split("T")[0];
+    }
+
+    // Retorna a hora atual no formato: "14:59"
+    function getHoraAtual(): string {
+        const agora = new Date();
+        const horas = agora.getHours().toString().padStart(2, '0');
+        const minutos = agora.getMinutes().toString().padStart(2, '0');
+        return `${horas}:${minutos}`;
+    }
+
+
+    const handleSelectBarbeiro = (value: string) => {
+        if (value === selectBarbeiro) {
+            setSelectBarbeiro("");
+            setHorariosDisponiveis([]); // limpa os horários quando deselecionar
+        } else {
+            setSelectBarbeiro(value);
+        }
+    };
+
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -65,7 +116,7 @@ export function DialogNovoAgendamento() {
                         <div className="flex flex-wrap gap-2 py-2">
                             {
                                 services && services.map((item) => (
-                                    <ItemService item={item} />
+                                    <ItemService key={item.id} item={item} />
                                 ))
                             }
                         </div>
@@ -74,16 +125,27 @@ export function DialogNovoAgendamento() {
                     <div>
                         <h1>Selecione um Barbeiro:</h1>
                         <div className="flex flex-wrap gap-2 py-2">
-                            {
-                                barbeiros && barbeiros.map((item) => (
-                                    <ItemBarbeiro item={item} />
-                                ))
-                            }
+                            {barbeiros && barbeiros.map((item) => (
+                                <ItemBarbeiro
+                                    key={item.id}
+                                    item={item}
+                                    onClick={handleSelectBarbeiro}
+                                    isSelected={selectBarbeiro === item.id}
+                                />
+                            ))}
                         </div>
                     </div>
 
                     <div>
                         <h1>Selecione um Horário:</h1>
+                        <div className="flex flex-wrap gap-2 py-2">
+                            {!selectBarbeiro && <AlertSelectBarber />}
+                            {selectBarbeiro && horariosDisponiveis === null && <p className="dark:text-gray-400 text-gray-500">Carregando horários...</p>}
+                            {selectBarbeiro && horariosDisponiveis && horariosDisponiveis.length > 0 && horariosDisponiveis.map((item) => (
+                                <ItemHorario key={item.id} item={item} />
+                            ))}
+                            {selectBarbeiro && horariosDisponiveis && horariosDisponiveis.length === 0 && <p className="dark:text-gray-400 text-gray-500">Sem horário disponível</p>}
+                        </div>
                     </div>
 
                 </div>

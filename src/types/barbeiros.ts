@@ -14,3 +14,8 @@ export type HorariosDeTrabalho = {
     diaSemana: number;
     hora: string;
 }
+
+export type HorariosDisponiveis = {
+    id: string;
+    hora: string;
+}
