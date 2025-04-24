@@ -3,11 +3,17 @@ import { Button } from "../ui/button";
 
 type Props = {
     item: HorariosDisponiveis;
+    onClick: (id: string) => void;
+    isSelected: boolean;
 }
 
-export const ItemHorario = ({ item }: Props) => {
+export const ItemHorario = ({ item, onClick, isSelected }: Props) => {
     return (
-        <Button variant={"outline"}>
+        <Button
+            onClick={() => onClick(item.id)}
+            variant={isSelected ? "default" : "outline"}
+            className={isSelected ? "bg-primary text-white dark:text-black" : ""}
+        >
             {item.hora}
         </Button>
     );

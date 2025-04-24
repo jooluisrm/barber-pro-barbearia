@@ -30,6 +30,8 @@ export function DialogNovoAgendamento() {
     const [horariosDisponiveis, setHorariosDisponiveis] = useState<HorariosDisponiveis[] | null>(null);
 
     const [selectBarbeiro, setSelectBarbeiro] = useState("");
+    const [selectService, setSelectService] = useState("");
+    const [selectHorario, setSelectHorario] = useState("");
 
     useEffect(() => {
         if (!barbearia) return;
@@ -93,8 +95,25 @@ export function DialogNovoAgendamento() {
             setHorariosDisponiveis([]); // limpa os horários quando deselecionar
         } else {
             setSelectBarbeiro(value);
+            setSelectHorario("");
         }
     };
+
+    const handleSelectService = (value: string) => {
+        if (value === selectService) {
+            setSelectService("");
+        } else {
+            setSelectService(value);
+        }
+    };
+
+    const handleHorarioService = (value: string) => {
+        if (value === selectHorario) {
+            setSelectHorario("");
+        } else {
+            setSelectHorario(value);
+        }
+    }
 
 
     return (
@@ -116,7 +135,12 @@ export function DialogNovoAgendamento() {
                         <div className="flex flex-wrap gap-2 py-2">
                             {
                                 services && services.map((item) => (
-                                    <ItemService key={item.id} item={item} />
+                                    <ItemService
+                                        key={item.id}
+                                        item={item}
+                                        onClick={handleSelectService}
+                                        isSelected={selectService === item.id}
+                                    />
                                 ))
                             }
                         </div>
@@ -142,7 +166,12 @@ export function DialogNovoAgendamento() {
                             {!selectBarbeiro && <AlertSelectBarber />}
                             {selectBarbeiro && horariosDisponiveis === null && <p className="dark:text-gray-400 text-gray-500">Carregando horários...</p>}
                             {selectBarbeiro && horariosDisponiveis && horariosDisponiveis.length > 0 && horariosDisponiveis.map((item) => (
-                                <ItemHorario key={item.id} item={item} />
+                                <ItemHorario
+                                    key={item.id}
+                                    item={item}
+                                    onClick={handleHorarioService}
+                                    isSelected={selectHorario === item.id}
+                                />
                             ))}
                             {selectBarbeiro && horariosDisponiveis && horariosDisponiveis.length === 0 && <p className="dark:text-gray-400 text-gray-500">Sem horário disponível</p>}
                         </div>
