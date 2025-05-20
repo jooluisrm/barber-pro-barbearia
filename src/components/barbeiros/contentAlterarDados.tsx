@@ -13,8 +13,11 @@ import { AlertDeletar } from "./alertDeletar";
 import { Button } from "../ui/button";
 import { Barbeiro } from "@/types/barbeiros";
 import { useState } from "react";
-import { editBarbeiro } from "@/api/barbeiros/barbeirosServices";
+import { editBarbeiro, getBarbeiros } from "@/api/barbeiros/barbeirosServices";
 import { Clock } from "lucide-react";
+import { loadItems } from "@/utils/loadItems";
+import { useAuth } from "@/contexts/AuthContext";
+import { useBarberContext } from "@/contexts/BarberContext";
 
 
 type Props = {
@@ -24,15 +27,18 @@ type Props = {
 }
 
 export const ContentAlterarDados = ({ barbeiro, nextPage, setOpen }: Props) => {
+    const { barbearia } = useAuth();
+    const { setBarbeiros } = useBarberContext();
 
     const [inputNome, setInputNome] = useState(barbeiro.nome);
     const [inputEmail, setInputEmail] = useState(barbeiro.email);
     const [inputTelefone, setInputTelefone] = useState(barbeiro.telefone);
 
     const handleEdit = async () => {
-        const done = await editBarbeiro(barbeiro.id, {nome: inputNome, email: inputEmail, telefone: inputTelefone});
-        if(done) {
+        const done = await editBarbeiro(barbeiro.id, { nome: inputNome, email: inputEmail, telefone: inputTelefone });
+        if (done) {
             setOpen(false);
+            await loadItems(barbearia, getBarbeiros, setBarbeiros);
         }
     }
 

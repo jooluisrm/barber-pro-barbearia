@@ -11,36 +11,43 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "../ui/button";
 import { Barbeiro } from "@/types/barbeiros";
-import { deleteBarbeiro } from "@/api/barbeiros/barbeirosServices";
+import { deleteBarbeiro, getBarbeiros } from "@/api/barbeiros/barbeirosServices";
 import { useEffect, useState } from "react";
+import { loadItems } from "@/utils/loadItems";
+import { useAuth } from "@/contexts/AuthContext";
+import { useBarberContext } from "@/contexts/BarberContext";
 
 type Props = {
     barbeiro: Barbeiro;
 }
 
 export const AlertDeletar = ({ barbeiro }: Props) => {
+    const { barbearia } = useAuth();
+    const { setBarbeiros } = useBarberContext();
+
     const [desabilitar, setDesabilitar] = useState(true);
     const [cont, setCont] = useState(5);
     const [click, setClick] = useState(false);
 
-    const handleDeleteBarbeiro = () => {
-        deleteBarbeiro(barbeiro.id);
+    const handleDeleteBarbeiro = async () => {
+        await deleteBarbeiro(barbeiro.id);
+        await loadItems(barbearia, getBarbeiros, setBarbeiros);
     }
 
     useEffect(() => {
-        if(!click) return;
+        if (!click) return;
         const timer = setInterval(() => {
             setCont((prev) => {
                 if (prev <= 1) {
-                    clearInterval(timer); 
-                    setDesabilitar(false); 
+                    clearInterval(timer);
+                    setDesabilitar(false);
                     return 0;
                 }
-                return prev - 1; 
+                return prev - 1;
             });
         }, 1000);
 
-        return () => clearInterval(timer); 
+        return () => clearInterval(timer);
     }, [click]);
 
     return (

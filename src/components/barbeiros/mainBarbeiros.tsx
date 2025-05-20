@@ -9,21 +9,16 @@ import { getBarbeiros } from "@/api/barbeiros/barbeirosServices";
 import { useAuth } from "@/contexts/AuthContext";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { DialogAddBarbeiro } from "./dialogAddBarbeiro";
+import { useBarberContext } from "@/contexts/BarberContext";
+import { loadItems } from "@/utils/loadItems";
 
 export const MainBarbeiros = () => {
     const { barbearia } = useAuth();
+    const { setBarbeiros } = useBarberContext();
 
-    const [barbeiros, setBarbeiros] = useState<Barbeiro[] | null>(null);
-
-    const carregarBarbeiros = async () => {
-        if(!barbearia) return; 
-        const dados = await getBarbeiros(barbearia.id);
-        setBarbeiros(dados);
-    }
-    
     useEffect(() => {
         if (barbearia) {
-            carregarBarbeiros();
+            loadItems(barbearia, getBarbeiros, setBarbeiros);
         }
     }, [barbearia]);
 
@@ -44,7 +39,7 @@ export const MainBarbeiros = () => {
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <DialogAddBarbeiro carregarBarbeiros={carregarBarbeiros}/>
+                                <DialogAddBarbeiro />
                             </TooltipTrigger>
                             <TooltipContent>
                                 Criar Barbeiro
@@ -54,7 +49,7 @@ export const MainBarbeiros = () => {
                 </div>
 
                 <div>
-                    <TableBarbeiros barbeiros={barbeiros} />
+                    <TableBarbeiros />
                 </div>
             </div>
         </main>

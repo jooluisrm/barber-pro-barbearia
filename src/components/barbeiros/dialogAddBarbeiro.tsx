@@ -11,16 +11,15 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useState } from "react";
 import { ocultarMostrarSenha } from "@/utils/ocultarMostrarSenha";
-import { RegisterBarbeiro, registerBarbeiro } from "@/api/barbeiros/barbeirosServices";
+import { getBarbeiros, RegisterBarbeiro, registerBarbeiro } from "@/api/barbeiros/barbeirosServices";
 import { useAuth } from "@/contexts/AuthContext";
 import { handleConfetti } from "@/utils/confetti";
+import { useBarberContext } from "@/contexts/BarberContext";
+import { loadItems } from "@/utils/loadItems";
 
-type Props = {
-    carregarBarbeiros: () => void;
-}
 
-export const DialogAddBarbeiro = ({ carregarBarbeiros }: Props) => {
-
+export const DialogAddBarbeiro = () => {
+    const { setBarbeiros } = useBarberContext();
     const { barbearia } = useAuth();
 
     const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +41,7 @@ export const DialogAddBarbeiro = ({ carregarBarbeiros }: Props) => {
             barbeariaId: barbearia?.id
         }
         const sucesso = await registerBarbeiro(data);
-        carregarBarbeiros();
+        await loadItems(barbearia, getBarbeiros, setBarbeiros);
 
         if (sucesso) {
             handleConfetti();
