@@ -41,7 +41,7 @@ export const MainAgendamentos = () => {
 
         carregarBarbeiros();
         carregarAgendamentos();
-    }, [barbearia, barbeiros, date]);
+    }, [barbearia, date]);
 
     const handleSelectStatus = (value: string) => {
         if (value) {
