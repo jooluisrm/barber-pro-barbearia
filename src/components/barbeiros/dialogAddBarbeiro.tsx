@@ -15,7 +15,11 @@ import { RegisterBarbeiro, registerBarbeiro } from "@/api/barbeiros/barbeirosSer
 import { useAuth } from "@/contexts/AuthContext";
 import { handleConfetti } from "@/utils/confetti";
 
-export const DialogAddBarbeiro = () => {
+type Props = {
+    carregarBarbeiros: () => void;
+}
+
+export const DialogAddBarbeiro = ({ carregarBarbeiros }: Props) => {
 
     const { barbearia } = useAuth();
 
@@ -38,6 +42,7 @@ export const DialogAddBarbeiro = () => {
             barbeariaId: barbearia?.id
         }
         const sucesso = await registerBarbeiro(data);
+        carregarBarbeiros();
 
         if (sucesso) {
             handleConfetti();

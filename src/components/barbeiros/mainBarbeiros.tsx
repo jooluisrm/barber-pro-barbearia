@@ -15,15 +15,17 @@ export const MainBarbeiros = () => {
 
     const [barbeiros, setBarbeiros] = useState<Barbeiro[] | null>(null);
 
+    const carregarBarbeiros = async () => {
+        if(!barbearia) return; 
+        const dados = await getBarbeiros(barbearia.id);
+        setBarbeiros(dados);
+    }
+    
     useEffect(() => {
         if (barbearia) {
-            const carregarBarbeiros = async () => {
-                const dados = await getBarbeiros(barbearia.id);
-                setBarbeiros(dados);
-            }
             carregarBarbeiros();
         }
-    }, [barbearia, barbeiros]);
+    }, [barbearia]);
 
     return (
         <main>
@@ -42,7 +44,7 @@ export const MainBarbeiros = () => {
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <DialogAddBarbeiro />
+                                <DialogAddBarbeiro carregarBarbeiros={carregarBarbeiros}/>
                             </TooltipTrigger>
                             <TooltipContent>
                                 Criar Barbeiro
