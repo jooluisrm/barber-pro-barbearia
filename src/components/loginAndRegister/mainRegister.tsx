@@ -8,123 +8,188 @@ import { TitlePage } from "./titlePage";
 import { ocultarMostrarSenha } from "@/utils/ocultarMostrarSenha";
 import Link from "next/link";
 import { toast } from "sonner";
-import { registerUser } from "@/api/auth/authService";
+import { loginUser, registerUser } from "@/api/auth/authService";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { useForm } from "react-hook-form";
+import { useAuth } from "@/contexts/AuthContext";
+
+const formSchema = z.object({
+    nome: z.string().min(1, 'Nome é obrigatório'),
+    email: z.string().email('E-mail inválido!'),
+    senha: z.string().min(6, 'Precisa ter no mínimo 6 caracteres!'),
+    celular: z.string().min(8, 'Celular inválido'),
+    telefone: z.string().optional(),
+    endereco: z.string().min(1, 'Endereço é obrigatório'),
+    latitude: z.string().min(1, 'Latitude é obrigatória'),
+    longitude: z.string().min(1, 'Longitude é obrigatória'),
+});
 
 export const MainRegister = () => {
-
+    const { login, barbearia } = useAuth();
     const [mostrarSenha, setMostrarSenha] = useState(false);
 
-    const [inputEmail, setInputEmail] = useState("");
-    const [inputSenha, setInputSenha] = useState("");
-    const [inputCelular, setInputCelular] = useState("");
-    const [inputTelefone, setInputTelefone] = useState("");
-    const [inputNome, setInputNome] = useState("");
-    const [inputEndereco, setInputEndereco] = useState("");
-    const [inputLatitude, setInputLatitude] = useState("");
-    const [inputLongitude, setInputLongitude] = useState("");
-    
-    const fazerRegistro = async (nome: string, email: string, senha: string, celular: string, telefone: string, endereco: string, latitude: string, longitude: string) => {
-        try {
-            await registerUser({nome, email, senha, celular, telefone, endereco, latitude, longitude});
-        } catch (error) {
-            console.log("Erro!");
-        }
-    }
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+        defaultValues: { email: "", senha: "", celular: "", endereco: "", latitude: "", longitude: "", nome: "", telefone: "" },
+    });
 
-    return (
-        <main className="min-w-[450px] mt-20 flex flex-col items-center">
-            <TitlePage title="BarberPro" subtitle="Registre sua barbearia" />
-            <form className="grid grid-cols-1 md:grid-cols-2 gap-10 md:min-w-[700px] mb-5">
-                <div className="flex flex-col gap-3">
-                    <h1 className="text-lg font-bold">Dados Pessoais:</h1>
-                    <div>
-                        <label htmlFor="email">E-mail:</label>
-                        <Input
-                            id="email"
-                            placeholder="Digite seu email"
-                            value={inputEmail}
-                            onChange={(e) => setInputEmail(e.target.value)}
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        const { nome, email, senha, celular, telefone, endereco, latitude, longitude } = values;
+        try {
+            console.log(values)
+            await registerUser({ nome, email, senha, celular, telefone, endereco, latitude, longitude });
+            const userData = await loginUser({ email, senha });
+            await login(userData);
+    } catch (error: any) {
+        console.log(error);
+    }
+}
+
+return (
+    <main className="min-w-[450px] mt-20 flex flex-col items-center">
+        <TitlePage title="BarberPro" subtitle="Registre sua barbearia" />
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:min-w-[700px] mb-5">
+                    <div className="flex flex-col gap-3">
+                        <h1 className="text-lg font-bold">Dados Pessoais:</h1>
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>E-mail:</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Digite seu email..." {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="senha"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Senha:</FormLabel>
+                                    <FormControl>
+                                        <div className="relative flex items-center">
+                                            <Input
+                                                id="senha"
+                                                type={`${mostrarSenha ? "text" : "password"}`}
+                                                placeholder="Digite sua senha..."
+                                                className="flex-1 pr-10"
+                                                {...field}
+                                            />
+                                            <div className="absolute right-3 cursor-pointer" onClick={() => ocultarMostrarSenha(setMostrarSenha, mostrarSenha)}>
+                                                {!mostrarSenha ? <EyeClosed /> : <Eye />}
+                                            </div>
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="celular"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Celular:</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Digite seu celular..." {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="telefone"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Telefone:</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Digite seu telefone..." {...field} />
+                                    </FormControl>
+                                    <FormDescription>
+                                        Opcional
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
                     </div>
-                    <div>
-                        <label htmlFor="senha">Senha:</label>
-                        <div className="relative flex items-center">
-                            <Input
-                                id="senha"
-                                type={`${mostrarSenha ? "text" : "password"}`}
-                                placeholder="Digite sua senha"
-                                className="flex-1 pr-10"
-                                value={inputSenha}
-                                onChange={(e) => setInputSenha(e.target.value)}
-                            />
-                            <div className="absolute right-3" onClick={() => ocultarMostrarSenha(setMostrarSenha, mostrarSenha)}>
-                                {!mostrarSenha ? <EyeClosed /> : <Eye />}
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <label htmlFor="celular">Celular:</label>
-                        <Input
-                            id="celular"
-                            placeholder="Digite seu celular"
-                            value={inputCelular}
-                            onChange={(e) => setInputCelular(e.target.value)}
+                    <div className="flex flex-col gap-3">
+                        <h1 className="text-lg font-bold">Dados da Barbearia:</h1>
+
+                        <FormField
+                            control={form.control}
+                            name="nome"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Nome da Barbearia:</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Digite o nome da sua Barbearia" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
-                    </div>
-                    <div>
-                        <label htmlFor="telefone">Telefone:</label>
-                        <Input
-                            id="telefone"
-                            placeholder="Digite seu telefone (Opcional)"
-                            value={inputTelefone}
-                            onChange={(e) => setInputTelefone(e.target.value)}
+                        <FormField
+                            control={form.control}
+                            name="endereco"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Endereço da Barbearia:</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="ex: Rua Brasil, Centro, 999" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="latitude"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Latitude:</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Digite a latitude..." {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="longitude"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Lontitude:</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Digite a lontitude..." {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
                     </div>
                 </div>
-                <div className="flex flex-col gap-3">
-                    <h1 className="text-lg font-bold">Dados da Barbearia:</h1>
-                    <div>
-                        <label htmlFor="nomeBarbearia">Nome da Barbearia:</label>
-                        <Input
-                            id="nomeBarbearia"
-                            placeholder="Digite o nome da sua barbearia"
-                            value={inputNome}
-                            onChange={(e) => setInputNome(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="endereco">Endereço da Barbearia:</label>
-                        <Input
-                            id="endereco"
-                            placeholder="ex: Rua Brasil, Centro, 999"
-                            value={inputEndereco}
-                            onChange={(e) => setInputEndereco(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="latitude">Latitude:</label>
-                        <Input
-                            id="latitude"
-                            placeholder="Digite a Latitude"
-                            value={inputLatitude}
-                            onChange={(e) => setInputLatitude(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="lontitude">Lontitude:</label>
-                        <Input
-                            id="lontitude"
-                            placeholder="Digite a Lontitude"
-                            value={inputLongitude}
-                            onChange={(e) => setInputLongitude(e.target.value)}
-                        />
-                    </div>
+                <div className="min-w-full flex justify-center ">
+                    <Button type="submit" className="font-bold  md:w-[200px] lg:w-[300px] xl:w-[400px]">Criar Barbearia</Button>
                 </div>
             </form>
-            <Button onClick={() => fazerRegistro(inputNome, inputEmail, inputSenha, inputCelular, inputTelefone, inputEndereco, inputLatitude, inputLongitude)} className="font-bold mt-5 min-w-[246px] md:w-full">Criar Barbearia</Button>
-            <div className="text-sm dark:text-gray-400 text-gray-600 mb-10 mt-2">
-                Já tem uma conta?  <Link href={"/login"}><span className="font-bold text-blue-500 cursor-pointer">Faça seu login.</span></Link>
-            </div>
-        </main>
-    );
+        </Form>
+        <div className="text-sm dark:text-gray-400 text-gray-600 mb-10 mt-2">
+            Já tem uma conta?  <Link href={"/login"}><span className="font-bold text-blue-500 cursor-pointer">Faça seu login.</span></Link>
+        </div>
+    </main>
+);
 }

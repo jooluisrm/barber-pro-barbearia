@@ -7,7 +7,7 @@ export interface RegisterData {
     email: string;
     senha: string;
     celular: string;
-    telefone: string;
+    telefone?: string;
     endereco: string;
     latitude: string;
     longitude: string;
