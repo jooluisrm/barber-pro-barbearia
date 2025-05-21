@@ -13,13 +13,26 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { useForm } from "react-hook-form";
 import { useAuth } from "@/contexts/AuthContext";
+import InputMask from 'react-input-mask'
 
 const formSchema = z.object({
     nome: z.string().min(1, 'Nome é obrigatório'),
     email: z.string().email('E-mail inválido!'),
     senha: z.string().min(6, 'Precisa ter no mínimo 6 caracteres!'),
-    celular: z.string().min(8, 'Celular inválido'),
-    telefone: z.string().optional(),
+    celular: z
+        .string()
+        .regex(/^\(\d{2}\) \d{5}-\d{4}$/, {
+            message: 'Celular inválido (ex: (11) 91234-5678)',
+        }),
+    telefone: z
+        .string()
+        .optional()
+        .refine(
+            (val) => !val || /^\(\d{2}\) \d{4}-\d{4}$/.test(val),
+            {
+                message: 'Telefone inválido (ex: (11) 3123-4567)',
+            }
+        ),
     endereco: z.string().min(1, 'Endereço é obrigatório'),
     latitude: z.string().min(1, 'Latitude é obrigatória'),
     longitude: z.string().min(1, 'Longitude é obrigatória'),
@@ -37,19 +50,20 @@ export const MainRegister = () => {
     });
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        setLoading(true)
+        setLoading(true);
         const { nome, email, senha, celular, telefone, endereco, latitude, longitude } = values;
+
         try {
-            console.log(values)
+            console.log('Valores enviados:', values); // celular e telefone já vêm limpos
             await registerUser({ nome, email, senha, celular, telefone, endereco, latitude, longitude });
             const userData = await loginUser({ email, senha });
             await login(userData);
-            setLoading(false);
         } catch (error: any) {
             console.log(error);
+        } finally {
             setLoading(false);
         }
-    }
+    };
 
     return (
         <main className="min-w-[450px] mt-20 flex flex-col items-center">
@@ -105,7 +119,20 @@ export const MainRegister = () => {
                                     <FormItem>
                                         <FormLabel>Celular:</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Digite seu celular..." {...field} />
+                                            <InputMask
+                                                mask="(99) 99999-9999"
+                                                value={field.value}
+                                                onChange={field.onChange}
+                                                onBlur={field.onBlur}
+                                            >
+                                                {(inputProps: any) => (
+                                                    <Input
+                                                        {...inputProps}
+                                                        inputRef={field.ref} // ESSENCIAL: envia ref correta ao RHF
+                                                        placeholder="Digite seu celular..."
+                                                    />
+                                                )}
+                                            </InputMask>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -119,11 +146,22 @@ export const MainRegister = () => {
                                     <FormItem>
                                         <FormLabel>Telefone:</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Digite seu telefone..." {...field} />
+                                            <InputMask
+                                                mask="(99) 9999-9999"
+                                                value={field.value}
+                                                onChange={field.onChange}
+                                                onBlur={field.onBlur}
+                                            >
+                                                {(inputProps: any) => (
+                                                    <Input
+                                                        {...inputProps}
+                                                        inputRef={field.ref} // ESSENCIAL: envia ref correta ao RHF
+                                                        placeholder="Digite seu telefone..."
+                                                    />
+                                                )}
+                                            </InputMask>
                                         </FormControl>
-                                        <FormDescription>
-                                            Opcional
-                                        </FormDescription>
+                                        <FormDescription>Opcional</FormDescription>
                                         <FormMessage />
                                     </FormItem>
                                 )}
