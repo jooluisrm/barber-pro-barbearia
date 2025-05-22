@@ -18,6 +18,7 @@ import { useOpeningHoursContext } from "@/contexts/OpeningHoursContext"
 import { DataOpeningHours, deleteOpeningHours, getOpeningHours, putOpeningHours } from "@/api/barbearia/barbeariaServices"
 import { loadItems } from "@/utils/loadItems"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { ButtonTrash } from "@/components/reultilizar/buttonTrash"
 
 type Props = {
     itemOpeningHours: OpeningHours;
@@ -94,9 +95,7 @@ export const DialogEditOpeningHours = ({ itemOpeningHours }: Props) => {
                     </div>
                 </div>
                 <DialogFooter className="gap-3">
-                    <Button variant={"destructive"} onClick={handleDeleteOpeningHours}>
-                        <Trash />
-                    </Button>
+                    <ButtonTrash deleteFunction={handleDeleteOpeningHours}/>
                     <Button
                         onClick={handleEditOpeningHours}
                         disabled={selectHourEndValue === itemOpeningHours.horaFim && selectHourInitValue === itemOpeningHours.horaInicio}

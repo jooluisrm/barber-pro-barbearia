@@ -16,6 +16,7 @@ import { deletePayment, getPayment } from "@/api/barbearia/barbeariaServices"
 import { loadItems } from "@/utils/loadItems"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { useState } from "react"
+import { ButtonTrash } from "@/components/reultilizar/buttonTrash"
 
 type Props = {
     itemPayment: Payment;
@@ -64,9 +65,7 @@ export const DialogEditPaymentMethod = ({ itemPayment }: Props) => {
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="gap-3">
-                    <Button variant={"destructive"} onClick={handleDeletePayment}>
-                        <Trash />
-                    </Button>
+                    <ButtonTrash deleteFunction={handleDeletePayment}/>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

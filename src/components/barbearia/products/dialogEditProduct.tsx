@@ -17,6 +17,7 @@ import { loadItems } from "@/utils/loadItems"
 import { EditIcon, Scissors, Trash } from "lucide-react"
 import { useState } from "react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { ButtonTrash } from "@/components/reultilizar/buttonTrash"
 
 type Props = {
     itemProduct: Products;
@@ -130,9 +131,7 @@ export const DialogEditProduct = ({ itemProduct }: Props) => {
                     </div>
                 </div>
                 <DialogFooter className="gap-3">
-                    <Button variant={"destructive"} onClick={handleDeleteProduct}>
-                        <Trash />
-                    </Button>
+                    <ButtonTrash deleteFunction={handleDeleteProduct}/>
                     <Button onClick={handleEditProduct} >Salvar</Button>
                 </DialogFooter>
             </DialogContent>

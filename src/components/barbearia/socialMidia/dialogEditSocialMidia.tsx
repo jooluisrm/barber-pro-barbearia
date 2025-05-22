@@ -17,6 +17,7 @@ import { loadItems } from "@/utils/loadItems"
 import { EditIcon, Scissors, Trash } from "lucide-react"
 import { useState } from "react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { ButtonTrash } from "@/components/reultilizar/buttonTrash"
 
 type Props = {
     itemSocialMedia: SocialMedia;
@@ -95,9 +96,7 @@ export const DialogEditSocialMidia = ({ itemSocialMedia }: Props) => {
                     </div>
                 </div>
                 <DialogFooter className="gap-3">
-                    <Button variant={"destructive"} onClick={handleDeleteSocialMedia}>
-                        <Trash />
-                    </Button>
+                    <ButtonTrash deleteFunction={handleDeleteSocialMedia}/>
                     <Button onClick={handleEditSocialMedia}>Salvar</Button>
                 </DialogFooter>
             </DialogContent>

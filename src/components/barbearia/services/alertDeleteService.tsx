@@ -38,8 +38,8 @@ export const AlertDeleteService = ({ itemService }: Props) => {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="destructive" size="sm">
-                    <Trash className="h-4 w-4" />
+                <Button variant="destructive">
+                    <Trash />
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
