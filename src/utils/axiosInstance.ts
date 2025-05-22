@@ -2,7 +2,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import axios from 'axios';
 
 // Defina a URL base da sua API
-const BASE_URL = 'http://localhost:3006'; // Atualize para o seu endpoint de produção
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL; // Atualize para o seu endpoint de produção// Atualize para o seu endpoint de produção
 
 // Crie a instância do axios
 const axiosInstance = axios.create({
