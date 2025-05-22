@@ -156,7 +156,7 @@ export const DialogAddBarbeiro = () => {
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit" className="mt-5 font-bold">Submit</Button>
+                            <Button type="submit" className="mt-5 font-bold">Cadastrar</Button>
                         </form>
                     </Form>
                 </main>

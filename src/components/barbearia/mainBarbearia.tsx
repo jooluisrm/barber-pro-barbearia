@@ -13,7 +13,7 @@ import { OpeningHoursContextProvider } from "@/contexts/OpeningHoursContext";
 
 export const MainBarbearia = () => {
     return (
-        <main>
+        <main className="pb-10">
             <div className="pb-6 pt-5 text-center sm:text-left">
                 <h1 className="text-2xl sm:text-3xl font-semibold">
                     Painel da <span className="text-blue-500">Barbearia</span>

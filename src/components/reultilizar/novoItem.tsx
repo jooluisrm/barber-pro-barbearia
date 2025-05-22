@@ -16,7 +16,7 @@ export const NovoItem = ({ onCLick }: Props) => {
         <TooltipProvider>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <Button onClick={() => onCLick(true)}>
+                    <Button onClick={() => onCLick(true)} variant={"default"}>
                         <Plus />
                     </Button>
                 </TooltipTrigger>
