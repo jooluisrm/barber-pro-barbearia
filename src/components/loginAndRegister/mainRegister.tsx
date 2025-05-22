@@ -54,7 +54,6 @@ export const MainRegister = () => {
         const { nome, email, senha, celular, telefone, endereco, latitude, longitude } = values;
 
         try {
-            console.log('Valores enviados:', values); // celular e telefone já vêm limpos
             await registerUser({ nome, email, senha, celular, telefone, endereco, latitude, longitude });
             const userData = await loginUser({ email, senha });
             await login(userData);
