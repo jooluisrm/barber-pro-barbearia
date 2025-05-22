@@ -15,15 +15,20 @@ import { formatarData, formatarPreco } from "@/utils/formatarValores"
 import { EditIcon } from "lucide-react"
 import { SelectStatus } from "./selectStatus"
 import { useState } from "react"
-import { editarAgendamento } from "@/api/agendamentos/agendamentoServices"
+import { editarAgendamento, getAgendamentos } from "@/api/agendamentos/agendamentoServices"
 import { toast } from "sonner"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { loadItems } from "@/utils/loadItems"
+import { useScheduleContext } from "@/contexts/scheduleContext"
+import { useAuth } from "@/contexts/AuthContext"
 
 type Props = {
     agendamentoSelecionado: Agendamentos;
 }
 
 export function DialogEdit({ agendamentoSelecionado }: Props) {
+    const { barbearia } = useAuth();
+    const { setAgendamentos } = useScheduleContext();
 
     const [statusSelecionado, setStatusSelecionado] = useState(agendamentoSelecionado.status);
 
@@ -38,6 +43,7 @@ export function DialogEdit({ agendamentoSelecionado }: Props) {
             try {
                 const done = await editarAgendamento(agendamentoId, novoStatus);
                 if(done) {
+                    await loadItems(barbearia, getAgendamentos, setAgendamentos);
                     setOpen(false);
                 }
             } catch (error: any) {

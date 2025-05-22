@@ -1,9 +1,12 @@
 import { MainAgendamentos } from "@/components/agendamentos/mainAgendamentos";
+import { ScheduleContextProvider } from "@/contexts/scheduleContext";
 
 const Agendamentos = () => {
     return (
         <section className="sm:ml-14 p-4 min-h-screen">
-            <MainAgendamentos />
+            <ScheduleContextProvider>
+                <MainAgendamentos />
+            </ScheduleContextProvider>
         </section>
     );
 }

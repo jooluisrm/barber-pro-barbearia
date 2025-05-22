@@ -12,11 +12,13 @@ import { getBarbeiros } from "@/api/barbeiros/barbeirosServices";
 import { Barbeiro } from "@/types/barbeiros";
 import { Button } from "../ui/button";
 import { DialogNovoAgendamento } from "./dialogNovoAgendamento";
+import { loadItems } from "@/utils/loadItems";
+import { useScheduleContext } from "@/contexts/scheduleContext";
 
 export const MainAgendamentos = () => {
     const { barbearia } = useAuth();
+    const { setAgendamentos, agendamentos } = useScheduleContext();
 
-    const [agendamentos, setAgendamentos] = useState<Agendamentos[] | null>(null);
     const [barbeiros, setBarbeiros] = useState<Barbeiro[] | null>(null);
     const [agendamentosFiltrados, setAgendamentosFiltrados] = useState<Agendamentos[] | null>(null);
     const [filtroSelecionadoStatus, setFiltroSelecionadoStatus] = useState("confirmado");
@@ -24,14 +26,11 @@ export const MainAgendamentos = () => {
 
     const [date, setDate] = useState<Date>()
 
+    useEffect(() => {
+        loadItems(barbearia, getAgendamentos, setAgendamentos)
+    }, [barbearia, date]);
 
     useEffect(() => {
-        const carregarAgendamentos = async () => {
-            if (barbearia) {
-                const dados = await getAgendamentos(barbearia.id);
-                setAgendamentos(dados);
-            }
-        }
         const carregarBarbeiros = async () => {
             if (barbearia) {
                 const dados = await getBarbeiros(barbearia.id);
@@ -40,17 +39,18 @@ export const MainAgendamentos = () => {
         }
 
         carregarBarbeiros();
-        carregarAgendamentos();
     }, [barbearia, date]);
 
     const handleSelectStatus = (value: string) => {
         if (value) {
             setFiltroSelecionadoStatus(value);
+            loadItems(barbearia, getAgendamentos, setAgendamentos);
         }
     }
     const handleSelectBarbeiro = (value: string) => {
         if (value) {
             setFiltroSelecionadoBarbeiro(value);
+            loadItems(barbearia, getAgendamentos, setAgendamentos);
         }
     }
 

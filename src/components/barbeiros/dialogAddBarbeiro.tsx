@@ -49,7 +49,7 @@ export const DialogAddBarbeiro = () => {
             nome: "", telefone: "", email: "", senha: ""
         },
     });
-
+    const { reset } = form;
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         if (!barbearia) return;
         const { nome, telefone, email, senha } = values;
@@ -60,6 +60,7 @@ export const DialogAddBarbeiro = () => {
             handleConfetti();
             await loadItems(barbearia, getBarbeiros, setBarbeiros);
             setIsOpen(false);
+            reset();
         }
     }
 

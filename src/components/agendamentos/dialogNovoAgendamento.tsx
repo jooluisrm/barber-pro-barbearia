@@ -20,11 +20,13 @@ import { getBarbeiros, getHorariosDisponiveis } from "@/api/barbeiros/barbeirosS
 import { ItemBarbeiro } from "./itemBarbeiro"
 import { AlertSelectBarber } from "./alertSelectBarber"
 import { ItemHorario } from "./itemHorario"
-import { DataNewAgendamento, postAgendamento } from "@/api/agendamentos/agendamentoServices"
+import { DataNewAgendamento, getAgendamentos, postAgendamento } from "@/api/agendamentos/agendamentoServices"
 import { handleConfetti } from "@/utils/confetti"
+import { useScheduleContext } from "@/contexts/scheduleContext"
 
 export function DialogNovoAgendamento() {
     const { barbearia } = useAuth();
+    const { setAgendamentos } = useScheduleContext();
 
     const [date, setDate] = useState<string>("");
     const [services, setServices] = useState<Services[] | null>(null);
@@ -122,6 +124,7 @@ export function DialogNovoAgendamento() {
                 servicoId: selectService
             }
             await postAgendamento(data);
+            await loadItems(barbearia, getAgendamentos, setAgendamentos);
             carregarHorarios();
             setSelectHorario("");
             setSelectService("");
