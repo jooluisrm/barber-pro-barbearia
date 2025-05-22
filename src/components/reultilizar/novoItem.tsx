@@ -1,4 +1,4 @@
-import { Trash, Trash2 } from "lucide-react";
+import { CirclePlus, Newspaper, Plus, Save } from "lucide-react";
 import { Button } from "../ui/button";
 import {
     Tooltip,
@@ -7,22 +7,21 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-
 type Props = {
-    deleteFunction?: () => void;
+    onCLick: (value: boolean) => void;
 }
 
-export const ButtonTrash = ({ deleteFunction }: Props) => {
+export const NovoItem = ({ onCLick }: Props) => {
     return (
         <TooltipProvider>
             <Tooltip>
-                <TooltipTrigger>
-                    <Button variant={"destructive"} onClick={deleteFunction}>
-                        <Trash2 className="h-4 w-4" />
+                <TooltipTrigger asChild>
+                    <Button onClick={() => onCLick(true)}>
+                        <Plus />
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                    <p>Deletar</p>
+                    <p>Novo</p>
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>

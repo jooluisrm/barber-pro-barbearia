@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { loadItems } from "@/utils/loadItems";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBarberContext } from "@/contexts/BarberContext";
+import { Trash2 } from "lucide-react";
 
 type Props = {
     barbeiro: Barbeiro;
@@ -54,7 +55,7 @@ export const AlertDeletar = ({ barbeiro }: Props) => {
         <AlertDialog>
             <AlertDialogTrigger asChild>
                 <Button variant={"destructive"} className="font-bold" onClick={() => setClick(true)}>
-                    Excluir Barbeiro
+                    <Trash2 />
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>

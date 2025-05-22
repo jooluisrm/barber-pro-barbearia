@@ -19,6 +19,7 @@ import { useAuth } from "@/contexts/AuthContext"
 import { useOpeningHoursContext } from "@/contexts/OpeningHoursContext"
 import { DataOpeningHours, getOpeningHours, postOpeningHours } from "@/api/barbearia/barbeariaServices"
 import { loadItems } from "@/utils/loadItems"
+import { NovoItem } from "@/components/reultilizar/novoItem"
 
 
 export const DialogNewOpeningHours = () => {
@@ -63,7 +64,7 @@ export const DialogNewOpeningHours = () => {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button onClick={() => setOpen(true)}>Novo Horário de Atendimento</Button>
+                <NovoItem onCLick={setOpen}/>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">
@@ -71,6 +72,7 @@ export const DialogNewOpeningHours = () => {
                         <PlusCircle className="w-6 h-6" />
                         Cadastrar Novo Horário de Atendimento
                     </DialogTitle>
+                    
                     <DialogDescription className="text-muted-foreground mt-2">
                         <span className="block text-sm text-primary/80 mt-1">
                             O novo Horário de Atendimento aparecerar aparecerá na página da barbearia.

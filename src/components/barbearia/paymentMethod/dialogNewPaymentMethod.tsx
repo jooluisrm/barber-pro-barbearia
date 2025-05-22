@@ -15,6 +15,7 @@ import { useAuth } from "@/contexts/AuthContext"
 import { getPayment, postPayment } from "@/api/barbearia/barbeariaServices"
 import { loadItems } from "@/utils/loadItems"
 import { usePaymentContext } from "@/contexts/PaymentContext"
+import { NovoItem } from "@/components/reultilizar/novoItem"
 
 export const DialogNewPaymentMethod = () => {
     const { barbearia } = useAuth();
@@ -48,7 +49,7 @@ export const DialogNewPaymentMethod = () => {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button onClick={(e) => setOpen(true)}>Nova Forma de Pagamento</Button>
+                <NovoItem onCLick={setOpen}/>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">

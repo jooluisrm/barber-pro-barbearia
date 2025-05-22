@@ -25,7 +25,7 @@ export const CardSocialMidia = () => {
     }, [barbearia]);
 
     return (
-        <Card>
+        <Card className="flex flex-col justify-between">
             <CardHeader>
                 <CardTitle>Redes Sociais</CardTitle>
                 <CardDescription>Adicione as Redes Sociais da barbearia.</CardDescription>
@@ -33,7 +33,7 @@ export const CardSocialMidia = () => {
             <CardContent>
                 <TableSocialMidia /> {/*Tabela para carregar Redes Sociais*/}
             </CardContent>
-            <CardFooter className="flex justify-between">
+            <CardFooter>
                 <DialogNewSocialMidia />
             </CardFooter>
         </Card>

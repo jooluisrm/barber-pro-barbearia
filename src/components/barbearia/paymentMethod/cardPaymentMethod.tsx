@@ -25,7 +25,7 @@ export const CardPaymentMethod = () => {
     }, [barbearia]);
 
     return (
-        <Card>
+        <Card className="flex flex-col justify-between">
             <CardHeader>
                 <CardTitle>Formas de Pagamentos</CardTitle>
                 <CardDescription>Adicione os Produtos a venda na sua barbearia.</CardDescription>
@@ -33,7 +33,7 @@ export const CardPaymentMethod = () => {
             <CardContent>
                 <TablePaymentMethod />
             </CardContent>
-            <CardFooter className="flex justify-between">
+            <CardFooter>
                 <DialogNewPaymentMethod />
             </CardFooter>
         </Card>

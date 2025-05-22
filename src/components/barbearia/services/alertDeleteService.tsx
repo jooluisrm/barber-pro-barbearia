@@ -15,7 +15,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useServiceContext } from "@/contexts/ServicesContext";
 import { Services } from "@/types/services";
 import { loadItems } from "@/utils/loadItems";
-import { Trash } from "lucide-react"
+import { Trash, Trash2 } from "lucide-react"
 
 type Props = {
     itemService: Services;
@@ -39,7 +39,7 @@ export const AlertDeleteService = ({ itemService }: Props) => {
         <AlertDialog>
             <AlertDialogTrigger asChild>
                 <Button variant="destructive">
-                    <Trash />
+                    <Trash2 />
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>

@@ -25,7 +25,7 @@ export const CardOpeningHours = () => {
     }, [barbearia]);
 
     return (
-        <Card>
+        <Card className="flex flex-col justify-between">
             <CardHeader>
                 <CardTitle>Horário de Atendimento</CardTitle>
                 <CardDescription>Adicione os horários de funcionamento da sua barbearia durante a semana.</CardDescription>
@@ -33,7 +33,7 @@ export const CardOpeningHours = () => {
             <CardContent className="">
                 <ItemOpeningHours />
             </CardContent>
-            <CardFooter className="flex justify-between">
+            <CardFooter>
                 <DialogNewOpeningHours />
             </CardFooter>
         </Card>

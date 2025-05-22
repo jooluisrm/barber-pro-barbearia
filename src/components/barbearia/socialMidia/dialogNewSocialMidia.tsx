@@ -16,6 +16,7 @@ import { useAuth } from "@/contexts/AuthContext"
 import { DataSocialMedia, getSocialMedia, postSocialMedia } from "@/api/barbearia/barbeariaServices"
 import { loadItems } from "@/utils/loadItems"
 import { useSocialContext } from "@/contexts/SocialContext"
+import { NovoItem } from "@/components/reultilizar/novoItem"
 
 export const DialogNewSocialMidia = () => {
     const { barbearia } = useAuth();
@@ -52,7 +53,7 @@ export const DialogNewSocialMidia = () => {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button onClick={() => setOpen(true)} >Nova Rede Social</Button>
+                <NovoItem onCLick={setOpen}/>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">

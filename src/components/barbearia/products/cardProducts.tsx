@@ -24,7 +24,7 @@ export const CardProducts = () => {
     }, [barbearia]);
 
     return (
-        <Card>
+        <Card className="flex flex-col justify-between">
             <CardHeader>
                 <CardTitle>Produtos</CardTitle>
                 <CardDescription>Adicione os Produtos a venda na sua barbearia.</CardDescription>
@@ -32,7 +32,7 @@ export const CardProducts = () => {
             <CardContent>
                 <TableProducts /> {/*Tabela para carregar produtos*/}
             </CardContent>
-            <CardFooter className="flex justify-between">
+            <CardFooter>
                 <DialogNewProduct />
             </CardFooter>
         </Card>

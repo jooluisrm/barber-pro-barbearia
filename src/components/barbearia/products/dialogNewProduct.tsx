@@ -1,4 +1,5 @@
 import { getProducts, postProduct } from "@/api/barbearia/barbeariaServices"
+import { NovoItem } from "@/components/reultilizar/novoItem"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -53,7 +54,7 @@ export const DialogNewProduct = () => {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button onClick={() => setOpen(true)} >Novo Produto</Button>
+                <NovoItem onCLick={setOpen}/>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">
