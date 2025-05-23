@@ -247,9 +247,9 @@ export const MainRegister = () => {
                                 name="longitude"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Lontitude:</FormLabel>
+                                        <FormLabel>Longitude:</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Digite a lontitude..." {...field} />
+                                            <Input placeholder="Digite a longitude..." {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
