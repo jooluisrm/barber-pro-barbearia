@@ -7,15 +7,18 @@ import { Eye, EyeClosed } from "lucide-react";
 import { TitlePage } from "./titlePage";
 import { ocultarMostrarSenha } from "@/utils/ocultarMostrarSenha";
 import Link from "next/link";
-import { loginUser, registerUser } from "@/api/auth/authService";
+import { criarPagamento, loginUser, registerUser } from "@/api/auth/authService";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { useForm } from "react-hook-form";
 import { useAuth } from "@/contexts/AuthContext";
 import InputMask from 'react-input-mask'
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
+    nomeCompleto: z.string().min(2, "Precisa ter no mínimo 2 caracteres!"),
+    taxId: z.string(),
     nome: z.string().min(1, 'Nome é obrigatório'),
     email: z.string().email('E-mail inválido!'),
     senha: z.string().min(6, 'Precisa ter no mínimo 6 caracteres!'),
@@ -38,7 +41,9 @@ const formSchema = z.object({
     longitude: z.string().min(1, 'Longitude é obrigatória'),
 });
 
+
 export const MainRegister = () => {
+    const router = useRouter();
     const { login, barbearia } = useAuth();
     const [mostrarSenha, setMostrarSenha] = useState(false);
 
@@ -46,17 +51,20 @@ export const MainRegister = () => {
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: { email: "", senha: "", celular: "", endereco: "", latitude: "", longitude: "", nome: "", telefone: "" },
+        defaultValues: { nomeCompleto: "", taxId: "" , email: "", senha: "", celular: "", endereco: "", latitude: "", longitude: "", nome: "", telefone: "" },
     });
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setLoading(true);
-        const { nome, email, senha, celular, telefone, endereco, latitude, longitude } = values;
+        const { nome, email, senha, celular, telefone, endereco, latitude, longitude, nomeCompleto, taxId } = values;
 
         try {
-            await registerUser({ nome, email, senha, celular, telefone, endereco, latitude, longitude });
-            const userData = await loginUser({ email, senha });
-            await login(userData);
+            const dados = await criarPagamento({email, nome: nomeCompleto, plano: "Mensal", taxId, telefone, celular, valorCentavos: 1500, endereco, latitude, longitude, senha});
+            console.log(dados.billing.data.url)
+            await router.push(dados.billing.data.url);
+            //await registerUser({ nome, email, senha, celular, telefone, endereco, latitude, longitude });
+            //const userData = await loginUser({ email, senha });
+            //await login(userData);
         } catch (error: any) {
             console.log(error);
         } finally {
@@ -72,6 +80,32 @@ export const MainRegister = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:min-w-[700px] mb-5">
                         <div className="flex flex-col gap-3">
                             <h1 className="text-lg font-bold">Dados Pessoais:</h1>
+                            <FormField
+                                control={form.control}
+                                name="nomeCompleto"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Nome Completo:</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Digite seu nome completo..." {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="taxId"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>CPF/CNPJ</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Digite seu CPF ou CNPJ" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
                             <FormField
                                 control={form.control}
                                 name="email"
