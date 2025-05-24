@@ -17,8 +17,6 @@ import InputMask from 'react-input-mask'
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-    nomeCompleto: z.string().min(2, "Precisa ter no mínimo 2 caracteres!"),
-    taxId: z.string(),
     nome: z.string().min(1, 'Nome é obrigatório'),
     email: z.string().email('E-mail inválido!'),
     senha: z.string().min(6, 'Precisa ter no mínimo 6 caracteres!'),
@@ -51,13 +49,12 @@ export const MainRegister = () => {
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: { nomeCompleto: "", taxId: "" , email: "", senha: "", celular: "", endereco: "", latitude: "", longitude: "", nome: "", telefone: "" },
+        defaultValues: { email: "", senha: "", celular: "", endereco: "", latitude: "", longitude: "", nome: "", telefone: "" },
     });
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setLoading(true);
-        const { nome, email, senha, celular, telefone, endereco, latitude, longitude, nomeCompleto, taxId } = values;
-
+        const { nome, email, senha, celular, telefone, endereco, latitude, longitude } = values;
         try {
             //const dados = await criarPagamento({email, nome: nomeCompleto, plano: "Mensal", taxId, telefone, celular, valorCentavos: 1500, endereco, latitude, longitude, senha});
             //console.log(dados.billing.data.url)
