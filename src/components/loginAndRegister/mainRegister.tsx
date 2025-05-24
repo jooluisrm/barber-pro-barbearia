@@ -59,12 +59,12 @@ export const MainRegister = () => {
         const { nome, email, senha, celular, telefone, endereco, latitude, longitude, nomeCompleto, taxId } = values;
 
         try {
-            const dados = await criarPagamento({email, nome: nomeCompleto, plano: "Mensal", taxId, telefone, celular, valorCentavos: 1500, endereco, latitude, longitude, senha});
-            console.log(dados.billing.data.url)
-            await router.push(dados.billing.data.url);
-            //await registerUser({ nome, email, senha, celular, telefone, endereco, latitude, longitude });
-            //const userData = await loginUser({ email, senha });
-            //await login(userData);
+            //const dados = await criarPagamento({email, nome: nomeCompleto, plano: "Mensal", taxId, telefone, celular, valorCentavos: 1500, endereco, latitude, longitude, senha});
+            //console.log(dados.billing.data.url)
+            //await router.push(dados.billing.data.url);
+            await registerUser({ nome, email, senha, celular, telefone, endereco, latitude, longitude });
+            const userData = await loginUser({ email, senha });
+            await login(userData);
         } catch (error: any) {
             console.log(error);
         } finally {
@@ -80,32 +80,6 @@ export const MainRegister = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:min-w-[700px] mb-5">
                         <div className="flex flex-col gap-3">
                             <h1 className="text-lg font-bold">Dados Pessoais:</h1>
-                            <FormField
-                                control={form.control}
-                                name="nomeCompleto"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Nome Completo:</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Digite seu nome completo..." {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="taxId"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>CPF/CNPJ</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Digite seu CPF ou CNPJ" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
                             <FormField
                                 control={form.control}
                                 name="email"
