@@ -12,6 +12,7 @@ export interface Barbearia {
     email: string;
     telefone: string;
     fotoPerfil?: string;
+    stripeCurrentPeriodEnd: string | null; // ISO string, ex: "2025-07-01T00:00:00.000Z"
 }
 
 interface AuthContextType {
@@ -45,37 +46,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const login = (userData: { barbearia: Barbearia; token: string }) => {
         setBarbearia(userData.barbearia);
         setToken(userData.token);
-    
+
         if (typeof window !== "undefined") {
             // Salvar no localStorage
             localStorage.setItem("barbearia", JSON.stringify(userData.barbearia));
-    
+
             // Salvar o token nos cookies
             setCookie(null, "token", userData.token, {
                 maxAge: 60 * 60 * 2, // Expira em 2 horas
                 path: "/", // Disponível globalmente
             });
         }
-    
+
         // Aguarda um pequeno delay e força um reload para garantir que o middleware pega o token
         setTimeout(() => {
             window.location.href = "/";
         }, 500);
     };
-    
+
 
     const logout = () => {
         setBarbearia(null);
         setToken(null);
-    
+
         if (typeof window !== "undefined") {
             // Remover do localStorage
             localStorage.removeItem("barbearia");
-    
+
             // Remover dos cookies
             destroyCookie(null, "token");
         }
-    
+
         // Aguarda um pequeno delay e força um reload
         setTimeout(() => {
             window.location.href = "/login";

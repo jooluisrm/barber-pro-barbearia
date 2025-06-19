@@ -64,7 +64,7 @@ export const MainHome = () => {
                 <p className="text-muted-foreground">Seu resumo mensal está pronto abaixo.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 ">
                 <ChartBarbeirosAgendamentos barbeiros={barbeiros} agendamentos={agendamentos} />
                 <ChartAgendamentosServicos agendamentos={agendamentos} />
                 <ChartFaturamentoAgendamento agendamentosPorMes={agendamentosPorMes} faturamentoPorMes={faturamentoPorMes} />

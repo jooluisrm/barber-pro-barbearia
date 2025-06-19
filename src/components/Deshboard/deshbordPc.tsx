@@ -1,4 +1,4 @@
-import { House, LogOut, NotebookPen, Store, Users } from "lucide-react";
+import { Gem, House, LogOut, NotebookPen, Store, Users } from "lucide-react";
 import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import Image from "next/image";
@@ -83,6 +83,22 @@ export const DeshboardPc = ({ token, rotaAtual }: Props) => {
                             </Link>
                         </TooltipTrigger>
                         <TooltipContent side="right">Barbearia</TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Link
+                                href={"/assinaturas"}
+                                className={`
+                                    flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground 
+                                    ${rotaAtual === "/assinaturas" && "dark:text-white text-black"}
+                                    `}
+                            >
+                                <Gem className="h-5 w-5" />
+                                <span className="sr-only">Assinaturas</span>
+                            </Link>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">Assinaturas</TooltipContent>
                     </Tooltip>
 
                 </TooltipProvider>

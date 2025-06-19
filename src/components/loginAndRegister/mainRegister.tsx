@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "@/contexts/AuthContext";
 import InputMask from 'react-input-mask'
 import { useRouter } from "next/navigation";
+import BotaoCheckout from "../stripe/button-chekout";
 
 const formSchema = z.object({
     nome: z.string().min(1, 'Nome é obrigatório'),
