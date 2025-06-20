@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { ItemConcluirAgendamento } from "./itemConcluirAgendamento";
+import { MensagemSemAgendamentosPendentes } from "./msmSemAgendamentosPendentes";
 
 export const DialogConcluirAgendamento = () => {
     return (
@@ -28,6 +29,7 @@ export const DialogConcluirAgendamento = () => {
                 </DialogHeader>
                 <main>
                     <ItemConcluirAgendamento />
+                    <MensagemSemAgendamentosPendentes />
                 </main>
             </DialogContent>
         </Dialog>
