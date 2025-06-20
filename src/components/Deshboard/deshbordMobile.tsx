@@ -3,7 +3,7 @@ import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import Link from "next/link";
 import Image from "next/image";
 import imgIcon from "../../../public/assets/BarberProIcone-removebg-preview.png";
-import { House, LogOut, NotebookPen, Package, PanelBottom, Store, Users } from "lucide-react";
+import { Gem, House, LogOut, NotebookPen, Package, PanelBottom, Store, Users } from "lucide-react";
 import { AlertLogout } from "../loginAndRegister/alertLogout";
 
 type Props = {
@@ -78,6 +78,16 @@ export const DeshboardMobile = ({ token, rotaAtual }: Props) => {
                                 <Store className="h-5 w-5" />
                                 Barbearia
                             </Link>
+
+                            <Link
+                                href={"/assinaturas"}
+                                className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground transition-all"
+                                prefetch={false}
+                            >
+                                <Gem className="h-5 w-5" />
+                                Assinaturas
+                            </Link>
+
 
                             {
                                 token && (

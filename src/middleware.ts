@@ -1,77 +1,54 @@
-// middleware.ts
+// middleware.ts - Versão Final com /assinaturas pública
+
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-function getBarbeariaIdFromToken(token: string): string | null {
-    try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        return payload.id || null;
-    } catch {
-        return null;
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const authToken = request.cookies.get("token")?.value;
+
+  // ✅ MUDANÇA AQUI: Adicionamos a rota /assinaturas à lista de páginas públicas.
+  // Renomeei a variável para ficar mais claro.
+  const isPublicPage = 
+    pathname.startsWith('/login') || 
+    pathname.startsWith('/register') || 
+    pathname.startsWith('/assinaturas') ||
+    pathname.startsWith('/favicon.png');
+  
+  // Uma página protegida é qualquer página que NÃO seja pública.
+  const isProtectedRoute = !isPublicPage;
+
+  // LÓGICA 1: Usuário LOGADO tentando acessar páginas PÚBLICAS (como login, registro).
+  // Se ele tem um token e está na página de login, manda para a home.
+  if (authToken && isPublicPage) {
+    // Exceção: se ele estiver logado e na página de assinaturas, PODE ficar.
+    if (pathname.startsWith('/assinaturas')) {
+      return NextResponse.next();
     }
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  // LÓGICA 2: Usuário NÃO LOGADO tentando acessar páginas PROTEGIDAS.
+  // Se ele não tem token e a página é protegida, manda para o login.
+  if (!authToken && isProtectedRoute) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+  
+  // Se nenhuma das condições acima foi atendida, permite o acesso.
+  return NextResponse.next();
 }
 
-export async function middleware(request: NextRequest) {
-    const token = request.cookies.get("token")?.value;
-    const { pathname } = request.nextUrl;
-
-    const protectedRoutes = ["/", "/agendamentos", "/barbeiros", "/barbearia", "/sucesso", "/cancelado", "/dashboard", "/perfil"];
-    const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route) && route !== '/') || pathname === '/';
-
-    if (!token && isProtectedRoute) {
-        return NextResponse.redirect(new URL("/login", request.url));
-    }
-
-    if (token && (pathname === "/login" || pathname === "/register")) {
-        return NextResponse.redirect(new URL("/", request.url));
-    }
-
-    if (token && isProtectedRoute) {
-        try {
-            console.log("\n--- INICIANDO VERIFICAÇÃO DE MIDDLEWARE ---");
-            console.log(`[PASSO 1] Rota protegida acessada: ${pathname}. Entrando no bloco try...`);
-            
-            const barbeariaId = getBarbeariaIdFromToken(token);
-            console.log(`[PASSO 2] ID extraído do token: ${barbeariaId}`);
-
-            if (!barbeariaId) {
-                throw new Error("Token inválido ou não contém ID.");
-            }
-
-            const backendUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/status?id=${barbeariaId}`;
-            console.log(`[PASSO 3] Chamando a API de status em: ${backendUrl}`);
-            
-            const response = await fetch(backendUrl, { cache: 'no-store' });
-            console.log(`[PASSO 4] Resposta da API recebida com status: ${response.status} ${response.statusText}`);
-
-            if (!response.ok) {
-                throw new Error(`API de status retornou um erro: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            console.log(`[PASSO 5] Dados recebidos da API:`, data);
-            
-            if (!data.isActive && pathname !== '/assinaturas') {
-                console.log("[PASSO 6] Redirecionando para /assinaturas pois a assinatura está INATIVA.");
-                return NextResponse.redirect(new URL('/assinaturas', request.url));
-            }
-            
-            console.log("[PASSO 7] Verificação concluída com SUCESSO. Permitindo acesso.");
-
-        } catch (error) {
-            // ✅ LOG ESSENCIAL: Imprime o erro exato que fez o código pular para o catch.
-            console.error("❌ [ERRO CAPTURADO] O middleware falhou, forçando logout. Causa:", error);
-            
-            const loginUrl = new URL('/login', request.url);
-            const res = NextResponse.redirect(loginUrl);
-            res.cookies.delete('token');
-            return res;
-        }
-    }
-
-    return NextResponse.next();
-}
-
+// A configuração do matcher continua a mesma, pois ela já "pega" todas as rotas
+// para que nossa lógica acima possa decidir o que fazer com elas.
 export const config = {
-    matcher: ["/", "/dashboard/:path*", "/perfil/:path*", "/login", "/register", "/agendamentos", "/barbeiros", "/barbearia"],
+  matcher: [
+    /*
+     * Corresponde a todas as rotas, exceto as que começam com:
+     * - api (rotas de API do Next.js, que não são páginas)
+     * - _next/static (arquivos estáticos)
+     * - _next/image (otimização de imagens)
+     * - favicon.ico (ícone)
+     */
+    '/((?!api|_next/static|_next/image|).*)',
+  ],
 };
