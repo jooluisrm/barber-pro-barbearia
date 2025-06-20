@@ -1,6 +1,10 @@
+import { MainSucesso } from "@/components/stripe/sucesso/mainSucesso";
+
 // pages/sucesso.js
 export default function PaginaSucesso() {
-  return <h1>Obrigado pela sua assinatura!</h1>;
-  // Aqui você pode adicionar lógica para verificar o status da sessão
-  // e dar as boas-vindas ao usuário.
+  return (
+    <section className="sm:ml-14 p-4 min-h-screen">
+        <MainSucesso />
+    </section>
+  );
 }
