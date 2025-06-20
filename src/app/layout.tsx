@@ -6,6 +6,7 @@ import { Deshboard } from "@/components/Deshboard/deshbord";
 import { Footer } from "@/components/footer/footer";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "sonner";
+import { PendingScheduleContextProvider } from "@/contexts/PendingScheduleContext";
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
@@ -37,18 +38,20 @@ export default function RootLayout({
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
                 <AuthProvider>
-                    <ThemeProvider
-                        attribute="class"
-                        defaultTheme="system"
-                        enableSystem
-                        disableTransitionOnChange
-                    >
+                    <PendingScheduleContextProvider>
+                        <ThemeProvider
+                            attribute="class"
+                            defaultTheme="system"
+                            enableSystem
+                            disableTransitionOnChange
+                        >
 
-                        <Deshboard />
-                        {children}
-                        <Toaster />
-                        <Footer />
-                    </ThemeProvider>
+                            <Deshboard />
+                            {children}
+                            <Toaster />
+                            <Footer />
+                        </ThemeProvider>
+                    </PendingScheduleContextProvider>
                 </AuthProvider>
             </body>
         </html>

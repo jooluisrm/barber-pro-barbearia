@@ -15,12 +15,13 @@ import { DialogNovoAgendamento } from "./dialogNovoAgendamento";
 import { loadItems } from "@/utils/loadItems";
 import { useScheduleContext } from "@/contexts/scheduleContext";
 import { DialogConcluirAgendamento } from "./dialogConcluirAgendamento";
+import { usePendingScheduleContext } from "@/contexts/PendingScheduleContext";
 
 export const MainAgendamentos = () => {
     const { barbearia } = useAuth();
     const { setAgendamentos, agendamentos } = useScheduleContext();
+    const {agendamentosPendentes, setAgendamentosPendentes} = usePendingScheduleContext();
 
-    const [agendamentosPendentes, setAgendamentosPendentes] = useState<AgendamentoPendente[] | null>(null);
     const [barbeiros, setBarbeiros] = useState<Barbeiro[] | null>(null);
     const [agendamentosFiltrados, setAgendamentosFiltrados] = useState<Agendamentos[] | null>(null);
     const [filtroSelecionadoStatus, setFiltroSelecionadoStatus] = useState("confirmado");

@@ -39,7 +39,7 @@ export const DialogConcluirAgendamento = ({ agendamentosPendentes }: Props) => {
                 <DialogHeader>
                     <DialogTitle>Agendamentos pendentes</DialogTitle>
                     <DialogDescription>
-                        Esta operação identifica agendamentos com horário expirado e status pendente, e os conclui automaticamente para manter os dados atualizados.
+                        Esta operação localiza agendamentos pendentes cujo horário já expirou, para que o usuário possa avaliá-los e concluir conforme necessário.
                     </DialogDescription>
                 </DialogHeader>
                 <main className="flex flex-col gap-4 max-h-52 xl:max-h-[400px] overflow-y-hidden">

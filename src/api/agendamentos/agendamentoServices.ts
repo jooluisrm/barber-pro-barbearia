@@ -61,3 +61,33 @@ export const getAgendamentosPendentes = async (barbeariaId: string) => {
         throw error.response?.data?.error;
     }
 }
+
+export const patchConcluirAgendamento = async (barbeariaId: string, agendamentoId: string) => {
+    try {
+        const response = await axiosInstance.patch(`/barbearia/${barbeariaId}/agendamentos/${agendamentoId}/concluir`);
+        toast.success(`O status do agendamento foi atualizado.`, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            }
+        });
+        return response.data;
+    } catch (error: any) {
+        throw error.response?.data?.error || "Erro ao concluir o agendamento";
+    }
+};
+
+export const patchCancelarAgendamento = async (barbeariaId: string, agendamentoId: string) => {
+    try {
+        const response = await axiosInstance.patch(`/barbearia/${barbeariaId}/agendamentos/${agendamentoId}/cancelar`);
+        toast.success(`O status do agendamento foi atualizado.`, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            }
+        });
+        return response.data;
+    } catch (error: any) {
+        throw error.response?.data?.error || "Erro ao cancelar o agendamento";
+    }
+};
