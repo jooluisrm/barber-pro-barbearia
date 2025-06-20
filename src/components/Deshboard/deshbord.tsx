@@ -5,8 +5,11 @@ import { DeshboardMobile } from "./deshbordMobile";
 import { DeshboardPc } from "./deshbordPc";
 import { usePathname } from "next/navigation"; // Adicionando usePathname
 import { useEffect, useState } from "react";
+import { usePendingScheduleContext } from "@/contexts/PendingScheduleContext";
 
 export const Deshboard = () => {
+    const {agendamentosPendentes} = usePendingScheduleContext();
+
     const [rotaAtual, setRotaAtual] = useState("");
     const { token } = useAuth();
     const pathname = usePathname(); // Pega o caminho da URL
@@ -18,8 +21,8 @@ export const Deshboard = () => {
 
     return (
         <div className="flex w-full flex-col bg-muted/40">
-            <DeshboardPc token={token} rotaAtual={rotaAtual}/>
-            <DeshboardMobile token={token} rotaAtual={rotaAtual}/>
+            <DeshboardPc token={token} rotaAtual={rotaAtual} agendamentosPendentes={agendamentosPendentes}/>
+            <DeshboardMobile token={token} rotaAtual={rotaAtual} agendamentosPendentes={agendamentosPendentes}/>
         </div>
     );
 };
