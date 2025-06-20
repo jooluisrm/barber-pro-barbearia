@@ -1,6 +1,6 @@
 "use client"
 
-import { Eye, EyeClosed } from "lucide-react";
+import { Eye, EyeClosed, LoaderCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useState } from "react";
@@ -103,7 +103,9 @@ export const MainLogin = () => {
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit" className="font-bold" disabled={loading || barbearia != null}>Entrar</Button>
+                        <Button type="submit" className="font-bold" disabled={loading || barbearia != null}>
+                            {loading ? <LoaderCircle className="animate-spin"/> : "Entrar"}
+                        </Button>
                         <div className="text-sm dark:text-gray-400 text-gray-600">
                             Não tem uma conta?  <Link href={"/register"}><span className="font-bold text-blue-500 cursor-pointer">Cadastre-se aqui</span></Link> e comece agora!
                         </div>

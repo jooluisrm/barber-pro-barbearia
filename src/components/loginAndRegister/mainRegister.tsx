@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Eye, EyeClosed } from "lucide-react";
+import { Eye, EyeClosed, LoaderCircle } from "lucide-react";
 import { TitlePage } from "./titlePage";
 import { ocultarMostrarSenha } from "@/utils/ocultarMostrarSenha";
 import Link from "next/link";
@@ -234,7 +234,9 @@ export const MainRegister = () => {
                             type="submit"
                             className="font-bold md:w-[200px] lg:w-[300px] xl:w-[400px]"
                             disabled={loading || barbearia != null}
-                        >Criar Barbearia</Button>
+                        >
+                            {loading ? <LoaderCircle className="animate-spin"/> : "Criar Barbearia"}
+                        </Button>
                     </div>
                 </form>
             </Form>

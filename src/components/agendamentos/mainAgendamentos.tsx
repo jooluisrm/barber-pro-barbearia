@@ -14,6 +14,7 @@ import { Button } from "../ui/button";
 import { DialogNovoAgendamento } from "./dialogNovoAgendamento";
 import { loadItems } from "@/utils/loadItems";
 import { useScheduleContext } from "@/contexts/scheduleContext";
+import { DialogConcluirAgendamento } from "./dialogConcluirAgendamento";
 
 export const MainAgendamentos = () => {
     const { barbearia } = useAuth();
@@ -59,14 +60,18 @@ export const MainAgendamentos = () => {
             if (!agendamentos) return;
             let agendamentosFiltrados = agendamentos;
 
-            // 🔹 Filtrar por data, se uma data estiver selecionada
+            // 🔹 Filtrar por data
             if (date) {
-                agendamentosFiltrados = agendamentosFiltrados.filter((item) => item.data === date);
+                agendamentosFiltrados = agendamentosFiltrados.filter((item) =>
+                    new Date(item.data).toDateString() === new Date(date).toDateString()
+                );
             }
 
-            // 🔹 Filtrar por barbeiro, se um barbeiro estiver selecionado e diferente de "todos"
+            // 🔹 Filtrar por barbeiro
             if (filtroSelecionadoBarbeiro && filtroSelecionadoBarbeiro !== "todos") {
-                agendamentosFiltrados = agendamentosFiltrados.filter((item) => item.barbeiroId === filtroSelecionadoBarbeiro);
+                agendamentosFiltrados = agendamentosFiltrados.filter(
+                    (item) => item.barbeiroId === filtroSelecionadoBarbeiro
+                );
             }
 
             // 🔹 Filtrar por status
@@ -85,11 +90,20 @@ export const MainAgendamentos = () => {
                     break;
             }
 
+            // ✅ Ordenar pela hora (formato "HH:mm")
+            agendamentosFiltrados.sort((a, b) => {
+                const [aHour, aMinute] = a.hora.split(":").map(Number);
+                const [bHour, bMinute] = b.hora.split(":").map(Number);
+
+                return aHour * 60 + aMinute - (bHour * 60 + bMinute);
+            });
+
             setAgendamentosFiltrados(agendamentosFiltrados);
         };
 
         filtrarAgendamentos();
     }, [filtroSelecionadoStatus, filtroSelecionadoBarbeiro, agendamentos, date]);
+
 
     return (
         <main>
@@ -107,7 +121,10 @@ export const MainAgendamentos = () => {
             <div className="space-y-4">
                 {/* 🔹 Botão de Novo Agendamento e Filtros */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <DialogNovoAgendamento />
+                    <div className="gap-4 grid grid-cols-2">
+                        <DialogNovoAgendamento />
+                        <DialogConcluirAgendamento />
+                    </div>
 
                     {/* 🔹 Filtros - Organiza responsivamente */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-center gap-4">

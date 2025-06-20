@@ -34,7 +34,7 @@ export const ItemSubscription = () => {
 
                 {/* Preço */}
                 <div className="text-3xl font-bold mb-4">
-                    <span className="text-blue-500">R$ 20,90</span>
+                    <span className="text-blue-500">R$ 20,00</span>
                     <span className="text-sm font-normal text-muted-foreground">/mês</span>
                 </div>
 
