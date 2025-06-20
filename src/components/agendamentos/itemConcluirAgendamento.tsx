@@ -1,15 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge"; // certifique-se de ter esse componente
+import { Badge } from "@/components/ui/badge"; 
+import { AgendamentoPendente } from "@/types/agendamentos";
+import { formatarPreco } from "@/utils/formatarValores";
+import { CancelarAgendamentoPendente } from "./cancelarAgendamentoPendente";
 
-export const ItemConcluirAgendamento = () => {
-    // Exemplo de dados estáticos — substitua por props ou contexto
-    const cliente = "João Silva";
-    const barbeiro = "Carlos Mendes";
-    const data = "20/06/2025";
-    const hora = "14:30";
-    const preco = "R$ 75,00";
-    const status = "Confirmado"; // ou Confirmado, Feito, Cancelado
+type Props = {
+    item: AgendamentoPendente;
+}
+
+export const ItemConcluirAgendamento = ({ item }: Props) => {
 
     return (
         <Card className="flex items-center justify-between w-full shadow-sm border border-muted bg-background px-4 py-2">
@@ -17,27 +17,26 @@ export const ItemConcluirAgendamento = () => {
                 <CardHeader className="pb-1">
                     <div className="flex items-center gap-2">
                         <CardTitle className="text-sm sm:text-base text-foreground">
-                            {cliente}
+                            {item.nomeCliente}
                         </CardTitle>
-                        <Badge variant={"outline"} className="text-xs capitalize text-yellow-500">{status}</Badge>
+                        <Badge variant={"outline"} className="text-xs capitalize text-yellow-500">{item.status}</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                        {data} • {hora}
+                        {item.data} • {item.hora}
                     </p>
                 </CardHeader>
 
                 <CardContent className="flex flex-col gap-4 items-start text-sm text-muted-foreground pt-1">
                     <div className="space-y-1">
-                        <p><span className="font-medium text-foreground">Barbeiro:</span> {barbeiro}</p>
-                        <p><span className="font-medium text-foreground">Valor:</span> <span className="text-green-600">{preco}</span></p>
+                        <p><span className="font-medium text-foreground">Barbeiro:</span> {item.nomeBarbeiro}</p>
+                        <p><span className="font-medium text-foreground">Serviço:</span> {item.nomeServico}</p>
+                        <p><span className="font-medium text-foreground">Valor:</span> <span className="text-green-600">{formatarPreco(item.valor)}</span></p>
                     </div>
                 </CardContent>
             </div>
 
             <div className="flex flex-col-reverse gap-2 ml-4">
-                <Button variant="outline" size="sm">
-                    Cancelar
-                </Button>
+                <CancelarAgendamentoPendente />
                 <Button size="sm">
                     Concluir
                 </Button>

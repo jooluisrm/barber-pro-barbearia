@@ -52,3 +52,12 @@ export const postAgendamento = async (data: DataNewAgendamento) => {
         });
     }
 }
+
+export const getAgendamentosPendentes = async (barbeariaId: string) => {
+    try {
+        const response = await axiosInstance.get(`/barbearia/agendamentos/pendente/${barbeariaId}`);
+        return response.data;
+    } catch (error: any) {
+        throw error.response?.data?.error;
+    }
+}

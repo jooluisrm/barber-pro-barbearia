@@ -9,16 +9,31 @@ import {
 import { Button } from "../ui/button";
 import { ItemConcluirAgendamento } from "./itemConcluirAgendamento";
 import { MensagemSemAgendamentosPendentes } from "./msmSemAgendamentosPendentes";
+import { AgendamentoPendente } from "@/types/agendamentos";
 
-export const DialogConcluirAgendamento = () => {
+type Props = {
+    agendamentosPendentes: AgendamentoPendente[] | null;
+}
+
+export const DialogConcluirAgendamento = ({ agendamentosPendentes }: Props) => {
     return (
         <Dialog>
             <DialogTrigger asChild>
                 <Button className="font-bold relative flex items-center gap-2">
                     Concluir Agendamentos
                     {/* Notificação visual (badge) */}
-                    <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-600 rounded-full animate-pulse" />
+                    {agendamentosPendentes && agendamentosPendentes.length > 0 && (
+                        <span
+                            className={`
+                absolute -top-1 -right-1 w-5 h-5 bg-red-600 rounded-full
+                flex items-center justify-center text-[10px] text-white
+            `}
+                        >
+                            {agendamentosPendentes.length > 9 ? "9+" : agendamentosPendentes.length}
+                        </span>
+                    )}
                 </Button>
+
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
@@ -27,9 +42,14 @@ export const DialogConcluirAgendamento = () => {
                         Esta operação identifica agendamentos com horário expirado e status pendente, e os conclui automaticamente para manter os dados atualizados.
                     </DialogDescription>
                 </DialogHeader>
-                <main>
-                    <ItemConcluirAgendamento />
-                    <MensagemSemAgendamentosPendentes />
+                <main className="flex flex-col gap-4 max-h-52 xl:max-h-[400px] overflow-y-hidden">
+                    {
+                        agendamentosPendentes &&
+                            agendamentosPendentes?.length > 0 ? agendamentosPendentes.map((item) => (
+                                <ItemConcluirAgendamento key={item.idAgendamento} item={item} />
+                            )) : <MensagemSemAgendamentosPendentes />
+                    }
+
                 </main>
             </DialogContent>
         </Dialog>

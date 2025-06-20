@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { TableAgendamentos } from "./tableAgendamentos";
-import { Agendamentos } from "@/types/agendamentos";
+import { AgendamentoPendente, Agendamentos } from "@/types/agendamentos";
 import { useAuth } from "@/contexts/AuthContext";
-import { getAgendamentos } from "@/api/agendamentos/agendamentoServices";
+import { getAgendamentos, getAgendamentosPendentes } from "@/api/agendamentos/agendamentoServices";
 import { SelectFilterStatus } from "./selectFilterStatus";
 import { CalendarioFilter } from "./calendarioFilter";
 import { SelectFilterBarbeiro } from "./selectFilterBarbeiro";
@@ -20,6 +20,7 @@ export const MainAgendamentos = () => {
     const { barbearia } = useAuth();
     const { setAgendamentos, agendamentos } = useScheduleContext();
 
+    const [agendamentosPendentes, setAgendamentosPendentes] = useState<AgendamentoPendente[] | null>(null);
     const [barbeiros, setBarbeiros] = useState<Barbeiro[] | null>(null);
     const [agendamentosFiltrados, setAgendamentosFiltrados] = useState<Agendamentos[] | null>(null);
     const [filtroSelecionadoStatus, setFiltroSelecionadoStatus] = useState("confirmado");
@@ -30,6 +31,10 @@ export const MainAgendamentos = () => {
     useEffect(() => {
         loadItems(barbearia, getAgendamentos, setAgendamentos)
     }, [barbearia, date]);
+
+    useEffect(() => {
+        loadItems(barbearia, getAgendamentosPendentes, setAgendamentosPendentes);
+    }, [barbearia, agendamentos]);
 
     useEffect(() => {
         const carregarBarbeiros = async () => {
@@ -123,7 +128,7 @@ export const MainAgendamentos = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="gap-4 grid grid-cols-2">
                         <DialogNovoAgendamento />
-                        <DialogConcluirAgendamento />
+                        <DialogConcluirAgendamento agendamentosPendentes={agendamentosPendentes}/>
                     </div>
 
                     {/* 🔹 Filtros - Organiza responsivamente */}
