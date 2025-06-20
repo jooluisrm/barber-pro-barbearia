@@ -28,7 +28,7 @@ export const CardPaymentMethod = () => {
         <Card className="flex flex-col justify-between">
             <CardHeader>
                 <CardTitle>Formas de Pagamentos</CardTitle>
-                <CardDescription>Adicione os Produtos a venda na sua barbearia.</CardDescription>
+                <CardDescription>Adicione os métodos de pagamento aceitos na sua barbearia.</CardDescription>
             </CardHeader>
             <CardContent>
                 <TablePaymentMethod />

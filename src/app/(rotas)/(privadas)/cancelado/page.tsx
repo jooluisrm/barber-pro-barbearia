@@ -1,5 +1,9 @@
-// pages/cancelado.js
+import { MainCancelado } from "@/components/stripe/cancelado/mainCancelado";
+
 export default function PaginaCancelado() {
-  return <h1>Pagamento cancelado.</h1>;
-  // Você pode adicionar um link para o usuário tentar novamente.
+    return (
+        <section className="sm:ml-14 p-4 min-h-screen">
+            <MainCancelado />
+        </section>
+    );
 }
