@@ -5,15 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Agendamentos } from "@/types/agendamentos";
 import { Barbeiro } from "@/types/barbeiros";
 import { useEffect, useState } from "react";
-
-// Tipos simplificados para as prop
+import { RankingMedal } from "./RankingMedal";
+ // ✨ 1. IMPORTE O NOVO COMPONENTE
 
 type Props = {
   barbeiros: Barbeiro[] | null;
   agendamentos: Agendamentos[] | null;
 };
 
-// Novo tipo para os dados processados
 type Desempenho = {
   id: string;
   nome: string;
@@ -25,13 +24,11 @@ export const DesempenhoBarbeiros = ({ barbeiros, agendamentos }: Props) => {
   const [dadosDesempenho, setDadosDesempenho] = useState<Desempenho[]>([]);
 
   useEffect(() => {
-    // Só executa se ambos os dados existirem
     if (barbeiros && agendamentos) {
       const hoje = new Date();
       const anoAtual = hoje.getFullYear();
       const mesAtual = hoje.getMonth();
 
-      // 1. Contar agendamentos 'Feito' por barbeiro no mês atual
       const contagemPorBarbeiro = new Map<string, number>();
 
       agendamentos
@@ -48,7 +45,6 @@ export const DesempenhoBarbeiros = ({ barbeiros, agendamentos }: Props) => {
           contagemPorBarbeiro.set(ag.barbeiroId, contagemAtual + 1);
         });
 
-      // 2. Mapear os barbeiros, adicionar a contagem e ordenar
       const dadosProcessados = barbeiros
         .map(barbeiro => ({
           id: barbeiro.id,
@@ -56,7 +52,7 @@ export const DesempenhoBarbeiros = ({ barbeiros, agendamentos }: Props) => {
           fotoUrl: barbeiro.fotoPerfil,
           totalAgendamentos: contagemPorBarbeiro.get(barbeiro.id) || 0,
         }))
-        .sort((a, b) => b.totalAgendamentos - a.totalAgendamentos); // Ordena do maior para o menor
+        .sort((a, b) => b.totalAgendamentos - a.totalAgendamentos);
 
       setDadosDesempenho(dadosProcessados);
     }
@@ -65,13 +61,18 @@ export const DesempenhoBarbeiros = ({ barbeiros, agendamentos }: Props) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Melhores Barbeiros</CardTitle>
-        <CardDescription>Barbeiros com mais agendamentos concluídos no mês.</CardDescription>
+        <CardTitle>Pódio dos Barbeiros</CardTitle> {/* Título atualizado */}
+        <CardDescription>Ranking de agendamentos concluídos no mês.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {dadosDesempenho.length > 0 ? (
-          dadosDesempenho.map((barbeiro) => (
+          // Usamos o 'index' para saber a posição no ranking
+          dadosDesempenho.map((barbeiro, index) => (
             <div key={barbeiro.id} className="flex items-center space-x-4">
+                
+              {/* ✨ 2. ADICIONE O COMPONENTE DA MEDALHA AQUI ✨ */}
+              <RankingMedal rank={index} total={dadosDesempenho.length} />
+
               <Avatar>
                 <AvatarImage src={barbeiro.fotoUrl ?? undefined} alt={barbeiro.nome} />
                 <AvatarFallback>{barbeiro.nome.substring(0, 2).toUpperCase()}</AvatarFallback>

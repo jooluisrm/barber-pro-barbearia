@@ -154,7 +154,7 @@ export const MainHome = () => {
 
     return (
         <main className="flex-1 space-y-4">
-            <div className="pb-10 pt-5 flex justify-between items-center">
+            <div className="pb-10 pt-5 flex flex-col-reverse md:flex-row md:justify-between md:items-center">
                 <div>
                     <h1 className="text-xl md:text-2xl">
                         Bem-vindo(a) ao <span className="font-bold">BarberPro</span>, <span className="font-bold text-blue-500 text-nowrap">{barbearia?.nome}</span>!
@@ -163,7 +163,7 @@ export const MainHome = () => {
                 </div>
 
                 {/* ✨ DATA ATUALIZADA E ESTILIZADA AQUI ✨ */}
-                <div className="hidden md:flex flex-col items-end">
+                <div className="md:flex flex-col items-end">
                     <span className="font-medium text-lg">
                         {diaSemana}, <span className="font-bold text-blue-500 dark:text-blue-400">{diaDoMes} de {nomeDoMes}</span> de {ano}
                     </span>
