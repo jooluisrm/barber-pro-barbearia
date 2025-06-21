@@ -3,7 +3,7 @@
 import { Barbearia, useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { Agendamentos } from "@/types/agendamentos";
-import { getAgendamentos } from "@/api/agendamentos/agendamentoServices";
+import { getAgendamentos, getAgendamentosPendentes } from "@/api/agendamentos/agendamentoServices";
 import { getBarbeiros } from "@/api/barbeiros/barbeirosServices";
 import { Barbeiro } from "@/types/barbeiros";
 
@@ -15,6 +15,8 @@ import { GraficoServicosPopulares } from "./graficoServicosPopulares";
 import { DesempenhoBarbeiros } from "./desempenhoBarbeiros";
 import { TabelaProximosAgendamentos } from "./TabelaProximosAgendamentos";
 import { LiveClock } from "./liveClock";
+import { loadItems } from "@/utils/loadItems";
+import { usePendingScheduleContext } from "@/contexts/PendingScheduleContext";
 
 // Definindo o tipo para as métricas
 type Metricas = {
@@ -26,6 +28,8 @@ type Metricas = {
 
 export const MainHome = () => {
     const { barbearia } = useAuth();
+    const { setAgendamentosPendentes } = usePendingScheduleContext();
+
     const [agendamentos, setAgendamentos] = useState<Agendamentos[] | null>(null);
     const [barbeiros, setBarbeiros] = useState<Barbeiro[] | null>(null);
     const [metricas, setMetricas] = useState<Metricas | null>(null);
@@ -37,6 +41,7 @@ export const MainHome = () => {
                 setAgendamentos(dadosAgendamentos);
 
                 const dadosBarbeiros = await getBarbeiros(barbearia.id);
+                await loadItems(barbearia, getAgendamentosPendentes, setAgendamentosPendentes);
                 setBarbeiros(dadosBarbeiros);
 
                 if (dadosAgendamentos) {

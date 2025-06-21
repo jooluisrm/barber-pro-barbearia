@@ -42,15 +42,16 @@ export const DialogConcluirAgendamento = ({ agendamentosPendentes }: Props) => {
                         Esta operação localiza agendamentos pendentes cujo horário já expirou, para que o usuário possa avaliá-los e concluir conforme necessário.
                     </DialogDescription>
                 </DialogHeader>
-                <main className="flex flex-col gap-4 max-h-52 xl:max-h-[400px] overflow-y-hidden">
+                <main className="flex flex-col gap-4 pr-4 max-h-52 xl:max-h-[400px] overflow-y-auto">
                     {
-                        agendamentosPendentes &&
-                            agendamentosPendentes?.length > 0 ? agendamentosPendentes.map((item) => (
+                        agendamentosPendentes && agendamentosPendentes.length > 0
+                            ? agendamentosPendentes.map((item) => (
                                 <ItemConcluirAgendamento key={item.idAgendamento} item={item} />
-                            )) : <MensagemSemAgendamentosPendentes />
+                            ))
+                            : <MensagemSemAgendamentosPendentes />
                     }
-
                 </main>
+
             </DialogContent>
         </Dialog>
     );
