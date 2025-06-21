@@ -14,6 +14,7 @@ import { GraficoFaturamentoComparativo } from "./graficoFaturamentoComparativo";
 import { GraficoServicosPopulares } from "./graficoServicosPopulares";
 import { DesempenhoBarbeiros } from "./desempenhoBarbeiros";
 import { TabelaProximosAgendamentos } from "./TabelaProximosAgendamentos";
+import { LiveClock } from "./liveClock";
 
 // Definindo o tipo para as métricas
 type Metricas = {
@@ -167,7 +168,7 @@ export const MainHome = () => {
                         {diaSemana}, <span className="font-bold text-blue-500 dark:text-blue-400">{diaDoMes} de {nomeDoMes}</span> de {ano}
                     </span>
                     <span className="text-sm font-bold text-blue-500 dark:text-blue-400">
-                        {horaAtual}
+                        <LiveClock />
                     </span>
                 </div>
             </div>
