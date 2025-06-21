@@ -1,9 +1,10 @@
 "use client"
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Agendamentos } from "@/types/agendamentos";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"; 
+import { TabelaProximosAgendamentosSkeleton } from "./skeletons/tabelaProximosAgendamentosSkeleton";
 
 type Props = {
   agendamentos: Agendamentos[] | null;
@@ -19,7 +20,7 @@ export const TabelaProximosAgendamentos = ({ agendamentos }: Props) => {
 
       const filtrados = agendamentos
         .filter((ag: any) => {
-          const eHoje = ag.data === hojeFormatado;
+          const eHoje = ag.data.startsWith(hojeFormatado);
           const estaConfirmado = ag.status === 'Confirmado';
           const naoEstaVencido = ag.hora >= horaAtual;
           return eHoje && estaConfirmado && naoEstaVencido;
@@ -29,6 +30,11 @@ export const TabelaProximosAgendamentos = ({ agendamentos }: Props) => {
       setProximosAgendamentos(filtrados);
     }
   }, [agendamentos]);
+
+  // ✨ 2. ADICIONE O ESTADO DE CARREGAMENTO COM O SKELETON AQUI ✨
+  if (agendamentos === null) {
+      return <TabelaProximosAgendamentosSkeleton />
+  }
 
   return (
     <Card className="col-span-full">
@@ -47,15 +53,8 @@ export const TabelaProximosAgendamentos = ({ agendamentos }: Props) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {agendamentos === null ? (
-              <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
-                  Carregando...
-                </TableCell>
-              </TableRow>
-            ) : proximosAgendamentos.length > 0 ? (
+            {proximosAgendamentos.length > 0 ? (
               proximosAgendamentos.map((ag, index) => (
-                // ✨ DESTAQUE APLICADO AQUI ✨
                 <TableRow 
                   key={ag.id} 
                   className={index === 0 ? "bg-muted/50" : ""}

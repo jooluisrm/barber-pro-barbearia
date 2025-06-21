@@ -3,8 +3,9 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useEffect, useState } from "react";
+import { GraficoServicosPopularesSkeleton } from "./skeletons/graficoServicosPopularesSkeleton";
 
-// Tipos para as props que o componente vai receber
+
 type Agendamento = {
   status: string;
   servico: {
@@ -16,7 +17,6 @@ type Props = {
   agendamentos: Agendamento[] | null;
 };
 
-// Tipo para os dados já processados do gráfico
 type ServicoPopular = {
   nome: string;
   total: number;
@@ -26,10 +26,9 @@ export const GraficoServicosPopulares = ({ agendamentos }: Props) => {
   const [chartData, setChartData] = useState<ServicoPopular[]>([]);
 
   useEffect(() => {
+    // ... (sua lógica de useEffect continua a mesma)
     if (agendamentos) {
-      // 1. Contar a ocorrência de cada serviço 'Feito'
       const contagemServicos = new Map<string, number>();
-
       agendamentos
         .filter(ag => ag.status === 'Feito')
         .forEach(ag => {
@@ -37,19 +36,19 @@ export const GraficoServicosPopulares = ({ agendamentos }: Props) => {
           const contagemAtual = contagemServicos.get(nomeServico) || 0;
           contagemServicos.set(nomeServico, contagemAtual + 1);
         });
-
-      // 2. Converter o Map para o formato do array do gráfico
       const dadosProcessados = Array.from(contagemServicos, ([nome, total]) => ({
         nome,
         total,
       }));
-      
-      // 3. Ordenar do mais popular para o menos popular
       dadosProcessados.sort((a, b) => b.total - a.total);
-
       setChartData(dadosProcessados);
     }
   }, [agendamentos]);
+
+  // ✨ 2. ADICIONE O ESTADO DE CARREGAMENTO COM O SKELETON AQUI ✨
+  if (agendamentos === null) {
+      return <GraficoServicosPopularesSkeleton />
+  }
 
   return (
     <Card>
@@ -70,7 +69,7 @@ export const GraficoServicosPopulares = ({ agendamentos }: Props) => {
                 fontSize={12} 
                 tickLine={false} 
                 axisLine={false} 
-                width={120} // Ajuste a largura se os nomes forem grandes
+                width={120}
                 interval={0}
               />
               <Tooltip 
@@ -79,14 +78,14 @@ export const GraficoServicosPopulares = ({ agendamentos }: Props) => {
                   backgroundColor: "hsl(var(--background))",
                   borderColor: "hsl(var(--border))",
                   borderRadius: "var(--radius)",
-                  color: "hsl(var(--foreground))", // Corrigindo para o texto do tooltip
+                  color: "hsl(var(--foreground))",
                 }}
               />
               <Bar dataKey="total" name="Agendamentos" fill="#2563eb" radius={[0, 4, 4, 0]} />
             </BarChart>
           ) : (
             <div className="flex items-center justify-center h-full text-muted-foreground">
-              {agendamentos ? "Nenhum serviço concluído para exibir." : "Carregando..."}
+              Nenhum serviço concluído para exibir.
             </div>
           )}
         </ResponsiveContainer>

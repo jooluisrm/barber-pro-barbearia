@@ -6,7 +6,7 @@ import { Agendamentos } from "@/types/agendamentos";
 import { Barbeiro } from "@/types/barbeiros";
 import { useEffect, useState } from "react";
 import { RankingMedal } from "./RankingMedal";
- // ✨ 1. IMPORTE O NOVO COMPONENTE
+import { DesempenhoBarbeirosSkeleton } from "./skeletons/desempenhoBarbeirosSkeleton";
 
 type Props = {
   barbeiros: Barbeiro[] | null;
@@ -24,6 +24,7 @@ export const DesempenhoBarbeiros = ({ barbeiros, agendamentos }: Props) => {
   const [dadosDesempenho, setDadosDesempenho] = useState<Desempenho[]>([]);
 
   useEffect(() => {
+    // ... (sua lógica de useEffect continua a mesma)
     if (barbeiros && agendamentos) {
       const hoje = new Date();
       const anoAtual = hoje.getFullYear();
@@ -58,21 +59,23 @@ export const DesempenhoBarbeiros = ({ barbeiros, agendamentos }: Props) => {
     }
   }, [barbeiros, agendamentos]);
 
+  // ✨ 2. ADICIONE O ESTADO DE CARREGAMENTO COM O SKELETON AQUI ✨
+  if (!barbeiros || !agendamentos) {
+      return <DesempenhoBarbeirosSkeleton />
+  }
+
   return (
-    <Card>
+    <Card className="min-h-full">
       <CardHeader>
-        <CardTitle>Pódio dos Barbeiros</CardTitle> {/* Título atualizado */}
+        <CardTitle>Pódio dos Barbeiros</CardTitle>
         <CardDescription>Ranking de agendamentos concluídos no mês.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* A verificação agora é apenas para o caso de ter dados mas a lista estar vazia */}
         {dadosDesempenho.length > 0 ? (
-          // Usamos o 'index' para saber a posição no ranking
           dadosDesempenho.map((barbeiro, index) => (
             <div key={barbeiro.id} className="flex items-center space-x-4">
-                
-              {/* ✨ 2. ADICIONE O COMPONENTE DA MEDALHA AQUI ✨ */}
               <RankingMedal rank={index} total={dadosDesempenho.length} />
-
               <Avatar>
                 <AvatarImage src={barbeiro.fotoUrl ?? undefined} alt={barbeiro.nome} />
                 <AvatarFallback>{barbeiro.nome.substring(0, 2).toUpperCase()}</AvatarFallback>
@@ -85,8 +88,8 @@ export const DesempenhoBarbeiros = ({ barbeiros, agendamentos }: Props) => {
             </div>
           ))
         ) : (
-          <div className="flex items-center justify-center h-full text-muted-foreground">
-             {barbeiros && agendamentos ? "Nenhum agendamento concluído este mês." : "Carregando..."}
+          <div className="flex items-center justify-center h-full text-muted-foreground pt-10">
+            Nenhum agendamento concluído este mês.
           </div>
         )}
       </CardContent>
