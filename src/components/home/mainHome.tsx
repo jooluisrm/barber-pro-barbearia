@@ -17,6 +17,7 @@ import { TabelaProximosAgendamentos } from "./TabelaProximosAgendamentos";
 import { LiveClock } from "./liveClock";
 import { loadItems } from "@/utils/loadItems";
 import { usePendingScheduleContext } from "@/contexts/PendingScheduleContext";
+import { HeaderPage } from "../reultilizar/headerPage";
 
 // Definindo o tipo para as métricas
 type Metricas = {
@@ -142,41 +143,13 @@ export const MainHome = () => {
         carregarDados();
     }, [barbearia]);
 
-    // Dentro da sua função MainHome, antes do return
-
-    // LÓGICA ATUALIZADA PARA FORMATAR A DATA EM PARTES
-    const hoje = new Date();
-
-    // Pega cada parte da data individualmente
-    let diaSemana = new Intl.DateTimeFormat('pt-BR', { weekday: 'long' }).format(hoje);
-    const diaDoMes = hoje.getDate();
-    const nomeDoMes = new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(hoje);
-    const ano = hoje.getFullYear();
-    const horaAtual = hoje.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-    // Capitaliza o dia da semana
-    diaSemana = diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1);
-
     return (
         <main className="flex-1 space-y-4">
-            <div className="pb-10 pt-5 flex flex-col-reverse md:flex-row md:justify-between md:items-center">
-                <div>
-                    <h1 className="text-xl md:text-2xl">
-                        Bem-vindo(a) ao <span className="font-bold">BarberPro</span>, <span className="font-bold text-blue-500 text-nowrap">{barbearia?.nome}</span>!
-                    </h1>
-                    <p className="text-muted-foreground">Seu resumo mensal está pronto abaixo.</p>
-                </div>
-
-                {/* ✨ DATA ATUALIZADA E ESTILIZADA AQUI ✨ */}
-                <div className="md:flex flex-col items-end">
-                    <span className="font-medium text-lg">
-                        {diaSemana}, <span className="font-bold text-blue-500 dark:text-blue-400">{diaDoMes} de {nomeDoMes}</span> de {ano}
-                    </span>
-                    <span className="text-sm font-bold text-blue-500 dark:text-blue-400">
-                        <LiveClock />
-                    </span>
-                </div>
-            </div>
+           
+            <HeaderPage
+                subTitle="Seu resumo mensal está pronto abaixo."
+                barberName={barbearia?.nome}
+            />
 
             {/* A ÚNICA ALTERAÇÃO NO JSX É ESSA LINHA */}
             <VisaoGeralCards metricas={metricas} />

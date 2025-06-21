@@ -16,6 +16,7 @@ import { loadItems } from "@/utils/loadItems";
 import { useScheduleContext } from "@/contexts/scheduleContext";
 import { DialogConcluirAgendamento } from "./dialogConcluirAgendamento";
 import { usePendingScheduleContext } from "@/contexts/PendingScheduleContext";
+import { HeaderPage } from "../reultilizar/headerPage";
 
 export const MainAgendamentos = () => {
     const { barbearia } = useAuth();
@@ -114,14 +115,11 @@ export const MainAgendamentos = () => {
     return (
         <main>
             {/* Título e descrição */}
-            <div className="pb-6 pt-5 text-center sm:text-left">
-                <h1 className="text-2xl sm:text-3xl font-semibold">
-                    Painel de <span className="text-blue-500">Agendamentos</span>
-                </h1>
-                <p className="text-muted-foreground text-sm sm:text-base">
-                    Visualize, filtre e gerencie todos os agendamentos da sua barbearia.
-                </p>
-            </div>
+           
+            <HeaderPage 
+                subTitle="Visualize, filtre e gerencie todos os agendamentos da sua barbearia."
+                title="Agendamentos"
+            />
 
             {/* Container principal */}
             <div className="space-y-4">

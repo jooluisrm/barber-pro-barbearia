@@ -10,18 +10,15 @@ import { ProductContextProvider } from "@/contexts/ProductsContext";
 import { SocialContextProvider } from "@/contexts/SocialContext";
 import { PaymentContextProvider } from "@/contexts/PaymentContext";
 import { OpeningHoursContextProvider } from "@/contexts/OpeningHoursContext";
+import { HeaderPage } from "../reultilizar/headerPage";
 
 export const MainBarbearia = () => {
     return (
         <main className="pb-10">
-            <div className="pb-6 pt-5 text-center sm:text-left">
-                <h1 className="text-2xl sm:text-3xl font-semibold">
-                    Painel da <span className="text-blue-500">Barbearia</span>
-                </h1>
-                <p className="text-muted-foreground text-sm sm:text-base">
-                    Visualize, crie e gerencie todos os elementos da sua barbearia.
-                </p>
-            </div>
+            <HeaderPage
+                subTitle="Visualize, crie e gerencie todos os elementos da sua barbearia."
+                title="Barbearia"
+            />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <ServiceContextProvider>
                     <CardServices />

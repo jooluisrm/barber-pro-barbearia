@@ -1,7 +1,12 @@
+import { HeaderPage } from "../reultilizar/headerPage";
+
 export const MainProfile = () => {
     return (
         <main>
-            Perfil
+            <HeaderPage 
+                subTitle="Perfil"
+                title="Perfil"
+            />
         </main>
     );
 }
