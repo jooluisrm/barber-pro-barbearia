@@ -75,7 +75,7 @@ export const DesempenhoBarbeiros = ({ barbeiros, agendamentos }: Props) => {
         {dadosDesempenho.length > 0 ? (
           dadosDesempenho.map((barbeiro, index) => (
             <div key={barbeiro.id} className="flex items-center space-x-4">
-              <RankingMedal rank={index} total={dadosDesempenho.length} />
+              <RankingMedal rank={index} />
               <Avatar>
                 <AvatarImage src={barbeiro.fotoUrl ?? undefined} alt={barbeiro.nome} />
                 <AvatarFallback>{barbeiro.nome.substring(0, 2).toUpperCase()}</AvatarFallback>
