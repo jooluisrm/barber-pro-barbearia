@@ -1,29 +1,36 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DollarSign, ArrowUpRight, ArrowDownRight, CalendarCheck, Users, Percent } from "lucide-react"
+import { AnimatedNumber } from "./AnimatedNumber" // 👈 Importe o novo componente
 
-// Dados Fake para as métricas
-const metricas = {
-  faturamento: {
-    valor: 7850.50,
-    variacao: 12.5, // Variação positiva em % em relação ao período anterior
-  },
-  agendamentos: {
-    valor: 215,
-    variacao: -3.2, // Variação negativa
-  },
-  ticketMedio: {
-    valor: 36.51,
-    variacao: 8.1,
-  },
-  novosClientes: {
-    valor: 32,
-    variacao: 20,
-  }
+// Definindo os tipos para as props que o componente vai receber
+type Metricas = {
+  faturamento: { valor: number; variacao: number };
+  agendamentos: { valor: number; variacao: number };
+  ticketMedio: { valor: number; variacao: number };
+  novosClientes: { valor: number; variacao: number };
 }
 
-export const VisaoGeralCards = () => {
+type Props = {
+  metricas: Metricas | null; // Pode ser nulo enquanto os dados carregam
+}
+
+export const VisaoGeralCards = ({ metricas }: Props) => {
+
+  // Mostra um estado de carregamento ou retorna nulo se não houver dados
+  if (!metricas) {
+    return (
+        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {/* Você pode colocar "skeletons" de carregamento aqui */}
+            <Card><CardHeader><CardTitle>Carregando...</CardTitle></CardHeader></Card>
+            <Card><CardHeader><CardTitle>Carregando...</CardTitle></CardHeader></Card>
+            <Card><CardHeader><CardTitle>Carregando...</CardTitle></CardHeader></Card>
+            <Card><CardHeader><CardTitle>Carregando...</CardTitle></CardHeader></Card>
+        </section>
+    )
+  }
+
   return (
     <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {/* Card: Faturamento Mensal */}
@@ -33,9 +40,13 @@ export const VisaoGeralCards = () => {
           <DollarSign className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">
-            {metricas.faturamento.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-          </div>
+          {/* 👇 SUBSTITUÍDO PELO COMPONENTE ANIMADO */}
+          <AnimatedNumber 
+            value={metricas.faturamento.valor} 
+            format="currency"
+            prefix="R$ "
+            className="text-2xl font-bold"
+          />
           <p className="text-xs text-muted-foreground flex items-center">
             {metricas.faturamento.variacao >= 0 ? 
               <ArrowUpRight className="h-4 w-4 text-emerald-500" /> : 
@@ -56,7 +67,12 @@ export const VisaoGeralCards = () => {
           <CalendarCheck className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">+{metricas.agendamentos.valor}</div>
+          {/* 👇 SUBSTITUÍDO PELO COMPONENTE ANIMADO */}
+          <AnimatedNumber 
+            value={metricas.agendamentos.valor}
+            prefix="+"
+            className="text-2xl font-bold"
+          />
            <p className="text-xs text-muted-foreground flex items-center">
             {metricas.agendamentos.variacao >= 0 ? 
               <ArrowUpRight className="h-4 w-4 text-emerald-500" /> : 
@@ -77,9 +93,13 @@ export const VisaoGeralCards = () => {
           <Percent className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">
-            {metricas.ticketMedio.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-          </div>
+          {/* 👇 SUBSTITUÍDO PELO COMPONENTE ANIMADO */}
+          <AnimatedNumber 
+            value={metricas.ticketMedio.valor}
+            format="currency"
+            prefix="R$ "
+            className="text-2xl font-bold"
+          />
            <p className="text-xs text-muted-foreground flex items-center">
             {metricas.ticketMedio.variacao >= 0 ? 
               <ArrowUpRight className="h-4 w-4 text-emerald-500" /> : 
@@ -100,7 +120,12 @@ export const VisaoGeralCards = () => {
           <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">+{metricas.novosClientes.valor}</div>
+          {/* 👇 SUBSTITUÍDO PELO COMPONENTE ANIMADO */}
+          <AnimatedNumber 
+            value={metricas.novosClientes.valor}
+            prefix="+"
+            className="text-2xl font-bold"
+          />
            <p className="text-xs text-muted-foreground flex items-center">
             {metricas.novosClientes.variacao >= 0 ? 
               <ArrowUpRight className="h-4 w-4 text-emerald-500" /> : 
