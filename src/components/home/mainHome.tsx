@@ -9,6 +9,12 @@ import { ChartBarbeirosAgendamentos } from "./chartBarbeirosAgendamentos";
 import { getBarbeiros } from "@/api/barbeiros/barbeirosServices";
 import { Barbeiro } from "@/types/barbeiros";
 import { ChartAgendamentosServicos } from "./chartAgendamentosServicos";
+import { VisaoGeralCards } from "./visaoGeralCards";
+import { GraficoStatusAgendamentos } from "./graficoStatusAgendamentos";
+import { GraficoFaturamentoComparativo } from "./graficoFaturamentoComparativo";
+import { GraficoServicosPopulares } from "./graficoServicosPopulares";
+import { DesempenhoBarbeiros } from "./desempenhoBarbeiros";
+import { TabelaProximosAgendamentos } from "./TabelaProximosAgendamentos";
 
 export const MainHome = () => {
 
@@ -57,18 +63,44 @@ export const MainHome = () => {
         carregarAgendamentos();
     }, [barbearia]);
 
+    //<ChartBarbeirosAgendamentos barbeiros={barbeiros} agendamentos={agendamentos} />
+    //          <ChartAgendamentosServicos agendamentos={agendamentos} />
+    //        <ChartFaturamentoAgendamento agendamentosPorMes={agendamentosPorMes} faturamentoPorMes={faturamentoPorMes} />
+
+    
     return (
-        <main>
+        <main className="flex-1 space-y-4">
             <div className="pb-10 pt-5">
                 <h1 className="text-xl md:text-2xl">Bem-vindo(a) ao <span className="font-bold">BarberPro</span>, <span className="font-bold text-blue-500 text-nowrap">{barbearia?.nome}</span>!</h1>
                 <p className="text-muted-foreground">Seu resumo mensal está pronto abaixo.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 ">
-                <ChartBarbeirosAgendamentos barbeiros={barbeiros} agendamentos={agendamentos} />
-                <ChartAgendamentosServicos agendamentos={agendamentos} />
-                <ChartFaturamentoAgendamento agendamentosPorMes={agendamentosPorMes} faturamentoPorMes={faturamentoPorMes} />
+            <VisaoGeralCards />
+
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+                <div className="lg:col-span-4">
+                    {/* Seção 2: Faturamento */}
+                    <GraficoFaturamentoComparativo />
+                </div>
+                <div className="lg:col-span-3">
+                    {/* Seção 2: Status */}
+                    <GraficoStatusAgendamentos />
+                </div>
             </div>
+
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+                <div className="lg:col-span-4">
+                    {/* Seção 3: Serviços */}
+                    <GraficoServicosPopulares />
+                </div>
+                <div className="lg:col-span-3">
+                    {/* Seção 3: Barbeiros */}
+                    <DesempenhoBarbeiros />
+                </div>
+            </div>
+
+            {/* Seção 4: Tabela */}
+            <TabelaProximosAgendamentos />
         </main>
     );
 }
