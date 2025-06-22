@@ -20,6 +20,7 @@ interface AuthContextType {
     token: string | null;
     login: (userData: { barbearia: Barbearia; token: string }) => void;
     logout: () => void;
+    updateBarbearia: (newBarbeariaData: Barbearia) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -83,8 +84,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }, 500);
     };
 
+    const updateBarbearia = (newBarbeariaData: Barbearia) => {
+        setBarbearia(newBarbeariaData);
+        if (typeof window !== "undefined") {
+            localStorage.setItem("barbearia", JSON.stringify(newBarbeariaData));
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ barbearia, token, login, logout }}>
+        <AuthContext.Provider value={{ barbearia, token, login, logout, updateBarbearia }}>
             {children}
         </AuthContext.Provider>
     );
