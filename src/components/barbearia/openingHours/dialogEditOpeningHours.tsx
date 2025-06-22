@@ -61,7 +61,7 @@ export const DialogEditOpeningHours = ({ itemOpeningHours }: Props) => {
     }
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={setOpen} modal={false}>
             <DialogTrigger asChild>
                 <TooltipProvider>
                     <Tooltip>

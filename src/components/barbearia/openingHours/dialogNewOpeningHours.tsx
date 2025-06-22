@@ -62,9 +62,9 @@ export const DialogNewOpeningHours = () => {
     }
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={setOpen} modal={false}>
             <DialogTrigger asChild>
-                <NovoItem onCLick={setOpen}/>
+                <NovoItem onCLick={setOpen}/> 
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">
