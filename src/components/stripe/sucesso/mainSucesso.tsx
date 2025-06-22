@@ -29,7 +29,7 @@ export const MainSucesso = () => {
                 // Opcional: redireciona o usuário para a página de assinaturas ou dashboard após a atualização
                 setTimeout(() => {
                     router.push('/assinaturas');
-                }, 2000); // Espera 2 segundos antes de redirecionar
+                }, 5000); // Espera 5 segundos antes de redirecionar
 
             } catch (error) {
                 console.error("Falha ao buscar dados atualizados do usuário.", error);
