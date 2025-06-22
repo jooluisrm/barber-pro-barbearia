@@ -15,6 +15,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { useForm } from "react-hook-form";
+import Image from "next/image";
 
 const formSchema = z.object({
     email: z.string().email('E-mail inválido!'),
@@ -60,57 +61,87 @@ export const MainLogin = () => {
     }
 
     return (
-        <main className="min-w-[450px] mt-20 flex flex-col items-center">
-            <TitlePage title="BarberPro" subtitle="Entrar na plataforma" />
+        <main className="flex min-h-screen w-full items-center justify-center p-4">
+            {/* Painel principal que será centralizado */}
+            <div className="w-full max-w-4xl lg:grid lg:grid-cols-2 rounded-2xl bg-card overflow-hidden">
 
-            <div className="flex flex-col gap-5">
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>E-mail</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Digite seu e-mail..." {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="senha"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Senha</FormLabel>
-                                    <FormControl>
-                                        <div className="relative flex items-center">
-                                            <Input
-                                                id="senha"
-                                                type={`${mostrarSenha ? "text" : "password"}`}
-                                                placeholder="Digite sua senha..."
-                                                className="flex-1 pr-10"
-                                                {...field}
-                                            />
-                                            <div className="absolute right-3 cursor-pointer" onClick={() => ocultarMostrarSenha(setMostrarSenha, mostrarSenha)}>
-                                                {!mostrarSenha ? <EyeClosed /> : <Eye />}
-                                            </div>
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <Button type="submit" className="font-bold" disabled={loading || barbearia != null}>
-                            {loading ? <LoaderCircle className="animate-spin"/> : "Entrar"}
-                        </Button>
-                        <div className="text-sm dark:text-gray-400 text-gray-600">
-                            Não tem uma conta?  <Link href={"/register"}><span className="font-bold text-blue-500 cursor-pointer">Cadastre-se aqui</span></Link> e comece agora!
-                        </div>
-                    </form>
-                </Form>
+                {/* Coluna da Esquerda (Boas-vindas e Logo) */}
+                <div className="hidden lg:flex flex-col items-center justify-center gap-6 p-12 text-center bg-[#f7f7f7] dark:bg-[#1d1d1d]">
+                    <Image
+                        alt="Logo BarberPro"
+                        width={150}
+                        height={150}
+                        src={"/barberpro-removebg.png"}
+                        className="bg-white rounded-full border"
+                    />
+                    <div className="space-y-2">
+                        <h1 className="text-3xl font-bold">Bem-vindo ao <span className="font-extrabold">BarberPro</span>!</h1>
+                        <p className="text-muted-foreground">
+                            A plataforma completa para gerenciar sua barbearia com eficiência e estilo.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Coluna da Direita (Formulário) */}
+                <div className="max-w-[500px] mx-auto flex flex-col justify-center p-8 sm:p-12 border-l border-t border-r border-b rounded-tl-2xl rounded-bl-2xl lg:rounded-tl-none lg:rounded-bl-none rounded-tr-2xl rounded-br-2xl">
+                    <TitlePage title="Acesse sua conta" subtitle="Entre na plataforma para começar" />
+
+                    <div className="mt-6 flex flex-col gap-5">
+                        <Form {...form}>
+                            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
+                                <FormField
+                                    control={form.control}
+                                    name="email"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>E-mail</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="Digite seu e-mail" {...field} />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="senha"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Senha</FormLabel>
+                                            <FormControl>
+                                                <div className="relative flex items-center">
+                                                    <Input
+                                                        id="senha"
+                                                        type={`${mostrarSenha ? "text" : "password"}`}
+                                                        placeholder="Digite sua senha"
+                                                        className="pr-10"
+                                                        {...field}
+                                                    />
+                                                    <div className="absolute right-3 cursor-pointer" onClick={() => setMostrarSenha(!mostrarSenha)}>
+                                                        {!mostrarSenha ? <EyeClosed className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
+                                                    </div>
+                                                </div>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button type="submit" className="font-bold w-full" disabled={loading || barbearia != null}>
+                                    {loading ? <LoaderCircle className="animate-spin" /> : "Entrar"}
+                                </Button>
+                                <div className="text-center text-sm text-muted-foreground">
+                                    Não tem uma conta?{" "}
+                                    <Link href={"/register"}>
+                                        <span className="font-bold text-blue-500 underline-offset-4 hover:underline">
+                                            Cadastre-se aqui
+                                        </span>
+                                    </Link>
+                                </div>
+                            </form>
+                        </Form>
+                    </div>
+                </div>
+
             </div>
         </main>
     );

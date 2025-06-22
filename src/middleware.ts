@@ -35,6 +35,6 @@ export const config = {
      * - favicon.ico (ícone do site)
      * - favicon.png (outro formato de ícone) ✅
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|favicon.png).*)', // ✅ ALTERAÇÃO AQUI
+    '/((?!api|_next/static|_next/image|favicon.ico|favicon.png|img.png|barberpro-removebg.png).*)', // ✅ ALTERAÇÃO AQUI
   ],
 };
