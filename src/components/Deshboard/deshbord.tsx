@@ -11,7 +11,7 @@ export const Deshboard = () => {
     const {agendamentosPendentes} = usePendingScheduleContext();
 
     const [rotaAtual, setRotaAtual] = useState("");
-    const { token } = useAuth();
+    const { token, usuario } = useAuth();
     const pathname = usePathname(); // Pega o caminho da URL
 
     useEffect(() => {
@@ -20,9 +20,9 @@ export const Deshboard = () => {
     }, [pathname]); // Executa o efeito sempre que a rota mudar
 
     return (
-        <div className="flex w-full flex-col bg-muted/40">
-            <DeshboardPc token={token} rotaAtual={rotaAtual} agendamentosPendentes={agendamentosPendentes}/>
-            <DeshboardMobile token={token} rotaAtual={rotaAtual} agendamentosPendentes={agendamentosPendentes}/>
+        <div className={`flex w-full flex-col bg-muted/40 ${!usuario && "hidden"}`}>
+            <DeshboardPc usuario={usuario} token={token} rotaAtual={rotaAtual} agendamentosPendentes={agendamentosPendentes}/>
+            <DeshboardMobile usuario={usuario} token={token} rotaAtual={rotaAtual} agendamentosPendentes={agendamentosPendentes}/>
         </div>
     );
 };

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { TableAgendamentos } from "./tableAgendamentos";
 import { AgendamentoPendente, Agendamentos } from "@/types/agendamentos";
 import { useAuth } from "@/contexts/AuthContext";
-import { getAgendamentos, getAgendamentosPendentes } from "@/api/agendamentos/agendamentoServices";
+import { getAgendamentos, getAgendamentosBarbeiro, getAgendamentosPendentes, getAgendamentosPendentesBarbeiro } from "@/api/agendamentos/agendamentoServices";
 import { SelectFilterStatus } from "./selectFilterStatus";
 import { CalendarioFilter } from "./calendarioFilter";
 import { SelectFilterBarbeiro } from "./selectFilterBarbeiro";
@@ -19,9 +19,9 @@ import { usePendingScheduleContext } from "@/contexts/PendingScheduleContext";
 import { HeaderPage } from "../reultilizar/headerPage";
 
 export const MainAgendamentos = () => {
-    const { barbearia } = useAuth();
+    const { barbearia, usuario } = useAuth();
     const { setAgendamentos, agendamentos } = useScheduleContext();
-    const {agendamentosPendentes, setAgendamentosPendentes} = usePendingScheduleContext();
+    const { agendamentosPendentes, setAgendamentosPendentes } = usePendingScheduleContext();
 
     const [barbeiros, setBarbeiros] = useState<Barbeiro[] | null>(null);
     const [agendamentosFiltrados, setAgendamentosFiltrados] = useState<Agendamentos[] | null>(null);
@@ -31,11 +31,20 @@ export const MainAgendamentos = () => {
     const [date, setDate] = useState<Date>()
 
     useEffect(() => {
-        loadItems(barbearia, getAgendamentos, setAgendamentos)
+        if (usuario && usuario.role === "ADMIN") {
+            loadItems(barbearia, getAgendamentos, setAgendamentos);
+        } else {
+            loadItems(usuario?.perfilBarbeiro, getAgendamentosBarbeiro, setAgendamentos);
+        }
+
     }, [barbearia, date]);
 
     useEffect(() => {
-        loadItems(barbearia, getAgendamentosPendentes, setAgendamentosPendentes);
+        if(usuario && usuario.role === "ADMIN") {
+            loadItems(barbearia, getAgendamentosPendentes, setAgendamentosPendentes);
+        } else {
+            loadItems(usuario?.perfilBarbeiro, getAgendamentosPendentesBarbeiro, setAgendamentosPendentes);
+        }
     }, [barbearia, agendamentos]);
 
     useEffect(() => {
@@ -115,8 +124,8 @@ export const MainAgendamentos = () => {
     return (
         <main>
             {/* Título e descrição */}
-           
-            <HeaderPage 
+
+            <HeaderPage
                 subTitle="Visualize, filtre e gerencie todos os agendamentos da sua barbearia."
                 title="Agendamentos"
             />
@@ -127,13 +136,13 @@ export const MainAgendamentos = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="gap-4 grid grid-cols-2">
                         <DialogNovoAgendamento />
-                        <DialogConcluirAgendamento agendamentosPendentes={agendamentosPendentes}/>
+                        <DialogConcluirAgendamento agendamentosPendentes={agendamentosPendentes} />
                     </div>
 
                     {/* 🔹 Filtros - Organiza responsivamente */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-center gap-4">
                         <CalendarioFilter date={date} setDate={setDate} />
-                        <SelectFilterBarbeiro handleSelect={handleSelectBarbeiro} barbeiros={barbeiros} />
+                        {usuario && usuario.role === "ADMIN" && <SelectFilterBarbeiro handleSelect={handleSelectBarbeiro} barbeiros={barbeiros} />}
                         <SelectFilterStatus handleSelect={handleSelectStatus} />
                     </div>
                 </div>

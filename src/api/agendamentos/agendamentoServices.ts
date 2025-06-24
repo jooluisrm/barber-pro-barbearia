@@ -9,6 +9,14 @@ export const getAgendamentos = async (barbeariaId: string) => {
         throw error.response?.data?.error;
     }
 }
+export const getAgendamentosBarbeiro = async (barbeiroId: string) => {
+    try {
+        const response = await axiosInstance.get(`/barbearia/agendamentos/barbeiro/${barbeiroId}`);
+        return response.data;
+    } catch (error: any) {
+        throw error.response?.data?.error;
+    }
+}
 
 export const editarAgendamento = async (agendamentoId: string, status: "Confirmado" | "Feito" | "Cancelado") => {
     try {
@@ -56,6 +64,15 @@ export const postAgendamento = async (data: DataNewAgendamento) => {
 export const getAgendamentosPendentes = async (barbeariaId: string) => {
     try {
         const response = await axiosInstance.get(`/barbearia/agendamentos/pendente/${barbeariaId}`);
+        return response.data;
+    } catch (error: any) {
+        throw error.response?.data?.error;
+    }
+}
+
+export const getAgendamentosPendentesBarbeiro = async (barbeiroId: string) => {
+    try {
+        const response = await axiosInstance.get(`/barbearia/agendamentos/pendente/barbeiro/${barbeiroId}`);
         return response.data;
     } catch (error: any) {
         throw error.response?.data?.error;

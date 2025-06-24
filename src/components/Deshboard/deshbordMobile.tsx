@@ -6,14 +6,16 @@ import imgIcon from "../../../public/assets/BarberProIcone-removebg-preview.png"
 import { CircleUserRound, Gem, House, LogOut, NotebookPen, Package, PanelBottom, Store, Users } from "lucide-react";
 import { AlertLogout } from "../loginAndRegister/alertLogout";
 import { AgendamentoPendente } from "@/types/agendamentos";
+import { Usuario } from "@/contexts/AuthContext";
 
 type Props = {
     token: string | null;
+    usuario: Usuario | null;
     rotaAtual: string;
     agendamentosPendentes: AgendamentoPendente[] | null;
 }
 
-export const DeshboardMobile = ({ token, rotaAtual, agendamentosPendentes }: Props) => {
+export const DeshboardMobile = ({ token, rotaAtual, agendamentosPendentes, usuario }: Props) => {
     return (
         <div className="sm:hidden flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
             <header className="sticky top-0 z-30 flex h-14 items-center px-4 border-b bg-background gap-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
@@ -70,28 +72,36 @@ export const DeshboardMobile = ({ token, rotaAtual, agendamentosPendentes }: Pro
                                 Agendamentos
                             </Link>
 
-                            <Link
-                                href={"/barbeiros"}
-                                className={`
+                            {
+                                usuario?.role === "ADMIN" && (
+                                    <Link
+                                        href={"/barbeiros"}
+                                        className={`
                                     flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground transition-all
                                     ${rotaAtual === "/barbeiros" && "dark:text-white text-black"}
                                     `}
-                                prefetch={false}
-                            >
-                                <Users className="h-5 w-5" />
-                                Barbeiros
-                            </Link>
+                                        prefetch={false}
+                                    >
+                                        <Users className="h-5 w-5" />
+                                        Barbeiros
+                                    </Link>
+                                )
+                            }
+
+                            {
+                                usuario?.role === "ADMIN" && (
+                                    <Link
+                                        href={"/barbearia"}
+                                        className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground transition-all"
+                                        prefetch={false}
+                                    >
+                                        <Store className="h-5 w-5" />
+                                        Barbearia
+                                    </Link>
+                                )
+                            }
 
                             <Link
-                                href={"/barbearia"}
-                                className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground transition-all"
-                                prefetch={false}
-                            >
-                                <Store className="h-5 w-5" />
-                                Barbearia
-                            </Link>
-
-                             <Link
                                 href={"/perfil"}
                                 className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground transition-all"
                                 prefetch={false}
@@ -100,14 +110,18 @@ export const DeshboardMobile = ({ token, rotaAtual, agendamentosPendentes }: Pro
                                 Perfil
                             </Link>
 
-                            <Link
-                                href={"/assinaturas"}
-                                className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground transition-all"
-                                prefetch={false}
-                            >
-                                <Gem className="h-5 w-5" />
-                                Assinaturas
-                            </Link>
+                            {
+                                usuario?.role === "ADMIN" && (
+                                    <Link
+                                        href={"/assinaturas"}
+                                        className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground transition-all"
+                                        prefetch={false}
+                                    >
+                                        <Gem className="h-5 w-5" />
+                                        Assinaturas
+                                    </Link>
+                                )
+                            }
 
 
                             {

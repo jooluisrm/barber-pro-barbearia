@@ -29,7 +29,7 @@ type Metricas = {
 };
 
 export const MainHome = () => {
-     const { barbearia } = useAuth();
+     const { barbearia, usuario } = useAuth();
      const {setAgendamentosPendentes} = usePendingScheduleContext();
 
     // Estados para os dados brutos da API

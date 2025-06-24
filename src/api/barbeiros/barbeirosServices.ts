@@ -99,12 +99,6 @@ export const getHorariosDisponiveis = async (barbeiroId: string, data: string, h
         return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao carregar horários Disponíveis";
-        toast.error(errorMessage, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
     }
 }
 

@@ -6,14 +6,16 @@ import imgIcon from "../../../public/assets/BarberProIcone-removebg-preview.png"
 import { AlertLogout } from "../loginAndRegister/alertLogout";
 import { ModeToggle } from "../buttonTheme";
 import { AgendamentoPendente } from "@/types/agendamentos";
+import { Usuario } from "@/contexts/AuthContext";
 
 type Props = {
     token: string | null;
+    usuario: Usuario | null;
     rotaAtual: string;
     agendamentosPendentes: AgendamentoPendente[] | null;
 }
 
-export const DeshboardPc = ({ token, rotaAtual, agendamentosPendentes }: Props) => {
+export const DeshboardPc = ({ token, rotaAtual, agendamentosPendentes, usuario }: Props) => {
     return (
         <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 border-r bg-background sm:flex flex-col">
             <nav className="flex flex-col items-center gap-4 px-2 py-5">
@@ -26,10 +28,10 @@ export const DeshboardPc = ({ token, rotaAtual, agendamentosPendentes }: Props) 
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Link
-                                href={"/"}
+                                href={`/`}
                                 className={`
                                     flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground 
-                                    ${rotaAtual === "/" && "dark:text-white text-black"}
+                                    ${rotaAtual === `/` && "dark:text-white text-black"}
                                     `}
                             >
                                 <House className="h-5 w-5" />
@@ -42,10 +44,10 @@ export const DeshboardPc = ({ token, rotaAtual, agendamentosPendentes }: Props) 
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Link
-                                href={"/agendamentos"}
+                                href={`/agendamentos`}
                                 className={`
                                     relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground 
-                                    ${rotaAtual === "/agendamentos" && "dark:text-white text-black"}
+                                    ${rotaAtual === `/agendamentos` && "dark:text-white text-black"}
                                     `}
                             >
                                 <NotebookPen className="h-5 w-5" />
@@ -53,7 +55,7 @@ export const DeshboardPc = ({ token, rotaAtual, agendamentosPendentes }: Props) 
                                     className={`
                                     absolute -top-1 -right-1 w-5 h-5 bg-red-600 rounded-full
                                     flex items-center justify-center text-[10px] text-white
-                                    ${rotaAtual === "/agendamentos" && "hidden"}
+                                    ${rotaAtual === `/agendamentos` && "hidden"}
                                     ${agendamentosPendentes === null && "hidden"}
                                     `}
                                 >
@@ -65,37 +67,45 @@ export const DeshboardPc = ({ token, rotaAtual, agendamentosPendentes }: Props) 
                         <TooltipContent side="right">Agendamentos</TooltipContent>
                     </Tooltip>
 
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Link
-                                href={"/barbeiros"}
-                                className={`
+                    {
+                        usuario && usuario.role != `BARBEIRO` && (
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Link
+                                        href={"/barbeiros"}
+                                        className={`
                                     flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground 
                                     ${rotaAtual === "/barbeiros" && "dark:text-white text-black"}
                                     `}
-                            >
-                                <Users className="h-5 w-5" />
-                                <span className="sr-only">Barbeiros</span>
-                            </Link>
-                        </TooltipTrigger>
-                        <TooltipContent side="right">Barbeiros</TooltipContent>
-                    </Tooltip>
+                                    >
+                                        <Users className="h-5 w-5" />
+                                        <span className="sr-only">Barbeiros</span>
+                                    </Link>
+                                </TooltipTrigger>
+                                <TooltipContent side="right">Barbeiros</TooltipContent>
+                            </Tooltip>
+                        )
+                    }
 
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Link
-                                href={"/barbearia"}
-                                className={`
+                    {
+                        usuario && usuario.role != `BARBEIRO` && (
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Link
+                                        href={"/barbearia"}
+                                        className={`
                                     flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground 
                                     ${rotaAtual === "/barbearia" && "dark:text-white text-black"}
                                     `}
-                            >
-                                <Store className="h-5 w-5" />
-                                <span className="sr-only">Barbearia</span>
-                            </Link>
-                        </TooltipTrigger>
-                        <TooltipContent side="right">Barbearia</TooltipContent>
-                    </Tooltip>
+                                    >
+                                        <Store className="h-5 w-5" />
+                                        <span className="sr-only">Barbearia</span>
+                                    </Link>
+                                </TooltipTrigger>
+                                <TooltipContent side="right">Barbearia</TooltipContent>
+                            </Tooltip>
+                        )
+                    }
 
                     <Tooltip>
                         <TooltipTrigger asChild>
@@ -113,21 +123,25 @@ export const DeshboardPc = ({ token, rotaAtual, agendamentosPendentes }: Props) 
                         <TooltipContent side="right">Perfil</TooltipContent>
                     </Tooltip>
 
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Link
-                                href={"/assinaturas"}
-                                className={`
+                    {
+                        usuario && usuario.role != `BARBEIRO` && (
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Link
+                                        href={"/assinaturas"}
+                                        className={`
                                     flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground 
                                     ${rotaAtual === "/assinaturas" && "dark:text-white text-black"}
                                     `}
-                            >
-                                <Gem className="h-5 w-5" />
-                                <span className="sr-only">Assinaturas</span>
-                            </Link>
-                        </TooltipTrigger>
-                        <TooltipContent side="right">Assinaturas</TooltipContent>
-                    </Tooltip>
+                                    >
+                                        <Gem className="h-5 w-5" />
+                                        <span className="sr-only">Assinaturas</span>
+                                    </Link>
+                                </TooltipTrigger>
+                                <TooltipContent side="right">Assinaturas</TooltipContent>
+                            </Tooltip>
+                        )
+                    }
 
                 </TooltipProvider>
             </nav>

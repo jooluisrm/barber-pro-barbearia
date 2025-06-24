@@ -3,77 +3,33 @@ import axiosInstance from '../../utils/axiosInstance';
 import { toast } from 'sonner';
 
 export interface RegisterData {
-    nome: string;
-    email: string;
-    senha: string;
-    celular: string;
-    telefone?: string;
+    nomeBarbearia: string;
     endereco: string;
+    celular: string;
+    telefone?: string; // <-- ADICIONE ESTA LINHA (com '?')
     latitude: string;
     longitude: string;
+    nomeAdmin: string;
+    emailAdmin: string;
+    senhaAdmin: string;
 }
 
+// FUNÇÃO ATUALIZADA para registrar
 export const registerUser = async (data: RegisterData) => {
     try {
+        // A rota agora é a que criamos, ex: /registrar-barbershop ou /registrar
         const response = await axiosInstance.post("/barbearia/registrar", data);
 
-        toast.success(response.data.message, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
-
+        toast.success(response.data.message);
         return response.data;
     } catch (error: any) {
-        const errorMessage = error.response?.data?.error || "Erro ao registrar usuário";
-
-        toast.error(errorMessage, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
-
+        const errorMessage = error.response?.data?.message || "Erro ao registrar barbearia";
+        toast.error(errorMessage);
         throw new Error(errorMessage);
     }
 };
 
-type PagamentoData = {
-    nome: string,
-    email: string,
-    telefone?: string,
-    taxId: string,
-    plano: string,
-    valorCentavos: number,
-    celular: string,
-    senha: string,
-    endereco: string,
-    latitude: string,
-    longitude: string
-}
-
-export const criarPagamento = async (data: PagamentoData) => {
-    console.log(data)
-    try {
-        const response = await axiosInstance.post("/pagamento/barbearia", data);
-        console.log(data)
-        console.log(response.data);
-        return response.data;
-    } catch (error: any) {
-        const errorMessage = error.response?.data?.error || "Erro ao criar pagamento";
-
-        toast.error(errorMessage, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
-
-        throw new Error(errorMessage);
-    }
-}
-
+// --- A PARTE DE LOGIN NÃO MUDA AQUI, MAS SIM NO CONTEXTO ---
 export interface LoginData {
     email: string;
     senha: string;
@@ -82,11 +38,11 @@ export interface LoginData {
 export const loginUser = async (data: LoginData) => {
     try {
         const response = await axiosInstance.post('/barbearia/login', data);
-        console.log("Resposta da API:", response.data);
-
-        return response.data; // Retorna os dados diretamente
+        // A resposta agora é { message, usuario, token }
+        return response.data;
     } catch (error: any) {
-        console.error("Erro ao fazer login:", error);
-        throw new Error(error.response?.data?.error || "Erro ao fazer login");
+        const errorMessage = error.response?.data?.error || "Erro ao fazer login";
+        // Lançamos o erro para ser tratado no componente que chama a função
+        throw new Error(errorMessage);
     }
 };

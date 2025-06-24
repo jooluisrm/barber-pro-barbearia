@@ -1,39 +1,58 @@
+// pages/sucesso.tsx (ou onde seu componente estiver)
+
 "use client"
 
 import { useEffect } from "react";
-import { RightSection } from "./rightSection";
+import { RightSection } from "./rightSection"; // Seu componente
 import { useAuth } from "@/contexts/AuthContext";
 import axiosInstance from "@/utils/axiosInstance";
 import { useRouter } from "next/navigation";
 
 export const MainSucesso = () => {
-
-    const auth = useAuth();
+    // 1. Pegamos as duas funções de update do nosso contexto
+    const { updateUsuario, updateBarbearia } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-        // Esta função será executada assim que a página carregar
         const refreshUserData = async () => {
             console.log("Página de sucesso: buscando dados atualizados do usuário...");
 
             try {
-                // Chama o nosso novo endpoint /api/auth/me
+                // 2. A chamada à API continua a mesma. A resposta é o objeto 'usuario' completo.
                 const response = await axiosInstance.get('/api/auth/me');
-                const updatedBarbearia = response.data;
+                const updatedUsuario = response.data; // ex: { id, nome, email, role, barbearia: { nome, stripe... } }
 
-                // Atualiza o AuthContext e o localStorage com os novos dados
-                auth.updateBarbearia(updatedBarbearia);
+                // 3. ATUALIZAMOS O ESTADO 'USUARIO' com os dados frescos e completos.
+                // Esta é a nossa nova fonte da verdade.
+                updateUsuario(updatedUsuario);
 
-                console.log("Dados do usuário atualizados com sucesso!", updatedBarbearia);
+                // 4. CRIAMOS O OBJETO 'BARBEARIA' PARA COMPATIBILIDADE, assim como no login.
+                const barbeariaCompativel = {
+                    id: updatedUsuario.barbeariaId,
+                    nome: updatedUsuario.barbearia.nome,
+                    email: updatedUsuario.email,
+                    telefone: updatedUsuario.perfilBarbeiro?.telefone || '', 
+                    fotoPerfil: updatedUsuario.fotoPerfil,
+                    // A informação mais importante que veio do backend!
+                    stripeCurrentPeriodEnd: updatedUsuario.barbearia.stripeCurrentPeriodEnd 
+                };
 
-                // Opcional: redireciona o usuário para a página de assinaturas ou dashboard após a atualização
+                // 5. ATUALIZAMOS O ESTADO 'BARBEARIA' antigo com os novos dados.
+                // Agora o seu botão que verifica `barbearia.stripeCurrentPeriodEnd` verá a data atualizada.
+                updateBarbearia(barbeariaCompativel);
+
+                console.log("Dados do usuário e da barbearia atualizados com sucesso!", { 
+                    usuario: updatedUsuario, 
+                    barbearia: barbeariaCompativel 
+                });
+
+                // Redireciona o usuário após a atualização bem-sucedida.
                 setTimeout(() => {
-                    router.push('/assinaturas');
-                }, 5000); // Espera 5 segundos antes de redirecionar
+                    router.push('/assinaturas'); 
+                }, 3000); // 3 segundos
 
             } catch (error) {
                 console.error("Falha ao buscar dados atualizados do usuário.", error);
-                // Se falhar, talvez redirecionar para a home mesmo assim
                 router.push('/');
             }
         };
@@ -44,7 +63,7 @@ export const MainSucesso = () => {
     return (
         <main className="grid grid-cols-1 lg:grid-cols-2 justify-center">
             <RightSection />
-            <img src="./successful.svg" alt="" className="flex-1" />
+            <img src="./successful.svg" alt="Ilustração de sucesso no pagamento" className="flex-1" />
         </main>
     );
 }

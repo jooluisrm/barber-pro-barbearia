@@ -3,16 +3,10 @@ import { toast } from "sonner";
 
 export const getServices = async (barbeariaId: string) => {
     try {
-        const response = await axiosInstance.get(`/barbearia/${barbeariaId}/servicos`);
+        const response = await axiosInstance.get(`/barbearia/${barbeariaId}/adm/servicos`);
         return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao Carregar Serviços";
-        toast.error(errorMessage, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
     }
 }
 
@@ -86,16 +80,10 @@ export const deleteService = async (barbeariaId: string, servicoId: string) => {
 
 export const getProducts = async (barbeariaId: string) => {
     try {
-        const response = await axiosInstance.get(`/barbearia/${barbeariaId}/produtos`);
+        const response = await axiosInstance.get(`/barbearia/${barbeariaId}/adm/produtos`);
         return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao Carregar produtos";
-        toast.error(errorMessage, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
     }
 }
 
@@ -172,16 +160,10 @@ export const deleteProduct = async (barbeariaId: string, produtoId: string) => {
 
 export const getSocialMedia = async (barbeariaId: string) => {
     try {
-        const response = await axiosInstance.get(`/barbearia/${barbeariaId}/redes-sociais`);
+        const response = await axiosInstance.get(`/barbearia/${barbeariaId}/adm/redes-sociais`);
         return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao carregar Redes Sociais";
-        toast.error(errorMessage, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
     }
 }
 
@@ -254,16 +236,10 @@ export const deleteSocialMedia = async (barbeariaId: string, socialMediaId: stri
 
 export const getPayment = async (barbeariaId: string) => {
     try {
-        const response = await axiosInstance.get(`/barbearia/${barbeariaId}/formas-pagamento`);
+        const response = await axiosInstance.get(`/barbearia/${barbeariaId}/adm/formas-pagamento`);
         return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao carregar Forma de pagamento";
-        toast.error(errorMessage, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
     }
 }
 
@@ -314,16 +290,10 @@ export const deletePayment = async (barbeariaId: string, formaPagamentoId: strin
 
 export const getOpeningHours = async (barbeariaId: string) => {
     try {
-        const response = await axiosInstance.get(`/barbearia/${barbeariaId}/horarios-funcionamento`);
+        const response = await axiosInstance.get(`/barbearia/${barbeariaId}/adm/horarios-funcionamento`);
         return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao carregar Horario de funcionamento";
-        toast.error(errorMessage, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
     }
 }
 

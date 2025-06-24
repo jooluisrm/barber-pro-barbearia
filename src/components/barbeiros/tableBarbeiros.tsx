@@ -35,7 +35,7 @@ export function TableBarbeiros() {
                 {barbeiros && barbeiros.map((item) => (
                     <TableRow key={item.id}>
                         <TableCell className="font-medium">{item.nome}</TableCell>
-                        <TableCell>{item.email}</TableCell>
+                        <TableCell>{item.usuarioSistema.email}</TableCell>
                         <TableCell>{item.telefone}</TableCell>
                         <TableCell className="flex justify-end items-center pt-4"><DialogEditarBarbeiro barbeiro={item} /></TableCell>
                     </TableRow>

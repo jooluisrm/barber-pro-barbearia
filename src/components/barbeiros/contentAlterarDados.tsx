@@ -46,13 +46,13 @@ export const ContentAlterarDados = ({ barbeiro, nextPage, setOpen }: Props) => {
     const { setBarbeiros } = useBarberContext();
 
     const [inputNome, setInputNome] = useState(barbeiro.nome);
-    const [inputEmail, setInputEmail] = useState(barbeiro.email);
+    const [inputEmail, setInputEmail] = useState(barbeiro.usuarioSistema.email);
     const [inputTelefone, setInputTelefone] = useState(barbeiro.telefone);
 
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
-        defaultValues: { nome: barbeiro.nome, email: barbeiro.email, telefone: barbeiro.telefone },
+        defaultValues: { nome: barbeiro.nome, email: barbeiro.usuarioSistema.email, telefone: barbeiro.telefone },
     })
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {

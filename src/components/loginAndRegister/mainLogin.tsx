@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { handleConfetti } from "@/utils/confetti";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 
@@ -23,10 +23,10 @@ const formSchema = z.object({
 });
 
 export const MainLogin = () => {
-    const { login, barbearia } = useAuth();
+    // Para maior clareza, agora também pegamos o 'usuario' do contexto
+    const { login, usuario } = useAuth();
 
     const [mostrarSenha, setMostrarSenha] = useState(false);
-
     const [loading, setLoading] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -38,34 +38,41 @@ export const MainLogin = () => {
         setLoading(true);
         const { email, senha } = values;
         try {
-            const userData = await loginUser({ email, senha })
-            login(userData);
-            handleConfetti();
-            toast.success("Login realizado com sucesso!", {
-                action: {
-                    label: "Fechar",
-                    onClick: () => console.log("Fechar"),
-                }
+            // A resposta da API agora é: { usuario: Usuario, token: string }
+            const apiResponse = await loginUser({ email, senha });
+
+            // Construímos um objeto 'barbearia' para manter a compatibilidade com seu código antigo
+            const barbeariaCompativel = {
+                id: apiResponse.usuario.barbeariaId,
+                nome: apiResponse.usuario.barbearia.nome, // <-- AGORA USAMOS O NOME CORRETO!
+                email: apiResponse.usuario.email,
+                telefone: apiResponse.usuario.perfilBarbeiro?.telefone || '', // Usamos o telefone do perfil se for um barbeiro
+                fotoPerfil: apiResponse.usuario.fotoPerfil,
+                stripeCurrentPeriodEnd: apiResponse.usuario.barbearia.stripeCurrentPeriodEnd
+            };
+
+            // Chamamos a função 'login' do contexto com a estrutura correta
+            login({
+                usuario: apiResponse.usuario,
+                barbearia: barbeariaCompativel,
+                token: apiResponse.token
             });
-            setLoading(false);
+
+            handleConfetti();
+            toast.success("Login realizado com sucesso!");
+            // setLoading(false) é opcional aqui, pois a página será redirecionada
+
         } catch (error: any) {
             const errorMessage = error.message || "Erro ao fazer login";
-            toast.error(errorMessage, {
-                action: {
-                    label: "Fechar",
-                    onClick: () => console.log("Fechar"),
-                }
-            });
+            toast.error(errorMessage);
             setLoading(false);
         }
     }
 
     return (
         <main className="flex min-h-screen w-full items-center justify-center p-4">
-            {/* Painel principal que será centralizado */}
             <div className="w-full max-w-4xl lg:grid lg:grid-cols-2 rounded-2xl bg-card overflow-hidden">
-
-                {/* Coluna da Esquerda (Boas-vindas e Logo) */}
+                {/* Coluna da Esquerda */}
                 <div className="hidden lg:flex flex-col items-center justify-center gap-6 p-12 text-center bg-[#f7f7f7] dark:bg-[#1d1d1d]">
                     <Image
                         alt="Logo BarberPro"
@@ -85,7 +92,6 @@ export const MainLogin = () => {
                 {/* Coluna da Direita (Formulário) */}
                 <div className="max-w-[500px] mx-auto flex flex-col justify-center p-8 sm:p-12 border-l border-t border-r border-b rounded-tl-2xl rounded-bl-2xl lg:rounded-tl-none lg:rounded-bl-none rounded-tr-2xl rounded-br-2xl">
                     <TitlePage title="Acesse sua conta" subtitle="Entre na plataforma para começar" />
-
                     <div className="mt-6 flex flex-col gap-5">
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -126,7 +132,8 @@ export const MainLogin = () => {
                                         </FormItem>
                                     )}
                                 />
-                                <Button type="submit" className="font-bold w-full" disabled={loading || barbearia != null}>
+                                {/* Lógica do botão atualizada para verificar o novo 'usuario' */}
+                                <Button type="submit" className="font-bold w-full" disabled={loading || usuario != null}>
                                     {loading ? <LoaderCircle className="animate-spin" /> : "Entrar"}
                                 </Button>
                                 <div className="text-center text-sm text-muted-foreground">
@@ -141,7 +148,6 @@ export const MainLogin = () => {
                         </Form>
                     </div>
                 </div>
-
             </div>
         </main>
     );

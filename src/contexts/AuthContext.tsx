@@ -2,25 +2,44 @@
 
 import { createContext, useState, useContext, ReactNode, useEffect } from "react";
 import { setCookie, parseCookies, destroyCookie } from "nookies";
-import { NextRequest, NextResponse } from "next/server";
 import { useRouter } from 'next/navigation';
 
-
+// A interface 'Barbearia' original para compatibilidade
 export interface Barbearia {
     id: string;
     nome: string;
     email: string;
     telefone: string;
     fotoPerfil?: string;
-    stripeCurrentPeriodEnd: string | null; // ISO string, ex: "2025-07-01T00:00:00.000Z"
+    stripeCurrentPeriodEnd: string | null;
 }
 
+// A nova interface 'Usuario' com todos os dados ricos
+export interface Usuario {
+    id: string; // ID do próprio usuário no sistema
+    nome: string;
+    email: string;
+    role: 'ADMIN' | 'BARBEIRO';
+    barbeariaId: string;
+    perfilBarbeiro?: {
+        id: string; // ID do perfil de barbeiro para operações
+        telefone: string;
+    };
+    barbearia: { // Dados da barbearia associada
+        nome: string;
+        stripeCurrentPeriodEnd: string | null;
+    };
+}
+
+// O tipo do contexto, definindo tudo que ele provê
 interface AuthContextType {
     barbearia: Barbearia | null;
+    usuario: Usuario | null;
     token: string | null;
-    login: (userData: { barbearia: Barbearia; token: string }) => void;
+    login: (userData: { usuario: Usuario; barbearia: Barbearia; token: string }) => void;
     logout: () => void;
     updateBarbearia: (newBarbeariaData: Barbearia) => void;
+    updateUsuario: (newUsuarioData: Usuario) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,76 +47,78 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const router = useRouter();
     const [barbearia, setBarbearia] = useState<Barbearia | null>(null);
+    const [usuario, setUsuario] = useState<Usuario | null>(null);
     const [token, setToken] = useState<string | null>(null);
 
-    // Verifica se está rodando no client antes de acessar localStorage e cookies
+    // Efeito para re-hidratar o estado a partir do localStorage e cookies
     useEffect(() => {
         if (typeof window !== "undefined") {
             const cookies = parseCookies();
             const storedBarbearia = localStorage.getItem("barbearia");
+            const storedUsuario = localStorage.getItem("auth-user");
             const storedToken = cookies.token;
-
-            if (storedBarbearia && storedToken) {
-                setBarbearia(JSON.parse(storedBarbearia));
+            if (storedToken) {
                 setToken(storedToken);
+                if (storedBarbearia) { 
+                    try { setBarbearia(JSON.parse(storedBarbearia)); } catch(e) { console.error("Falha ao parsear dados da barbearia", e); }
+                }
+                if (storedUsuario) {
+                    try { setUsuario(JSON.parse(storedUsuario)); } catch(e) { console.error("Falha ao parsear dados do usuário", e); }
+                }
             }
         }
     }, []);
 
-    const login = (userData: { barbearia: Barbearia; token: string }) => {
+    // Função para realizar o login e popular os estados
+    const login = (userData: { usuario: Usuario; barbearia: Barbearia, token: string }) => {
         setBarbearia(userData.barbearia);
+        setUsuario(userData.usuario);
         setToken(userData.token);
-
         if (typeof window !== "undefined") {
-            // Salvar no localStorage
             localStorage.setItem("barbearia", JSON.stringify(userData.barbearia));
-
-            // Salvar o token nos cookies
-            setCookie(null, "token", userData.token, {
-                maxAge: 60 * 60 * 2, // Expira em 2 horas
-                path: "/", // Disponível globalmente
-            });
+            localStorage.setItem("auth-user", JSON.stringify(userData.usuario));
+            setCookie(null, "token", userData.token, { maxAge: 60 * 60 * 8, path: "/" }); // 8 horas
         }
-
-        // Aguarda um pequeno delay e força um reload para garantir que o middleware pega o token
-        setTimeout(() => {
-            window.location.href = "/";
-        }, 500);
+        router.push('/');
     };
 
-
+    // Função para realizar o logout e limpar os estados e armazenamento
     const logout = () => {
         setBarbearia(null);
+        setUsuario(null);
         setToken(null);
-
         if (typeof window !== "undefined") {
-            // Remover do localStorage
             localStorage.removeItem("barbearia");
-
-            // Remover dos cookies
-            destroyCookie(null, "token");
+            localStorage.removeItem("auth-user");
+            destroyCookie(null, "token", { path: '/' });
         }
-
-        // Aguarda um pequeno delay e força um reload
-        setTimeout(() => {
-            window.location.href = "/login";
-        }, 500);
+        window.location.href = '/login';
     };
 
+    // Função para atualizar apenas o objeto de barbearia (para compatibilidade)
     const updateBarbearia = (newBarbeariaData: Barbearia) => {
         setBarbearia(newBarbeariaData);
         if (typeof window !== "undefined") {
             localStorage.setItem("barbearia", JSON.stringify(newBarbeariaData));
         }
     };
+    
+    // Função para atualizar o objeto de usuário (nova fonte da verdade)
+    const updateUsuario = (newUsuarioData: Usuario) => {
+        setUsuario(newUsuarioData);
+        if (typeof window !== "undefined") {
+            localStorage.setItem("auth-user", JSON.stringify(newUsuarioData));
+        }
+    };
 
     return (
-        <AuthContext.Provider value={{ barbearia, token, login, logout, updateBarbearia }}>
+        <AuthContext.Provider value={{ barbearia, usuario, token, login, logout, updateBarbearia, updateUsuario }}>
             {children}
         </AuthContext.Provider>
     );
 };
 
+// Hook customizado para consumir o contexto facilmente
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {
