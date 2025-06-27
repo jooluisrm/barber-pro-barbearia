@@ -57,6 +57,7 @@ export const DeshboardPc = ({ token, rotaAtual, agendamentosPendentes, usuario }
                                     flex items-center justify-center text-[10px] text-white
                                     ${rotaAtual === `/agendamentos` && "hidden"}
                                     ${agendamentosPendentes === null && "hidden"}
+                                    ${agendamentosPendentes && agendamentosPendentes.length <= 0 && "hidden"}
                                     `}
                                 >
                                     {agendamentosPendentes && (agendamentosPendentes.length > 9 ? "9+" : agendamentosPendentes.length)}
