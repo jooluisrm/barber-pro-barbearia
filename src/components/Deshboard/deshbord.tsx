@@ -18,9 +18,9 @@ export const Deshboard = () => {
         console.log("Caminho atual:", pathname); // Exibe a rota atual no console
         setRotaAtual(pathname);
     }, [pathname]); // Executa o efeito sempre que a rota mudar
-
+    //${!usuario && "hidden"}
     return (
-        <div className={`flex w-full flex-col bg-muted/40 ${!usuario && "hidden"}`}>
+        <div className={`flex w-full flex-col bg-muted/40`}>
             <DeshboardPc usuario={usuario} token={token} rotaAtual={rotaAtual} agendamentosPendentes={agendamentosPendentes}/>
             <DeshboardMobile usuario={usuario} token={token} rotaAtual={rotaAtual} agendamentosPendentes={agendamentosPendentes}/>
         </div>
