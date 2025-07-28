@@ -26,3 +26,29 @@ export const editNomeEmail = async (usuarioId: string, data: dataType) => {
         });
     }
 }
+
+type dataTypeSenha = {
+    currentPassword: string;
+    newPassword: string;
+}
+
+export const editSenha = async (usuarioId: string, data: dataTypeSenha) => {
+    try {
+        const response = await axiosInstance.patch(`/barbearia/usuarios-sistema/${usuarioId}/alterar-senha`, data);
+        toast.success(response.data.message, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+        return response.data;
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao alterar senha!";
+        toast.error(errorMessage, {
+            action: {
+                label: "Fechar",
+                onClick: () => console.log("Fechar"),
+            },
+        });
+    }
+}

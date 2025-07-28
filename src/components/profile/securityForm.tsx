@@ -14,8 +14,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SecurityFormValues, securityFormSchema } from "./profile.schema";
+import { useAuth } from "@/contexts/AuthContext";
+import { editSenha } from "@/api/perfil/perfilServices";
 
 export const SecurityForm = () => {
+
+    const { usuario, logout } = useAuth();
+
     const form = useForm<SecurityFormValues>({
         resolver: zodResolver(securityFormSchema),
         defaultValues: {
@@ -26,15 +31,15 @@ export const SecurityForm = () => {
         mode: "onChange",
     });
 
-    function onSubmit(data: SecurityFormValues) {
-        // TODO: Chamar a API para alterar a senha.
-        // Você enviaria apenas data.currentPassword e data.newPassword.
-        console.log("Dados para alterar a senha:", {
+    async function onSubmit(data: SecurityFormValues) {
+        if (!usuario) return;
+        const success = await editSenha(usuario.id, {
             currentPassword: data.currentPassword,
             newPassword: data.newPassword
         });
-
-        // Limpa os campos do formulário após a submissão bem-sucedida
+        if (success) {
+            setTimeout(() => logout(), 1000)
+        }
         form.reset();
     }
 
@@ -81,10 +86,16 @@ export const SecurityForm = () => {
                             <FormControl>
                                 <Input type="password" {...field} />
                             </FormControl>
-                            <FormMessage /> {/* Exibirá o erro "As senhas não coincidem" */}
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
+
+                {/* Aviso sobre logout */}
+                <p className="text-sm text-muted-foreground">
+                    Ao alterar sua senha, você será deslogado imediatamente por motivos de segurança.
+                </p>
+
                 <div className="flex justify-end pt-4">
                     <Button type="submit" variant="destructive">
                         Alterar Senha
@@ -92,5 +103,6 @@ export const SecurityForm = () => {
                 </div>
             </form>
         </Form>
+
     );
 };
