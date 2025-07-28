@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             localStorage.setItem("auth-user", JSON.stringify(userData.usuario));
             setCookie(null, "token", userData.token, { maxAge: 60 * 60 * 8, path: "/" }); // 8 horas
         }
-        router.push('/');
+        router.refresh(); 
     };
 
     // Função para realizar o logout e limpar os estados e armazenamento
