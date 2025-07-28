@@ -19,7 +19,7 @@ export const DialogConcluirAgendamento = ({ agendamentosPendentes }: Props) => {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button className="font-bold relative flex items-center gap-2 truncate">
+                <Button className="font-bold relative flex items-center gap-2">
                     Concluir Agendamentos
                     {/* Notificação visual (badge) */}
                     {agendamentosPendentes && agendamentosPendentes.length > 0 && (

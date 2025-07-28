@@ -16,10 +16,15 @@ import { Input } from "@/components/ui/input";
 import { SecurityFormValues, securityFormSchema } from "./profile.schema";
 import { useAuth } from "@/contexts/AuthContext";
 import { editSenha } from "@/api/perfil/perfilServices";
+import { Eye, EyeClosed } from "lucide-react";
+import { useState } from "react";
 
 export const SecurityForm = () => {
 
     const { usuario, logout } = useAuth();
+    const [mostrarSenha, setMostrarSenha] = useState(false);
+    const [mostrarSenha2, setMostrarSenha2] = useState(false);
+    const [mostrarSenha3, setMostrarSenha3] = useState(false);
 
     const form = useForm<SecurityFormValues>({
         resolver: zodResolver(securityFormSchema),
@@ -54,7 +59,12 @@ export const SecurityForm = () => {
                         <FormItem>
                             <FormLabel>Senha Atual</FormLabel>
                             <FormControl>
-                                <Input type="password" {...field} />
+                                <div className="relative flex items-center">
+                                    <Input type={`${mostrarSenha ? "text" : "password"}`} {...field} />
+                                    <div className="absolute right-3 cursor-pointer" onClick={() => setMostrarSenha(!mostrarSenha)}>
+                                        {!mostrarSenha ? <EyeClosed className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
+                                    </div>
+                                </div>
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -69,7 +79,12 @@ export const SecurityForm = () => {
                         <FormItem>
                             <FormLabel>Nova Senha</FormLabel>
                             <FormControl>
-                                <Input type="password" {...field} />
+                                <div className="relative flex items-center">
+                                    <Input type={`${mostrarSenha2 ? "text" : "password"}`} {...field} />
+                                    <div className="absolute right-3 cursor-pointer" onClick={() => setMostrarSenha2(!mostrarSenha2)}>
+                                        {!mostrarSenha2 ? <EyeClosed className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
+                                    </div>
+                                </div>
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -84,7 +99,12 @@ export const SecurityForm = () => {
                         <FormItem>
                             <FormLabel>Confirmar Nova Senha</FormLabel>
                             <FormControl>
-                                <Input type="password" {...field} />
+                                <div className="relative flex items-center">
+                                    <Input type={`${mostrarSenha3 ? "text" : "password"}`} {...field} />
+                                    <div className="absolute right-3 cursor-pointer" onClick={() => setMostrarSenha3(!mostrarSenha3)}>
+                                        {!mostrarSenha3 ? <EyeClosed className="h-5 w-5 text-muted-foreground" /> : <Eye className="h-5 w-5 text-muted-foreground" />}
+                                    </div>
+                                </div>
                             </FormControl>
                             <FormMessage />
                         </FormItem>
