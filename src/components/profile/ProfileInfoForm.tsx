@@ -19,9 +19,10 @@ import { useEffect } from "react";
 import { profileFormSchema, ProfileFormValues } from "./profile.schema";
 // ✨ 1. Importe um ícone de carregamento para usar no botão
 import { Loader2 } from "lucide-react";
+import { editNomeEmail } from "@/api/perfil/perfilServices";
 
 export const ProfileInfoForm = () => {
-    const { usuario } = useAuth();
+    const { usuario, updateUsuario } = useAuth();
 
     const form = useForm<ProfileFormValues>({
         resolver: zodResolver(profileFormSchema),
@@ -46,9 +47,16 @@ export const ProfileInfoForm = () => {
 
     // ✨ 3. Transforme a função em async para simular uma chamada de API
     async function onSubmit(data: ProfileFormValues) {
+        if (!usuario) return;
 
-        console.log("Dados enviados:", data);
-        toast.success("Informações salvas com sucesso!");
+        const dadosAtualizados = await editNomeEmail(usuario.id, {
+            nome: data.username,
+            email: data.email
+        });
+
+        if (dadosAtualizados && dadosAtualizados.usuario) {
+            updateUsuario(dadosAtualizados.usuario); // ATUALIZA O CONTEXTO AQUI!
+        }
 
         // Opcional: após o sucesso, o formulário não está mais "dirty"
         // Você pode chamar form.reset com os novos dados para refletir isso

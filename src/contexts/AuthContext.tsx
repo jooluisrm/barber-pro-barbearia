@@ -59,11 +59,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             const storedToken = cookies.token;
             if (storedToken) {
                 setToken(storedToken);
-                if (storedBarbearia) { 
-                    try { setBarbearia(JSON.parse(storedBarbearia)); } catch(e) { console.error("Falha ao parsear dados da barbearia", e); }
+                if (storedBarbearia) {
+                    try { setBarbearia(JSON.parse(storedBarbearia)); } catch (e) { console.error("Falha ao parsear dados da barbearia", e); }
                 }
                 if (storedUsuario) {
-                    try { setUsuario(JSON.parse(storedUsuario)); } catch(e) { console.error("Falha ao parsear dados do usuário", e); }
+                    try { setUsuario(JSON.parse(storedUsuario)); } catch (e) { console.error("Falha ao parsear dados do usuário", e); }
                 }
             }
         }
@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             localStorage.setItem("auth-user", JSON.stringify(userData.usuario));
             setCookie(null, "token", userData.token, { maxAge: 60 * 60 * 8, path: "/" }); // 8 horas
         }
-        router.refresh(); 
+        router.refresh();
     };
 
     // Função para realizar o logout e limpar os estados e armazenamento
@@ -102,13 +102,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             localStorage.setItem("barbearia", JSON.stringify(newBarbeariaData));
         }
     };
-    
-    // Função para atualizar o objeto de usuário (nova fonte da verdade)
-    const updateUsuario = (newUsuarioData: Usuario) => {
-        setUsuario(newUsuarioData);
-        if (typeof window !== "undefined") {
-            localStorage.setItem("auth-user", JSON.stringify(newUsuarioData));
-        }
+
+    const updateUsuario = (partialNewData: Partial<Usuario>) => {
+        // Usamos um callback para garantir que estamos atualizando o estado mais recente
+        setUsuario(prevUsuario => {
+            if (!prevUsuario) return null; // Se não houver usuário, não faz nada
+
+            // Mescla o usuário antigo com os novos dados parciais
+            const updatedUsuario = {
+                ...prevUsuario,
+                ...partialNewData
+            };
+
+            // Atualiza o localStorage com o objeto completamente mesclado
+            if (typeof window !== "undefined") {
+                localStorage.setItem("auth-user", JSON.stringify(updatedUsuario));
+            }
+
+            return updatedUsuario;
+        });
     };
 
     return (
