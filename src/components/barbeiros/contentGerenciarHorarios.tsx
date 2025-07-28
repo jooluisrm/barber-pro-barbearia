@@ -14,8 +14,11 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/
 import { AlertDialogDeleteTime } from "./alertDialogDeleteTime";
 
 type Props = {
-    barbeiro: Barbeiro;
-    backPage: VoidFunction;
+    barbeiro: Barbeiro | {
+        id: string;
+        telefone: string;
+    };
+    backPage?: VoidFunction;
 }
 
 export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
@@ -144,7 +147,7 @@ export const ContentGerenciarHorarios = ({ barbeiro, backPage }: Props) => {
                 </div>
 
                 <div className={`flex ${!selectDia ? "justify-start" : "justify-between"}`}>
-                    <Button variant="ghost" onClick={backPage}>Voltar</Button>
+                    {backPage && <Button variant="ghost" onClick={backPage}>Voltar</Button>}
                     <div className={`${selectItemTime.length === 0 ? "hidden" : "flex items-center gap-2"}`}>
                         <p className="text-sm dark:text-gray-400 text-gray-700">items selecionados: <span className="font-bold">{selectItemTime.length}</span></p>
                         <AlertDialogDeleteTime selectDia={selectDia} handleDeleteWorkTime={handleDeleteWorkTime} selectItemTime={selectItemTime} />

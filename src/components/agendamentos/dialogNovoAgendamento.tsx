@@ -195,7 +195,7 @@ export function DialogNovoAgendamento() {
             <DialogTrigger asChild>
                 <Button
                     variant="default"
-                    className="font-bold"
+                    className="font-bold truncate"
                     onClick={() => setOpen(true)}
                 >Criar Agendamento</Button>
             </DialogTrigger>

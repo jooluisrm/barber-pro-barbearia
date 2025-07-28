@@ -17,6 +17,7 @@ import { useScheduleContext } from "@/contexts/scheduleContext";
 import { DialogConcluirAgendamento } from "./dialogConcluirAgendamento";
 import { usePendingScheduleContext } from "@/contexts/PendingScheduleContext";
 import { HeaderPage } from "../reultilizar/headerPage";
+import { DialogEditarHorarioBarbeiro } from "./dialogEditarHorarioBarbeiro";
 
 export const MainAgendamentos = () => {
     const { barbearia, usuario } = useAuth();
@@ -61,13 +62,13 @@ export const MainAgendamentos = () => {
     const handleSelectStatus = (value: string) => {
         if (value) {
             setFiltroSelecionadoStatus(value);
-            loadItems(barbearia, getAgendamentos, setAgendamentos);
+            //loadItems(barbearia, getAgendamentos, setAgendamentos);
         }
     }
     const handleSelectBarbeiro = (value: string) => {
         if (value) {
             setFiltroSelecionadoBarbeiro(value);
-            loadItems(barbearia, getAgendamentos, setAgendamentos);
+            //loadItems(barbearia, getAgendamentos, setAgendamentos);
         }
     }
 
@@ -134,9 +135,10 @@ export const MainAgendamentos = () => {
             <div className="space-y-4">
                 {/* 🔹 Botão de Novo Agendamento e Filtros */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="gap-4 grid grid-cols-2">
+                    <div className="gap-4 grid lg:grid-cols-3">
                         <DialogNovoAgendamento />
                         <DialogConcluirAgendamento agendamentosPendentes={agendamentosPendentes} />
+                        {usuario && usuario.role === "BARBEIRO" && <DialogEditarHorarioBarbeiro barbeiro={usuario.perfilBarbeiro}/>}
                     </div>
 
                     {/* 🔹 Filtros - Organiza responsivamente */}
