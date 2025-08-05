@@ -14,26 +14,27 @@ type DataService = {
     nome: string;
     duracao: number;
     preco?: string;
+    imagem?: File; 
 }
 
-export const postService = async (barbeariaId: string, data: DataService) => {
+export const postService = async (barbeariaId: string, data: FormData) => {
     try {
-        const response = await axiosInstance.post(`/barbearia/${barbeariaId}/servicos`, data);
-        toast.success(response.data.message, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
+        // Passamos o FormData diretamente para o axios
+        const response = await axiosInstance.post(`/barbearia/${barbeariaId}/servicos`, data, {
+            // É crucial dizer ao axios que o conteúdo é multipart/form-data
+            headers: {
+                'Content-Type': 'multipart/form-data',
             },
         });
-        return response.data.servico
+        
+        toast.success(response.data.message || "Serviço criado com sucesso!");
+        return response.data.servico;
+
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao criar novo serviço";
-        toast.error(errorMessage, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
+        toast.error(errorMessage);
+        // Lançar o erro novamente para que o componente possa tratá-lo se necessário
+        throw error;
     }
 }
 

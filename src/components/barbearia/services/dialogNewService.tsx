@@ -1,4 +1,5 @@
 import { getServices, postService } from "@/api/barbearia/barbeariaServices"
+import UploadImgAvatar from "@/components/uploadImgAvatar"
 import { NovoItem } from "@/components/reultilizar/novoItem"
 import { Button } from "@/components/ui/button"
 import {
@@ -31,30 +32,43 @@ export const DialogNewService = () => {
     const [inputDuracao, setInputDuracao] = useState(5);
     const [inputPreco, setInputPreco] = useState("0");
 
+    const [imageFile, setImageFile] = useState<File | null>(null);
+
     const handleAddService = async () => {
-        if (!barbearia) return;
+        if (!barbearia || !inputNome) return;
+
+        // Para enviar arquivos, precisamos usar FormData
+        const formData = new FormData();
+        formData.append('nome', inputNome);
+        formData.append('duracao', String(inputDuracao)); // Enviar como string
+        formData.append('preco', inputPreco);
+
+        // Adiciona a imagem ao FormData SÓ SE ela foi selecionada
+        if (imageFile) {
+            formData.append('imagem', imageFile);
+        }
+
         try {
-            const data = {
-                nome: inputNome,
-                duracao: inputDuracao,
-                preco: inputPreco
-            }
-            await postService(barbearia.id, data);
+            // A função postService agora receberá o FormData
+            await postService(barbearia.id, formData);
+
+            // Limpa o formulário e recarrega a lista
             await loadItems(barbearia, getServices, setServices);
             setOpen(false);
             setInputNome("");
             setInputDuracao(5);
-            setInputPreco("");
-        } catch (error: any) {
+            setInputPreco("0");
+            setImageFile(null); // Limpa o estado da imagem
+        } catch (error) {
             console.log(error);
         }
     }
 
-    
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <NovoItem onCLick={setOpen}/>
+                <NovoItem onCLick={setOpen} />
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">
@@ -69,6 +83,9 @@ export const DialogNewService = () => {
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex flex-col gap-4">
+                    <div>
+                        <UploadImgAvatar onFileSelect={setImageFile} />
+                    </div>
                     <div className="">
                         <label htmlFor="">Serviço</label>
                         <Input
