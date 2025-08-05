@@ -38,24 +38,23 @@ export const postService = async (barbeariaId: string, data: FormData) => {
     }
 }
 
-export const putService = async (barbeariaId: string, servicoId: string, data: DataService) => {
+export const putService = async (barbeariaId: string, servicoId: string, data: FormData) => {
     try {
-        const response = await axiosInstance.put(`/barbearia/${barbeariaId}/servicos/${servicoId}`, data);
-        toast.success(response.data.message, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
+        // A rota para editar um serviço específico
+        const response = await axiosInstance.put(`/barbearia/${barbeariaId}/servicos/${servicoId}`, data, {
+            // Novamente, especificamos o Content-Type para o upload de arquivos
+            headers: {
+                'Content-Type': 'multipart/form-data',
             },
         });
+        
+        toast.success(response.data.message || "Serviço atualizado com sucesso!");
         return response.data;
+
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao editar serviço";
-        toast.error(errorMessage, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
+        toast.error(errorMessage);
+        throw error;
     }
 }
 

@@ -19,6 +19,7 @@ import { EditIcon, Scissors, Trash } from "lucide-react"
 import { useState } from "react"
 import { AlertDeleteService } from "./alertDeleteService"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import UploadImgAvatar from "@/components/uploadImgAvatar"
 
 type Props = {
     itemService: Services;
@@ -33,19 +34,29 @@ export const DialogEditService = ({ itemService }: Props) => {
     const [inputNome, setInputNome] = useState(itemService.nome);
     const [inputDuracao, setInputDuracao] = useState(itemService.duracao);
     const [inputPreco, setInputPreco] = useState(itemService.preco);
+    
+    const [imageFile, setImageFile] = useState<File | null>(null);
 
     const handleEditService = async () => {
         if (!barbearia) return;
+
+        const formData = new FormData();
+        // Adiciona os campos de texto. O backend é inteligente e só atualizará o que mudou.
+        formData.append('nome', inputNome);
+        formData.append('duracao', String(inputDuracao));
+        formData.append('preco', inputPreco);
+
+        // Adiciona a NOVA imagem ao FormData SÓ SE uma nova foi selecionada
+        if (imageFile) {
+            formData.append('imagem', imageFile);
+        }
+
         try {
-            const data = {
-                nome: inputNome,
-                duracao: inputDuracao,
-                preco: inputPreco
-            }
-            const done = await putService(barbearia.id, itemService.id, data);
+            const done = await putService(barbearia.id, itemService.id, formData);
             if (done) {
                 await loadItems(barbearia, getServices, setServices);
                 setOpen(false);
+                // Não precisa limpar os inputs aqui, pois o diálogo será fechado
             }
         } catch (error: any) {
             console.log(error);
@@ -80,6 +91,12 @@ export const DialogEditService = ({ itemService }: Props) => {
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex flex-col gap-4">
+                    <div>
+                        <UploadImgAvatar 
+                            onFileSelect={setImageFile} 
+                            initialImageUrl={itemService.imagemUrl}
+                        />
+                    </div>
                     <div className="">
                         <label htmlFor="">Serviço</label>
                         <Input

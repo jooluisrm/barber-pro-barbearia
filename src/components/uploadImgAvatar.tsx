@@ -8,9 +8,10 @@ import { useEffect } from "react"
 
 type UploadImgAvatarProps = {
     onFileSelect: (file: File | null) => void;
+    initialImageUrl?: string | null;
 }
 
-export default function UploadImgAvatar({ onFileSelect }: UploadImgAvatarProps) {
+export default function UploadImgAvatar({ onFileSelect, initialImageUrl }: UploadImgAvatarProps) {
     const [
         { files, isDragging },
         {
@@ -36,6 +37,10 @@ export default function UploadImgAvatar({ onFileSelect }: UploadImgAvatarProps) 
         onFileSelect(file);
     }, [files, onFileSelect]); // Roda sempre que a lista de 'files' mudar
 
+    // ✅ 2. LÓGICA DE EXIBIÇÃO: PRIORIZA A NOVA IMAGEM, SENÃO MOSTRA A ANTIGA
+    const newPreviewUrl = files[0]?.preview || null;
+    const displayUrl = newPreviewUrl || initialImageUrl;
+
     return (
         <div className="flex flex-col items-center gap-2">
             <div className="relative inline-flex">
@@ -50,10 +55,10 @@ export default function UploadImgAvatar({ onFileSelect }: UploadImgAvatarProps) 
                     data-dragging={isDragging || undefined}
                     aria-label={previewUrl ? "Change image" : "Upload image"}
                 >
-                    {previewUrl ? (
+                    {displayUrl ? (
                         <img
                             className="size-full object-cover"
-                            src={previewUrl}
+                            src={displayUrl}
                             alt={files[0]?.file?.name || "Uploaded image"}
                             width={64}
                             height={64}
@@ -87,7 +92,7 @@ export default function UploadImgAvatar({ onFileSelect }: UploadImgAvatarProps) 
                 role="region"
                 className="text-muted-foreground mt-2 text-xs"
             >
-                Selecione uma imagem para o serviço.
+                Selecione uma imagem.
             </p>
         </div>
     )
