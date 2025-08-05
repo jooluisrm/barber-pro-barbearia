@@ -12,6 +12,7 @@ import { DialogEditService } from "./dialogEditService";
 import { Services } from "@/types/services";
 import { useServiceContext } from "@/contexts/ServicesContext";
 import { formatarPreco } from "@/utils/formatarValores";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type Props = {
     services: Services[] | null;
@@ -26,6 +27,7 @@ export const TableServices = () => {
             <TableCaption>Lista de Serviços prestados</TableCaption>
             <TableHeader>
                 <TableRow>
+                    <TableHead></TableHead>
                     <TableHead className="w-[150px]">Serviço</TableHead>
                     <TableHead>Duração</TableHead>
                     <TableHead className="text-right">Preço</TableHead>
@@ -36,6 +38,12 @@ export const TableServices = () => {
 
                 {services && services.map((item: Services) => (
                     <TableRow key={item.id}>
+                        <TableCell>
+                            <Avatar>
+                                <AvatarImage src={item.imagemUrl ? item.imagemUrl : "/favicon.png"} />
+                                <AvatarFallback>CN</AvatarFallback>
+                            </Avatar>
+                        </TableCell>
                         <TableCell className="font-medium">{item.nome}</TableCell>
                         <TableCell>{item.duracao} min</TableCell>
                         <TableCell className="text-right">{!item.preco ? " R$ 0,00" : formatarPreco(item.preco)}</TableCell>
@@ -48,7 +56,7 @@ export const TableServices = () => {
             </TableBody>
             <TableFooter>
                 <TableRow>
-                    <TableCell colSpan={3}>Total de Serviços</TableCell>
+                    <TableCell colSpan={4}>Total de Serviços</TableCell>
                     <TableCell className="text-right">{services?.length}</TableCell>
                 </TableRow>
             </TableFooter>

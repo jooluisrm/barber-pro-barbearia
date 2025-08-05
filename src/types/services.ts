@@ -4,4 +4,5 @@ export type Services = {
     nome: string;
     duracao: number;
     preco: string;
+    imagemUrl: string | null;
 }
