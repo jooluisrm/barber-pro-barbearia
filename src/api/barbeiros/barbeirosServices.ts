@@ -6,20 +6,23 @@ export type RegisterBarbeiro = {
     email: string;
     senha: string;
     telefone: string;
-    fotoPerfil?: string;
+    fotoPerfil?: File; // Opcional, para tipar o que o formulário monta
     barbeariaId: string;
 }
 
-export const registerBarbeiro = async (data: RegisterBarbeiro) => {
+// 1. O tipo do parâmetro 'data' agora é FormData
+export const registerBarbeiro = async (data: FormData) => {
     try {
-        const response = await axiosInstance.post(`/barbearia/barbeiro/register`, data);
-
-        toast.success(response.data.message, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
+        // 2. A rota do backend para registrar barbeiro
+        const response = await axiosInstance.post(`/barbearia/barbeiro/register`, data, {
+            // 3. É crucial definir o cabeçalho como 'multipart/form-data'
+            // Isso avisa ao backend que estamos enviando arquivos junto com o texto.
+            headers: {
+                'Content-Type': 'multipart/form-data',
             },
         });
+
+        toast.success(response.data.message || "Barbeiro cadastrado com sucesso!");
 
         return response.data;
     } catch (error: any) {
@@ -31,7 +34,9 @@ export const registerBarbeiro = async (data: RegisterBarbeiro) => {
                 onClick: () => console.log("Fechar"),
             },
         });
-
+        
+        // É uma boa prática relançar o erro para que o componente possa tratá-lo se necessário
+        throw error;
     }
 }
 
@@ -66,30 +71,23 @@ export const deleteBarbeiro = async (barbeiroId: string) => {
     }
 }
 
-type DataEdit = {
-    nome: string;
-    telefone: string;
-    email: string;
-}
-
-export const editBarbeiro = async (barbeiroId: string, data: DataEdit) => {
+export const editBarbeiro = async (barbeiroId: string, data: FormData) => {
     try {
-        const response = await axiosInstance.put(`/barbearia/barbeiro/${barbeiroId}`, data);
-        toast.success(response.data.message, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
+        // 2. A rota do backend para editar o barbeiro
+        const response = await axiosInstance.put(`/barbearia/barbeiro/${barbeiroId}`, data, {
+            // 3. Definimos o cabeçalho para 'multipart/form-data'
+            headers: {
+                'Content-Type': 'multipart/form-data',
             },
         });
+
+        toast.success(response.data.message || "Barbeiro atualizado com sucesso!");
         return response.data;
+
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao editar barbeiro";
-        toast.error(errorMessage, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
+        toast.error(errorMessage);
+        throw error; // Re-lança o erro para o componente poder tratar se necessário
     }
 }
 

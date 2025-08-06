@@ -23,6 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import InputMask from 'react-input-mask'
+import UploadImgAvatar from "../uploadImgAvatar";
 
 
 type Props = {
@@ -49,6 +50,8 @@ export const ContentAlterarDados = ({ barbeiro, nextPage, setOpen }: Props) => {
     const [inputEmail, setInputEmail] = useState(barbeiro.usuarioSistema.email);
     const [inputTelefone, setInputTelefone] = useState(barbeiro.telefone);
 
+    const [imageFile, setImageFile] = useState<File | null>(null);
+
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -56,18 +59,26 @@ export const ContentAlterarDados = ({ barbeiro, nextPage, setOpen }: Props) => {
     })
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
-        const { nome, email, telefone } = values
-        const done = await editBarbeiro(barbeiro.id, {nome, email, telefone});
+        if (!barbearia) return;
 
-        if(done) {
-            setOpen(false);
-            await loadItems(barbearia, getBarbeiros, setBarbeiros);
+        const { nome, email, telefone } = values;
+
+        // 1. Criar o FormData
+        const formData = new FormData();
+
+        // 2. Adicionar os dados de texto que podem ter mudado
+        formData.append('nome', nome);
+        formData.append('email', email);
+        formData.append('telefone', telefone);
+        
+        // 3. Adicionar o novo arquivo de imagem, SOMENTE se um novo foi selecionado
+        if (imageFile) {
+            formData.append('fotoPerfil', imageFile);
         }
-        console.log(values);
-    }
 
-    const handleEdit = async () => {
-        const done = await editBarbeiro(barbeiro.id, { nome: inputNome, email: inputEmail, telefone: inputTelefone });
+        // 4. Chamar a função da API com o FormData
+        const done = await editBarbeiro(barbeiro.id, formData);
+
         if (done) {
             setOpen(false);
             await loadItems(barbearia, getBarbeiros, setBarbeiros);
@@ -83,8 +94,10 @@ export const ContentAlterarDados = ({ barbeiro, nextPage, setOpen }: Props) => {
                 </DialogDescription>
             </AlertDialogHeader>
             <main className="flex flex-col gap-5">
+                <UploadImgAvatar onFileSelect={setImageFile} initialImageUrl={barbeiro.fotoPerfil}/>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
+                        
                         <FormField
                             control={form.control}
                             name="nome"

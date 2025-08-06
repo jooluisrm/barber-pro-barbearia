@@ -23,25 +23,28 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import InputMask from 'react-input-mask'
+import UploadImgAvatar from "../uploadImgAvatar";
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
-    nome: z.string().min(2, 'Precisa ter minimo 2 caracteres!'),
+    nome: z.string().min(2, 'Precisa ter mínimo 2 caracteres!'),
     telefone: z
         .string()
         .regex(/^\(\d{2}\) \d{5}-\d{4}$/, {
             message: 'Celular inválido (ex: (11) 91234-5678)',
         }),
     email: z.string().email('E-mail inválido!'),
-    senha: z.string().min(6, 'Precisa ter minimo 6 caracteres!')
+    senha: z.string().min(6, 'Precisa ter mínimo 6 caracteres!')
 });
-
 
 export const DialogAddBarbeiro = () => {
     const { setBarbeiros } = useBarberContext();
     const { barbearia } = useAuth();
+    const { toast } = useToast();
 
     const [isOpen, setIsOpen] = useState(false);
     const [mostrarSenha, setMostrarSenha] = useState(false);
+    const [imageFile, setImageFile] = useState<File | null>(null);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -50,17 +53,47 @@ export const DialogAddBarbeiro = () => {
         },
     });
     const { reset } = form;
+
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         if (!barbearia) return;
         const { nome, telefone, email, senha } = values;
-        const  barbeariaId: any = barbearia.id;
-        const sucesso = await registerBarbeiro({ nome, telefone, email, senha, barbeariaId });
-        console.log(values)
-        if(sucesso) {
-            handleConfetti();
-            await loadItems(barbearia, getBarbeiros, setBarbeiros);
-            setIsOpen(false);
-            reset();
+        const barbeariaId: any = barbearia.id;
+
+        const formData = new FormData();
+        formData.append('nome', nome);
+        formData.append('telefone', telefone);
+        formData.append('email', email);
+        formData.append('senha', senha);
+        formData.append('barbeariaId', barbeariaId);
+        if (imageFile) {
+            formData.append('fotoPerfil', imageFile); // 'fotoPerfil' deve corresponder ao nome do campo no backend
+        }
+
+        try {
+            const sucesso = await registerBarbeiro(formData); // Agora enviamos o FormData
+            if (sucesso) {
+                handleConfetti();
+                await loadItems(barbearia, getBarbeiros, setBarbeiros);
+                setIsOpen(false);
+                reset();
+                toast({
+                    title: "Sucesso!",
+                    description: "Barbeiro cadastrado com foto!",
+                })
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "Erro!",
+                    description: "Falha ao cadastrar o barbeiro.",
+                })
+            }
+        } catch (error: any) {
+            console.error("Erro ao cadastrar barbeiro:", error);
+            toast({
+                variant: "destructive",
+                title: "Erro!",
+                description: error?.response?.data?.error || "Erro interno ao cadastrar o barbeiro.",
+            })
         }
     }
 
@@ -79,8 +112,10 @@ export const DialogAddBarbeiro = () => {
                     </DialogDescription>
                 </DialogHeader>
                 <main className="flex flex-col gap-5">
+                    <UploadImgAvatar onFileSelect={setImageFile} />
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
+
                             <FormField
                                 control={form.control}
                                 name="nome"
@@ -165,3 +200,5 @@ export const DialogAddBarbeiro = () => {
         </Dialog>
     );
 }
+
+export default DialogAddBarbeiro;
