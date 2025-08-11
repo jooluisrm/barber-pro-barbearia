@@ -75,3 +75,19 @@ export const updateProfilePicture = async (imageFile: File) => {
         throw error;
     }
 };
+
+
+export const deleteProfilePicture = async () => {
+    try {
+        // 1. Chamar a nova rota com o método DELETE
+        const response = await axiosInstance.delete('barbearia/usuarios-sistema/picture');
+
+        toast.success(response.data.message || "Foto de perfil removida!");
+        return response.data;
+
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao remover a foto.";
+        toast.error(errorMessage);
+        throw error;
+    }
+};

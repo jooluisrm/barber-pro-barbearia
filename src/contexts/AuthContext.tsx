@@ -40,7 +40,7 @@ interface AuthContextType {
     login: (userData: { usuario: Usuario; barbearia: Barbearia; token: string }) => void;
     logout: () => void;
     updateBarbearia: (newBarbeariaData: Barbearia) => void;
-    updateUsuario: (newUsuarioData: Usuario) => void;
+    updateUsuario: (newUsuarioData: Partial<Usuario>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
