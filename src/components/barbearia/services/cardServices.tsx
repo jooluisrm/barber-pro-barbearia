@@ -26,13 +26,15 @@ export const CardServices = () => {
 
     return (
         <Card className="flex flex-col justify-between">
-            <CardHeader>
+            <div>
+                <CardHeader>
                 <CardTitle>Serviços</CardTitle>
                 <CardDescription>Adicione os Serviços prestados em sua barbearia.</CardDescription>
             </CardHeader>
             <CardContent>
                 <TableServices /> {/*Tabela para carregar serviços*/}
             </CardContent>
+            </div>
             <CardFooter>
                 <DialogNewService />
             </CardFooter>

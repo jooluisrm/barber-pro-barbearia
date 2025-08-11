@@ -41,7 +41,7 @@ export const TableServices = () => {
                         <TableCell>
                             <Avatar>
                                 <AvatarImage src={item.imagemUrl ? item.imagemUrl : "/favicon.png"} />
-                                <AvatarFallback>CN</AvatarFallback>
+                                <AvatarFallback>{item.nome.substring(0, 2).toUpperCase()}</AvatarFallback>
                             </Avatar>
                         </TableCell>
                         <TableCell className="font-medium">{item.nome}</TableCell>

@@ -26,13 +26,15 @@ export const CardOpeningHours = () => {
 
     return (
         <Card className="flex flex-col justify-between">
-            <CardHeader>
-                <CardTitle>Horário de Atendimento</CardTitle>
-                <CardDescription>Adicione os horários de funcionamento da sua barbearia durante a semana.</CardDescription>
-            </CardHeader>
-            <CardContent className="">
-                <ItemOpeningHours />
-            </CardContent>
+            <div>
+                <CardHeader>
+                    <CardTitle>Horário de Atendimento</CardTitle>
+                    <CardDescription>Adicione os horários de funcionamento da sua barbearia durante a semana.</CardDescription>
+                </CardHeader>
+                <CardContent className="">
+                    <ItemOpeningHours />
+                </CardContent>
+            </div>
             <CardFooter>
                 <DialogNewOpeningHours />
             </CardFooter>
