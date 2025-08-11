@@ -4,6 +4,6 @@ export type Products = {
     descricao?: string;
     preco: number;
     tipo: string;
-    imagemUr?: string | null;
+    imagemUrl?: string | null;
     estoque?: boolean;
 }

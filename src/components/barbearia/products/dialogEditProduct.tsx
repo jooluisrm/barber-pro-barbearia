@@ -1,4 +1,4 @@
-import { DataProducts, deleteProduct, getProducts, putProduct } from "@/api/barbearia/barbeariaServices"
+import { deleteProduct, getProducts, putProduct } from "@/api/barbearia/barbeariaServices"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -18,6 +18,7 @@ import { EditIcon, Scissors, Trash } from "lucide-react"
 import { useState } from "react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { ButtonTrash } from "@/components/reultilizar/buttonTrash"
+import UploadImgAvatar from "@/components/uploadImgAvatar"
 
 type Props = {
     itemProduct: Products;
@@ -30,26 +31,39 @@ export const DialogEditProduct = ({ itemProduct }: Props) => {
     const [open, setOpen] = useState(false);
 
     const [inputNome, setInputNome] = useState(itemProduct.nome);
-    const [inputDescricao, setInputDescricao] = useState(itemProduct.descricao);
+    const [inputDescricao, setInputDescricao] = useState(itemProduct.descricao || "");
     const [inputTipo, setInputTipo] = useState(itemProduct.tipo);
     const [inputPreco, setInputPreco] = useState(itemProduct.preco);
+    const [imageFile, setImageFile] = useState<File | null>(null);
 
     const handleEditProduct = async () => {
         if (!barbearia) return;
+
+        // 1. Criar o objeto FormData
+        const formData = new FormData();
+
+        // 2. Anexar os dados de texto
+        // O backend é flexível e só atualizará os campos enviados
+        formData.append('nome', inputNome);
+        formData.append('descricao', inputDescricao);
+        formData.append('tipo', inputTipo);
+        formData.append('preco', String(inputPreco));
+
+        // 3. Anexar o novo arquivo de imagem, se ele existir
+        if (imageFile) {
+            formData.append('imagemUrl', imageFile);
+        }
+
         try {
-            const data: DataProducts = {
-                nome: inputNome,
-                descricao: inputDescricao,
-                tipo: inputTipo,
-                preco: inputPreco
-            }
-            const done = await putProduct(barbearia.id, itemProduct.id, data);
+            // 4. Chamar a API com o FormData
+            const done = await putProduct(barbearia.id, itemProduct.id, formData);
+
             if (done) {
                 await loadItems(barbearia, getProducts, setProducts);
                 setOpen(false);
             }
         } catch (error: any) {
-            console.log(error);
+            console.log("Erro no componente:", error);
         }
     }
 
@@ -88,6 +102,7 @@ export const DialogEditProduct = ({ itemProduct }: Props) => {
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex flex-col gap-4">
+                    <UploadImgAvatar initialImageUrl={itemProduct.imagemUrl} onFileSelect={setImageFile}/>
                     <div className="">
                         <label htmlFor="nome">Produto</label>
                         <Input

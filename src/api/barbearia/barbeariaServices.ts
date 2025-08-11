@@ -87,54 +87,43 @@ export const getProducts = async (barbeariaId: string) => {
     }
 }
 
-export type DataProducts = {
-    nome: string;
-    descricao?: string;
-    preco: number;
-    tipo: string;
-    imagemUr?: string | null;
-    estoque?: boolean;
-}
-
-export const postProduct = async (barbeariaId: string, data: DataProducts) => {
+export const postProduct = async (barbeariaId: string, data: FormData) => {
     try {
-        const response = await axiosInstance.post(`/barbearia/${barbeariaId}/produtos`, data);
-        toast.success(response.data.message, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
+        // A rota que você pediu para não mudar
+        const response = await axiosInstance.post(`/barbearia/${barbeariaId}/produtos`, data, {
+            // Cabeçalho para informar o backend sobre o tipo de conteúdo
+            headers: {
+                'Content-Type': 'multipart/form-data',
             },
         });
+
+        toast.success(response.data.message || "Produto criado com sucesso!");
         return response.data.produto;
+
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao criar novo produto";
-        toast.error(errorMessage, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
+        toast.error(errorMessage);
+        throw error;
     }
 }
 
-export const putProduct = async (barbeariaId: string, produtoId: string, data: DataProducts) => {
+export const putProduct = async (barbeariaId: string, produtoId: string, data: FormData) => {
     try {
-        const response = await axiosInstance.put(`/barbearia/${barbeariaId}/produtos/${produtoId}`, data);
-        toast.success(response.data.message, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
+        // 2. A rota do backend para editar o produto
+        const response = await axiosInstance.put(`/barbearia/${barbeariaId}/produtos/${produtoId}`, data, {
+            // 3. Define o cabeçalho para 'multipart/form-data'
+            headers: {
+                'Content-Type': 'multipart/form-data',
             },
         });
+
+        toast.success(response.data.message || "Produto atualizado com sucesso!");
         return response.data.produto;
+
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao editar produto";
-        toast.error(errorMessage, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
+        toast.error(errorMessage);
+        throw error;
     }
 }
 
