@@ -52,3 +52,26 @@ export const editSenha = async (usuarioId: string, data: dataTypeSenha) => {
         });
     }
 }
+
+export const updateProfilePicture = async (imageFile: File) => {
+    // 1. Criar o FormData
+    const formData = new FormData();
+    formData.append('fotoPerfil', imageFile); // 'fotoPerfil' corresponde ao upload.single() no backend
+
+    try {
+        // 2. Chamar a nova rota com o FormData
+        const response = await axiosInstance.post('barbearia/usuarios-sistema/picture', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        toast.success(response.data.message || "Foto de perfil atualizada!");
+        return response.data; // Retorna { message, fotoPerfilUrl }
+
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao atualizar a foto.";
+        toast.error(errorMessage);
+        throw error;
+    }
+};

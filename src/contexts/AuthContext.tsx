@@ -19,6 +19,7 @@ export interface Usuario {
     id: string; // ID do próprio usuário no sistema
     nome: string;
     email: string;
+    fotoPerfil: string | null;
     role: 'ADMIN' | 'BARBEIRO';
     barbeariaId: string;
     perfilBarbeiro?: {
