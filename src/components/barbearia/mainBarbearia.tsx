@@ -11,6 +11,9 @@ import { SocialContextProvider } from "@/contexts/SocialContext";
 import { PaymentContextProvider } from "@/contexts/PaymentContext";
 import { OpeningHoursContextProvider } from "@/contexts/OpeningHoursContext";
 import { HeaderPage } from "../reultilizar/headerPage";
+import { BarberContextProvider } from "@/contexts/BarberContext";
+import { CardBarberShop } from "./barberShop/cardBarberShop";
+import { BarbershopContextProvider } from "@/contexts/barberShopContext";
 
 export const MainBarbearia = () => {
     return (
@@ -39,6 +42,10 @@ export const MainBarbearia = () => {
                 <OpeningHoursContextProvider>
                     <CardOpeningHours />
                 </OpeningHoursContextProvider>
+
+                <BarbershopContextProvider>
+                    <CardBarberShop />
+                </BarbershopContextProvider>
             </div>
         </main>
     );

@@ -35,7 +35,7 @@ export const DialogEditarBarbeiro = ({ barbeiro }: Props) => {
     }
 
     return (
-        <Dialog open={open} onOpenChange={setOpen} modal={false}>
+        <Dialog open={open} onOpenChange={setOpen} modal={true}>
             <DialogTrigger asChild>
                 <TooltipProvider>
                     <Tooltip>

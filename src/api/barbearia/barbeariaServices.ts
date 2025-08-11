@@ -353,3 +353,12 @@ export const deleteOpeningHours = async (barbeariaId: string, horarioId: string)
         });
     }
 }
+
+export const getBarberShop = async (barbeariaId: string) => {
+    try {
+        const response = await axiosInstance.get(`/barbearia/barbershop/${barbeariaId}`);
+        return response.data;
+    } catch (error: any) {
+        
+    }
+}
