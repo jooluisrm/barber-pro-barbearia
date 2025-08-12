@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { MapPin, Phone, Smartphone, Globe } from "lucide-react";
+import { MapPin, Phone, Smartphone, Globe, LoaderCircle } from "lucide-react";
 import UploadImgAvatar from "@/components/uploadImgAvatar";
 import { BarberShop } from "@/types/barberShop";
 import { z } from "zod";
@@ -66,6 +66,7 @@ export const DialogEditBarberShop = ({ infosBarbearia }: Props) => {
     const [scrolledTop, setScrolledTop] = useState(false);
     const [scrolledBottom, setScrolledBottom] = useState(false);
     const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
         const target = e.currentTarget;
@@ -90,6 +91,7 @@ export const DialogEditBarberShop = ({ infosBarbearia }: Props) => {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         const formData = new FormData();
+        setLoading(true);
 
         Object.entries(values).forEach(([key, value]) => {
             if (value !== null && value !== undefined) {
@@ -106,8 +108,10 @@ export const DialogEditBarberShop = ({ infosBarbearia }: Props) => {
                 updateBarbearia(response.barbearia);
                 setOpen(false);
             }
+            setLoading(false);
         } catch (error) {
             console.error("Falha ao enviar formulário:", error);
+            setLoading(false);
         }
     }
 
@@ -317,10 +321,18 @@ export const DialogEditBarberShop = ({ infosBarbearia }: Props) => {
                                     : ""
                                     }`}
                             >
-                                <Button type="button" variant="outline">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    disabled={loading}
+                                    onClick={() => setOpen(false)}
+                                >
                                     Cancelar
                                 </Button>
-                                <Button type="submit">Salvar</Button>
+                                <Button
+                                    type="submit"
+                                    disabled={loading}
+                                >{loading ? <LoaderCircle className="animate-spin" /> : "Salvar"}</Button>
                             </div>
                         </form>
                     </Form>
