@@ -15,20 +15,13 @@ import { useEffect } from "react";
 import { loadItems } from "@/utils/loadItems";
 import { useBarbershopContext } from "@/contexts/barberShopContext";
 import { getBarberShop } from "@/api/barbearia/barbeariaServices";
+import { DialogEditBarberShop } from "./dialogEditBarberShop";
+
+
 
 export const CardBarberShop = () => {
     const { barbearia } = useAuth();
     const { setBarbershop, barbershop} = useBarbershopContext();
-
-    const barberShop = {
-        nome: "Barbearia Estilo Fino",
-        descricao: "Cortes modernos e atendimento premium assasasa assaassa sasasaas saassaas",
-        endereco: "Rua das Acácias, 123 - Centro",
-        latitude: -23.55052,
-        longitude: -46.633308,
-        telefone: "(11) 3456-7890",
-        celular: "(11) 98765-4321"
-    };
 
     useEffect(() => {
         if (!barbearia) return;
@@ -104,7 +97,7 @@ export const CardBarberShop = () => {
                 </CardContent>
             </div>
             <CardFooter>
-                <Button className="w-full">Editar</Button>
+                <DialogEditBarberShop infosBarbearia={barbershop}/>
             </CardFooter>
         </Card>
     );
