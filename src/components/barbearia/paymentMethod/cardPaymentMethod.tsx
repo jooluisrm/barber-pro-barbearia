@@ -17,12 +17,12 @@ import { getPayment } from "@/api/barbearia/barbeariaServices";
 
 export const CardPaymentMethod = () => {
 
-    const { barbearia } = useAuth();
+    const { barbearia, token } = useAuth();
     const { setPayment } = usePaymentContext();
 
     useEffect(() => {
         loadItems(barbearia, getPayment, setPayment);
-    }, [barbearia]);
+    }, [token]);
 
     return (
         <Card className="flex flex-col justify-between">

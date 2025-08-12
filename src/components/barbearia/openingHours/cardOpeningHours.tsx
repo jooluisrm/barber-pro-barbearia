@@ -17,12 +17,12 @@ import { getOpeningHours } from "@/api/barbearia/barbeariaServices";
 
 
 export const CardOpeningHours = () => {
-    const { barbearia } = useAuth();
+    const { barbearia, token } = useAuth();
     const { setOpeningHours } = useOpeningHoursContext();
 
     useEffect(() => {
         loadItems(barbearia, getOpeningHours, setOpeningHours);
-    }, [barbearia]);
+    }, [token]);
 
     return (
         <Card className="flex flex-col justify-between">

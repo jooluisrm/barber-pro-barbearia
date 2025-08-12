@@ -15,13 +15,13 @@ import { getProducts } from "@/api/barbearia/barbeariaServices";
 import { useProductContext } from "@/contexts/ProductsContext";
 
 export const CardProducts = () => {
-    const { barbearia } = useAuth();
+    const { barbearia, token } = useAuth();
     const { setProducts } = useProductContext();
 
 
     useEffect(() => {
         loadItems(barbearia, getProducts, setProducts);
-    }, [barbearia]);
+    }, [token]);
 
     return (
         <Card className="flex flex-col justify-between">

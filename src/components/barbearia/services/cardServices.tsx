@@ -17,12 +17,12 @@ import { loadItems } from "@/utils/loadItems";
 import { useServiceContext } from "@/contexts/ServicesContext";
 
 export const CardServices = () => {
-    const { barbearia } = useAuth();
+    const { barbearia, token } = useAuth();
     const { setServices } = useServiceContext();
 
     useEffect(() => {
         loadItems(barbearia, getServices, setServices);
-    }, [barbearia])
+    }, [token]);
 
     return (
         <Card className="flex flex-col justify-between">

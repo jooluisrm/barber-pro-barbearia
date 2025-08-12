@@ -16,13 +16,13 @@ import { useSocialContext } from "@/contexts/SocialContext";
 import { getSocialMedia } from "@/api/barbearia/barbeariaServices";
 
 export const CardSocialMidia = () => {
-    const { barbearia } = useAuth();
+    const { barbearia, token } = useAuth();
     const { setSocialMedia } = useSocialContext();
 
 
     useEffect(() => {
         loadItems(barbearia, getSocialMedia, setSocialMedia);
-    }, [barbearia]);
+    }, [token]);
 
     return (
         <Card className="flex flex-col justify-between">
