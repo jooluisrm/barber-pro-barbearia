@@ -28,6 +28,8 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { putBarberShop } from "@/api/barbearia/barbeariaServices";
+import { useAuth } from "@/contexts/AuthContext";
 
 type Props = {
     infosBarbearia: BarberShop;
@@ -58,9 +60,12 @@ const formSchema = z.object({
 });
 
 export const DialogEditBarberShop = ({ infosBarbearia }: Props) => {
+    const { updateBarbearia } = useAuth();
+
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [scrolledTop, setScrolledTop] = useState(false);
     const [scrolledBottom, setScrolledBottom] = useState(false);
+    const [open, setOpen] = useState(false);
 
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
         const target = e.currentTarget;
@@ -83,43 +88,61 @@ export const DialogEditBarberShop = ({ infosBarbearia }: Props) => {
         },
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log("Form values:", values);
-        console.log("Imagem selecionada:", imageFile);
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        const formData = new FormData();
+
+        Object.entries(values).forEach(([key, value]) => {
+            if (value !== null && value !== undefined) {
+                formData.append(key, String(value));
+            }
+        });
+        if (imageFile) {
+            formData.append('fotoPerfil', imageFile);
+        }
+
+        try {
+            const response = await putBarberShop(formData);
+            if (response && response.barbearia) {
+                updateBarbearia(response.barbearia);
+                setOpen(false);
+            }
+        } catch (error) {
+            console.error("Falha ao enviar formulário:", error);
+        }
     }
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button className="w-full">Editar</Button>
             </DialogTrigger>
             <DialogContent className="max-w-lg p-0 overflow-hidden">
                 {/* Cabeçalho fixo */}
                 <DialogHeader
-                    className={`p-6 border-b transition-shadow ${
-                        scrolledTop ? "shadow-sm" : ""
-                    }`}
+                    className={`p-6 border-b transition-shadow ${scrolledTop ? "shadow-sm" : ""
+                        }`}
                 >
                     <DialogTitle>Editar Barbearia</DialogTitle>
                 </DialogHeader>
+                <div
+                    className="max-h-[70vh] overflow-y-auto p-6 space-y-4"
+                    onScroll={handleScroll}
+                >
+                    {/* Foto */}
+                    <div className="flex items-center gap-4 border rounded-lg p-4">
+                        <div className="flex-1 space-y-2">
+                            <Label>Foto de Perfil</Label>
+                            <UploadImgAvatar
+                                onFileSelect={setImageFile}
+                                initialImageUrl={infosBarbearia?.fotoPerfil}
+                            />
+                        </div>
+                    </div>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                            {/* Corpo rolável */}
 
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)}>
-                        {/* Corpo rolável */}
-                        <div
-                            className="max-h-[70vh] overflow-y-auto p-6 space-y-4"
-                            onScroll={handleScroll}
-                        >
-                            {/* Foto */}
-                            <div className="flex items-center gap-4 border rounded-lg p-4">
-                                <div className="flex-1 space-y-2">
-                                    <Label>Foto de Perfil</Label>
-                                    <UploadImgAvatar
-                                        onFileSelect={setImageFile}
-                                        initialImageUrl={infosBarbearia?.fotoPerfil}
-                                    />
-                                </div>
-                            </div>
+
 
                             {/* Nome */}
                             <FormField
@@ -285,24 +308,24 @@ export const DialogEditBarberShop = ({ infosBarbearia }: Props) => {
                                     )}
                                 />
                             </div>
-                        </div>
 
-                        {/* Rodapé fixo */}
-                        <div
-                            className={`p-6 border-t flex justify-end gap-2 transition-shadow ${
-                                scrolledBottom
+
+                            {/* Rodapé fixo */}
+                            <div
+                                className={`p-6 border-t flex justify-end gap-2 transition-shadow ${scrolledBottom
                                     ? "shadow-[0_-2px_4px_rgba(0,0,0,0.05)]"
                                     : ""
-                            }`}
-                        >
-                            <Button type="button" variant="outline">
-                                Cancelar
-                            </Button>
-                            <Button type="submit">Salvar</Button>
-                        </div>
-                    </form>
-                </Form>
+                                    }`}
+                            >
+                                <Button type="button" variant="outline">
+                                    Cancelar
+                                </Button>
+                                <Button type="submit">Salvar</Button>
+                            </div>
+                        </form>
+                    </Form>
+                </div>
             </DialogContent>
-        </Dialog>
+        </Dialog >
     );
 };

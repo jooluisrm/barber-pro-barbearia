@@ -62,7 +62,7 @@ export const DialogNewOpeningHours = () => {
     }
 
     return (
-        <Dialog open={open} onOpenChange={setOpen} modal={false}>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <NovoItem onCLick={setOpen}/> 
             </DialogTrigger>

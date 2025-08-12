@@ -362,3 +362,19 @@ export const getBarberShop = async (barbeariaId: string) => {
         
     }
 }
+
+export const putBarberShop= async (data: FormData) => {
+    try {
+        const response = await axiosInstance.put('/barbearia/barbershop', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        toast.success(response.data.message || "Barbearia atualizada com sucesso!");
+        return response.data;
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao atualizar a barbearia.";
+        toast.error(errorMessage);
+        throw error;
+    }
+};
