@@ -7,6 +7,7 @@ import { CircleUserRound, Gem, House, LogOut, NotebookPen, Package, PanelBottom,
 import { AlertLogout } from "../loginAndRegister/alertLogout";
 import { AgendamentoPendente } from "@/types/agendamentos";
 import { Usuario } from "@/contexts/AuthContext";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 type Props = {
     token: string | null;
@@ -31,10 +32,13 @@ export const DeshboardMobile = ({ token, rotaAtual, agendamentosPendentes, usuar
                         <nav className="grid gap-6 text-lg font-medium">
                             <Link
                                 href={"#"}
-                                className={`flex h-14 w-14 bg-primary rounded-full text-lg items-center justify-center text-primary-foreground md:text-base gap-2`}
+                                className={`flex h-14 w-14 rounded-full text-lg items-center justify-center text-primary-foreground md:text-base gap-2`}
                                 prefetch={false}
                             >
-                                <Image src={imgIcon} alt="icone" className="transition-all" />
+                                <Avatar className="w-14 h-14">
+                                    <AvatarImage src={`${usuario?.fotoPerfil ? usuario.fotoPerfil : `/favicon.png`}`} />
+                                    <AvatarFallback>{usuario?.nome.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                </Avatar>
                                 <span className="sr-only">Logo do projeto</span>
                             </Link>
 
@@ -65,6 +69,7 @@ export const DeshboardMobile = ({ token, rotaAtual, agendamentosPendentes, usuar
                                     flex items-center justify-center text-[10px] text-white
                                     ${rotaAtual === "/agendamentos" && "hidden"}
                                     ${agendamentosPendentes === null && "hidden"}
+                                    ${agendamentosPendentes && agendamentosPendentes.length <= 0 && "hidden"}
                                     `}
                                 >
                                     {agendamentosPendentes && (agendamentosPendentes.length > 9 ? "9+" : agendamentosPendentes.length)}

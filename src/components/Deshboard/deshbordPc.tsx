@@ -6,7 +6,8 @@ import imgIcon from "../../../public/assets/BarberProIcone-removebg-preview.png"
 import { AlertLogout } from "../loginAndRegister/alertLogout";
 import { ModeToggle } from "../buttonTheme";
 import { AgendamentoPendente } from "@/types/agendamentos";
-import { Usuario } from "@/contexts/AuthContext";
+import { useAuth, Usuario } from "@/contexts/AuthContext";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 type Props = {
     token: string | null;
@@ -16,12 +17,16 @@ type Props = {
 }
 
 export const DeshboardPc = ({ token, rotaAtual, agendamentosPendentes, usuario }: Props) => {
+
     return (
         <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 border-r bg-background sm:flex flex-col">
             <nav className="flex flex-col items-center gap-4 px-2 py-5">
                 <TooltipProvider>
-                    <Link href={"#"} className="flex h-12 w-12 shrink-0 items-center dark:bg-primary justify-center text-primary-foreground rounded-full border">
-                        <Image src={imgIcon} alt="icone" />
+                    <Link href={"#"} className="flex shrink-0 items-center justify-center">
+                        <Avatar className="w-12 h-12">
+                            <AvatarImage src={`${usuario?.fotoPerfil ? usuario.fotoPerfil : `/favicon.png`}`} />
+                            <AvatarFallback>{usuario?.nome.substring(0,2).toUpperCase()}</AvatarFallback>
+                        </Avatar>
                         <span className="sr-only">Deshboard Avatar</span>
                     </Link>
 
