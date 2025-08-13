@@ -20,57 +20,77 @@ import { PlusCircle } from "lucide-react"
 import { useState } from "react"
 
 export const DialogNewProduct = () => {
-    const { setProducts } = useProductContext();
+
+    const { setProductData } = useProductContext();
     const { barbearia } = useAuth();
 
     const [open, setOpen] = useState(false);
 
+    // Estados existentes (vamos renomear 'inputPreco' para clareza)
     const [inputNome, setInputNome] = useState("");
     const [inputDescricao, setInputDescricao] = useState("");
     const [inputTipo, setInputTipo] = useState("");
-    const [inputPreco, setInputPreco] = useState(0);
+    const [inputPrecoVenda, setInputPrecoVenda] = useState(0); // RENOMEADO
     const [imageFile, setImageFile] = useState<File | null>(null);
 
-    const handleAddProduct = async () => {
-        if (!barbearia || !inputNome || !inputTipo) return;
+    // NOVOS ESTADOS para os campos de estoque
+    const [inputCusto, setInputCusto] = useState(0);
+    const [inputQuantidade, setInputQuantidade] = useState(0);
+    const [inputAlertaEstoque, setInputAlertaEstoque] = useState(''); // String para permitir campo vazio
+    const [inputDataValidade, setInputDataValidade] = useState(''); // String para o input type="date"
 
-        // 1. Criar o objeto FormData
+    const handleAddProduct = async () => {
+        // Validação para os novos campos obrigatórios
+        if (!barbearia || !inputNome || !inputTipo || !inputPrecoVenda || !inputCusto) return;
+
         const formData = new FormData();
 
-        // 2. Anexar todos os dados de texto
+        // Anexa os dados, incluindo os novos campos de estoque
         formData.append('nome', inputNome);
         formData.append('descricao', inputDescricao);
         formData.append('tipo', inputTipo);
-        formData.append('preco', String(inputPreco)); // Enviar números como string
+        formData.append('precoVenda', String(inputPrecoVenda)); // ATUALIZADO
+        formData.append('custo', String(inputCusto)); // NOVO
+        formData.append('quantidade', String(inputQuantidade)); // NOVO
 
-        // 3. Anexar o arquivo de imagem, se ele existir
+        // Anexa os campos opcionais apenas se tiverem valor
+        if (inputAlertaEstoque) {
+            formData.append('alertaEstoqueBaixo', inputAlertaEstoque); // NOVO
+        }
+        if (inputDataValidade) {
+            formData.append('dataValidade', inputDataValidade); // NOVO
+        }
         if (imageFile) {
-            formData.append('imagemUrl', imageFile); // 'imagemUrl' deve corresponder ao upload.single() no backend
+            formData.append('imagemUrl', imageFile);
         }
 
         try {
-            // 4. Chamar a API com o FormData
             await postProduct(barbearia.id, formData);
 
-            // 5. Recarregar a lista e limpar o formulário
-            await loadItems(barbearia, getProducts, setProducts);
-            setInputPreco(0);
+            // Recarrega a lista
+            await loadItems(barbearia, getProducts, setProductData); // ATUALIZADO
+
+            // Limpa TODOS os campos do formulário
             setInputNome("");
-            setInputTipo("");
             setInputDescricao("");
-            setImageFile(null); // Limpa a imagem selecionada
+            setInputTipo("");
+            setInputPrecoVenda(0);
+            setInputCusto(0);
+            setInputQuantidade(0);
+            setInputAlertaEstoque('');
+            setInputDataValidade('');
+            setImageFile(null);
             setOpen(false);
 
         } catch (error: any) {
             console.log("Erro no componente:", error);
-            // O toast de erro já é tratado na função da API
         }
     }
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <NovoItem onCLick={setOpen}/>
+                <NovoItem onCLick={setOpen} />
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader className="border-b pb-4">
@@ -85,7 +105,7 @@ export const DialogNewProduct = () => {
                     </DialogDescription>
                 </DialogHeader>
                 <div className="flex flex-col gap-4">
-                    <UploadImgAvatar onFileSelect={setImageFile}/>
+                    <UploadImgAvatar onFileSelect={setImageFile} />
                     <div className="">
                         <label htmlFor="nome">Produto</label>
                         <Input
@@ -115,23 +135,39 @@ export const DialogNewProduct = () => {
                                 onChange={(e) => setInputTipo(e.target.value)}
                             />
                         </div>
-                        <div className="">
-                            <label htmlFor="preco">Preço</label>
-                            <Input
-                                id="preco"
-                                type="number"
-                                min={0}
-                                placeholder="R$"
-                                value={inputPreco}
-                                onChange={(e) => setInputPreco(Number(e.target.value))}
-                            />
+                    </div>
+
+                    <div className="flex justify-between gap-4">
+                        <div className="w-1/2">
+                            <label htmlFor="precoVenda">Preço de Venda*</label>
+                            <Input id="precoVenda" type="number" min={0} placeholder="R$" value={inputPrecoVenda} onChange={(e) => setInputPrecoVenda(Number(e.target.value))} />
                         </div>
+                        <div className="w-1/2">
+                            <label htmlFor="custo">Custo*</label>
+                            <Input id="custo" type="number" min={0} placeholder="R$" value={inputCusto} onChange={(e) => setInputCusto(Number(e.target.value))} />
+                        </div>
+                    </div>
+
+                    <div className="flex justify-between gap-4">
+                        <div className="w-1/2">
+                            <label htmlFor="quantidade">Qtd. Inicial*</label>
+                            <Input id="quantidade" type="number" min={0} placeholder="0" value={inputQuantidade} onChange={(e) => setInputQuantidade(Number(e.target.value))} />
+                        </div>
+                        <div className="w-1/2">
+                            <label htmlFor="alertaEstoque">Alerta de Estoque</label>
+                            <Input id="alertaEstoque" type="number" min={0} placeholder="ex: 10" value={inputAlertaEstoque} onChange={(e) => setInputAlertaEstoque(e.target.value)} />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label htmlFor="dataValidade">Data de Validade</label>
+                        <Input id="dataValidade" type="date" value={inputDataValidade} onChange={(e) => setInputDataValidade(e.target.value)} />
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button 
-                    onClick={handleAddProduct}
-                    disabled={!inputNome || !inputTipo}
+                    <Button
+                        onClick={handleAddProduct}
+                        disabled={!inputNome || !inputTipo}
                     >Criar</Button>
                 </DialogFooter>
             </DialogContent>
