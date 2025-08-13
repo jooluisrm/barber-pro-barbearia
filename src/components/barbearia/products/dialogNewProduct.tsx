@@ -1,6 +1,7 @@
 import { getProducts, postProduct } from "@/api/barbearia/barbeariaServices"
 import { NovoItem } from "@/components/reultilizar/novoItem"
 import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import {
     Dialog,
     DialogContent,
@@ -11,13 +12,16 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import UploadImgAvatar from "@/components/uploadImgAvatar"
 import { useAuth } from "@/contexts/AuthContext"
 import { useProductContext } from "@/contexts/ProductsContext"
+import { cn } from "@/lib/utils"
 import { Products } from "@/types/products"
 import { loadItems } from "@/utils/loadItems"
-import { PlusCircle } from "lucide-react"
+import { CalendarIcon, PlusCircle } from "lucide-react"
 import { useState } from "react"
+import { format } from "date-fns"
 
 export const DialogNewProduct = () => {
 
@@ -37,7 +41,7 @@ export const DialogNewProduct = () => {
     const [inputCusto, setInputCusto] = useState(0);
     const [inputQuantidade, setInputQuantidade] = useState(0);
     const [inputAlertaEstoque, setInputAlertaEstoque] = useState(''); // String para permitir campo vazio
-    const [inputDataValidade, setInputDataValidade] = useState(''); // String para o input type="date"
+    const [dataValidade, setDataValidade] = useState<Date | undefined>(undefined);
 
     const handleAddProduct = async () => {
         // Validação para os novos campos obrigatórios
@@ -57,8 +61,8 @@ export const DialogNewProduct = () => {
         if (inputAlertaEstoque) {
             formData.append('alertaEstoqueBaixo', inputAlertaEstoque); // NOVO
         }
-        if (inputDataValidade) {
-            formData.append('dataValidade', inputDataValidade); // NOVO
+        if (dataValidade) {
+            formData.append('dataValidade', format(dataValidade, "yyyy-MM-dd"));
         }
         if (imageFile) {
             formData.append('imagemUrl', imageFile);
@@ -78,7 +82,7 @@ export const DialogNewProduct = () => {
             setInputCusto(0);
             setInputQuantidade(0);
             setInputAlertaEstoque('');
-            setInputDataValidade('');
+            setDataValidade(undefined);
             setImageFile(null);
             setOpen(false);
 
@@ -88,11 +92,11 @@ export const DialogNewProduct = () => {
     }
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={setOpen} modal={false}>
             <DialogTrigger asChild>
                 <NovoItem onCLick={setOpen} />
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[425px] max-h-[90vh] flex flex-col">
                 <DialogHeader className="border-b pb-4">
                     <DialogTitle className="text-2xl font-bold flex items-center gap-2">
                         <PlusCircle className="w-6 h-6" />
@@ -104,7 +108,7 @@ export const DialogNewProduct = () => {
                         </span>
                     </DialogDescription>
                 </DialogHeader>
-                <div className="flex flex-col gap-4">
+                <div className="flex-1 flex flex-col gap-4 py-4 overflow-y-auto pr-4">
                     <UploadImgAvatar onFileSelect={setImageFile} />
                     <div className="">
                         <label htmlFor="nome">Produto</label>
@@ -159,16 +163,37 @@ export const DialogNewProduct = () => {
                         </div>
                     </div>
 
+                    {/* CALENDÁRIO: Substituição do input de data */}
                     <div>
                         <label htmlFor="dataValidade">Data de Validade</label>
-                        <Input id="dataValidade" type="date" value={inputDataValidade} onChange={(e) => setInputDataValidade(e.target.value)} />
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                        "w-full justify-start text-left font-normal",
+                                        !dataValidade && "text-muted-foreground"
+                                    )}
+                                >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {dataValidade ? format(dataValidade, "dd/MM/yyyy") : <span>Selecione uma data</span>}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                                <Calendar
+                                    mode="single"
+                                    selected={dataValidade}
+                                    onSelect={setDataValidade}
+                                    initialFocus
+                                    captionLayout="dropdown-years"
+                                    className="rounded-md border shadow-sm"
+                                />
+                            </PopoverContent>
+                        </Popover>
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button
-                        onClick={handleAddProduct}
-                        disabled={!inputNome || !inputTipo}
-                    >Criar</Button>
+                    <Button onClick={handleAddProduct} disabled={!inputNome || !inputTipo || !inputPrecoVenda || !inputCusto}>Criar</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
