@@ -80,10 +80,13 @@ export const deleteService = async (barbeariaId: string, servicoId: string) => {
 
 export const getProducts = async (barbeariaId: string) => {
     try {
-        const response = await axiosInstance.get(`/barbearia/${barbeariaId}/adm/produtos`);
+        // A URL não precisa mais do barbeariaId, pois o backend usa o do token
+        const response = await axiosInstance.get(`/barbearia/qualquer-coisa/adm/produtos`);
         return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao Carregar produtos";
+        // É bom retornar o erro para que a interface possa reagir
+        throw new Error(errorMessage);
     }
 }
 

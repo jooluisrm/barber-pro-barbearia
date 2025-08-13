@@ -16,12 +16,14 @@ import { useProductContext } from "@/contexts/ProductsContext";
 
 export const CardProducts = () => {
     const { barbearia, token } = useAuth();
-    const { setProducts } = useProductContext();
+    // ATUALIZADO: O nome da função do context mudou
+    const { setProductData } = useProductContext();
 
 
     useEffect(() => {
-        loadItems(barbearia, getProducts, setProducts);
-    }, [token]);
+        // ATUALIZADO: Passa a função correta para o loadItems
+        loadItems(barbearia, getProducts, setProductData);
+    }, [token, barbearia]); // Adicionado 'barbearia' como dependência
 
     return (
         <Card className="flex flex-col justify-between">

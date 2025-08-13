@@ -15,7 +15,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export const TableProducts = () => {
 
-    const { products } = useProductContext();
+    // ATUALIZADO: Pega o objeto de dados do contexto
+    const { productData } = useProductContext();
+
+    // Extrai a lista de produtos do objeto
+    const products = productData?.produtos || [];
 
     return (
         <Table>
@@ -31,30 +35,30 @@ export const TableProducts = () => {
                 </TableRow>
             </TableHeader>
             <TableBody>
-
-                {products != null && products.map((item) => (
-                    <TableRow key={item.id}>
-                        <TableCell>
-                            <Avatar>
-                                <AvatarImage src={item.imagemUrl ? item.imagemUrl : "/favicon.png"} />
-                                <AvatarFallback>{item.nome.substring(0,2).toUpperCase()}</AvatarFallback>
-                            </Avatar>
-                        </TableCell>
-                        <TableCell className="font-medium">{item.nome}</TableCell>
-                        <TableCell>{item?.descricao}</TableCell>
-                        <TableCell>{item.tipo}</TableCell>
-                        <TableCell className="text-right">{formatarPreco(item.preco.toString())}</TableCell>
+                {/* A verificação agora é em 'products' que é um array garantido */
+                    products.map((item) => (
+                        <TableRow key={item.id}>
+                            <TableCell>
+                                <Avatar>
+                                    <AvatarImage src={item.imagemUrl ? item.imagemUrl : "/favicon.png"} />
+                                    <AvatarFallback>{item.nome.substring(0, 2).toUpperCase()}</AvatarFallback>
+                                </Avatar>
+                            </TableCell>
+                            <TableCell className="font-medium">{item.nome}</TableCell>
+                            <TableCell>{item?.descricao}</TableCell>
+                            <TableCell>{item.tipo}</TableCell>
+                            
+                        <TableCell className="text-right">{formatarPreco(item.precoVenda.toString())}</TableCell>
                         <TableCell className="flex justify-end items-center">
                             <DialogEditProduct itemProduct={item} />
                         </TableCell>
-                    </TableRow>
-                ))}
-
+                        </TableRow>
+                    ))}
             </TableBody>
             <TableFooter>
                 <TableRow>
-                    <TableCell colSpan={4}>Total de Produtos</TableCell>
-                    <TableCell className="text-right">{products?.length}</TableCell>
+                    <TableCell colSpan={5}>Total de Produtos Ativos</TableCell>
+                    <TableCell className="text-right">{productData?.total || 0}</TableCell>
                 </TableRow>
             </TableFooter>
         </Table>
