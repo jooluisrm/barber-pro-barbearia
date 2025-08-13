@@ -47,8 +47,9 @@ export const MainLogin = () => {
                 nome: apiResponse.usuario.barbearia.nome, // <-- AGORA USAMOS O NOME CORRETO!
                 email: apiResponse.usuario.email,
                 telefone: apiResponse.usuario.perfilBarbeiro?.telefone || '', // Usamos o telefone do perfil se for um barbeiro
-                fotoPerfil: apiResponse.usuario.fotoPerfil,
-                stripeCurrentPeriodEnd: apiResponse.usuario.barbearia.stripeCurrentPeriodEnd
+                fotoPerfil: apiResponse.usuario.barbearia?.fotoPerfil,
+                stripeCurrentPeriodEnd: apiResponse.usuario.barbearia.stripeCurrentPeriodEnd,
+                endereco: apiResponse.usuario.barbearia.endereco
             };
 
             // Chamamos a função 'login' do contexto com a estrutura correta

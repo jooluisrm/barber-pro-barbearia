@@ -11,6 +11,7 @@ export interface Barbearia {
     email: string;
     telefone: string;
     fotoPerfil?: string;
+    endereco: string;
     stripeCurrentPeriodEnd: string | null;
 }
 

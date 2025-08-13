@@ -7,7 +7,8 @@ import { AlertLogout } from "../loginAndRegister/alertLogout";
 import { ModeToggle } from "../buttonTheme";
 import { AgendamentoPendente } from "@/types/agendamentos";
 import { useAuth, Usuario } from "@/contexts/AuthContext";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { DeshboardAvatarHover } from "./deshboardAvatarHover";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type Props = {
     token: string | null;
@@ -23,10 +24,18 @@ export const DeshboardPc = ({ token, rotaAtual, agendamentosPendentes, usuario }
             <nav className="flex flex-col items-center gap-4 px-2 py-5">
                 <TooltipProvider>
                     <Link href={"#"} className="flex shrink-0 items-center justify-center">
-                        <Avatar className="w-12 h-12">
-                            <AvatarImage src={`${usuario?.fotoPerfil ? usuario.fotoPerfil : `/favicon.png`}`} />
-                            <AvatarFallback>{usuario?.nome.substring(0,2).toUpperCase()}</AvatarFallback>
-                        </Avatar>
+                        {!usuario ? (
+                            <Avatar className="w-12 h-12">
+                                <AvatarImage src={"/favicon.png"} />
+                                <AvatarFallback>
+                                    BA
+                                </AvatarFallback>
+                            </Avatar>
+                        ) : (
+                            <DeshboardAvatarHover />
+                        )
+                        }
+
                         <span className="sr-only">Deshboard Avatar</span>
                     </Link>
 
