@@ -33,6 +33,7 @@ export const MainSucesso = () => {
                     email: updatedUsuario.email,
                     telefone: updatedUsuario.perfilBarbeiro?.telefone || '', 
                     fotoPerfil: updatedUsuario.fotoPerfil,
+                    endereco: updatedUsuario.endereco,
                     // A informação mais importante que veio do backend!
                     stripeCurrentPeriodEnd: updatedUsuario.barbearia.stripeCurrentPeriodEnd 
                 };
