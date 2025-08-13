@@ -74,6 +74,7 @@ export const MainRegister = () => {
                 email: apiResponse.usuario.email,
                 telefone: values.celular,
                 fotoPerfil: apiResponse.usuario.fotoPerfil,
+                endereco: apiResponse.usuario.endereco,
                 stripeCurrentPeriodEnd: null
             };
             
