@@ -185,7 +185,7 @@ export const DialogNewProduct = () => {
                                     selected={dataValidade}
                                     onSelect={setDataValidade}
                                     initialFocus
-                                    captionLayout="dropdown-years"
+                                    captionLayout="dropdown"
                                     className="rounded-md border shadow-sm"
                                 />
                             </PopoverContent>
