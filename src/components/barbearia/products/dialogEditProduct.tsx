@@ -16,6 +16,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
+import { ButtonArchive } from "./ButtonArchive"
 
 type Props = {
     itemProduct: Products;
@@ -35,7 +36,7 @@ export const DialogEditProduct = ({ itemProduct }: Props) => {
     const [inputCusto, setInputCusto] = useState(itemProduct.custo); // NOVO
     const [inputAlertaEstoque, setInputAlertaEstoque] = useState(itemProduct.alertaEstoqueBaixo || ''); // NOVO
     const [imageFile, setImageFile] = useState<File | null>(null);
-    
+
     // Estado para o calendário
     const [dataValidade, setDataValidade] = useState<Date | undefined>(
         itemProduct.dataValidade ? new Date(itemProduct.dataValidade) : undefined
@@ -75,7 +76,7 @@ export const DialogEditProduct = ({ itemProduct }: Props) => {
         formData.append('precoVenda', String(inputPrecoVenda));
         formData.append('custo', String(inputCusto));
         formData.append('alertaEstoqueBaixo', String(inputAlertaEstoque));
-        
+
         if (dataValidade) {
             formData.append('dataValidade', format(dataValidade, "yyyy-MM-dd"));
         }
@@ -118,7 +119,7 @@ export const DialogEditProduct = ({ itemProduct }: Props) => {
 
     // --- RENDERIZAÇÃO ---
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={setOpen} modal={false}>
             <DialogTrigger asChild>
                 <TooltipProvider>
                     <Tooltip>
@@ -140,7 +141,7 @@ export const DialogEditProduct = ({ itemProduct }: Props) => {
                 </DialogHeader>
                 <div className="flex-1 flex flex-col gap-4 py-4 overflow-y-auto pr-4">
                     <UploadImgAvatar initialImageUrl={itemProduct.imagemUrl} onFileSelect={setImageFile} />
-                    
+
                     {/* Campos de Dados Descritivos */}
                     <div><label htmlFor="nome">Produto*</label><Input id="nome" value={inputNome} onChange={(e) => setInputNome(e.target.value)} /></div>
                     <div><label htmlFor="descricao">Descrição</label><Input id="descricao" value={inputDescricao} onChange={(e) => setInputDescricao(e.target.value)} /></div>
@@ -151,10 +152,23 @@ export const DialogEditProduct = ({ itemProduct }: Props) => {
                         <div className="w-1/2"><label htmlFor="precoVenda">Preço de Venda*</label><Input id="precoVenda" type="number" value={inputPrecoVenda} onChange={(e) => setInputPrecoVenda(Number(e.target.value))} /></div>
                         <div className="w-1/2"><label htmlFor="custo">Custo*</label><Input id="custo" type="number" value={inputCusto} onChange={(e) => setInputCusto(Number(e.target.value))} /></div>
                     </div>
-                    
+
                     {/* Calendário */}
-                    <div><label>Data de Validade</label><Popover><PopoverTrigger asChild><Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !dataValidade && "text-muted-foreground")}><CalendarIcon className="mr-2 h-4 w-4" />{dataValidade ? format(dataValidade, "dd/MM/yyyy") : <span>Selecione uma data</span>}</Button></PopoverTrigger><PopoverContent className="w-auto p-0"><Calendar mode="single" selected={dataValidade} onSelect={setDataValidade} initialFocus /></PopoverContent></Popover></div>
-                    
+                    <div>
+                        <label>Data de Validade</label>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !dataValidade && "text-muted-foreground")}>
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {dataValidade ? format(dataValidade, "dd/MM/yyyy") : <span>Selecione uma data</span>}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                                <Calendar mode="single" selected={dataValidade} onSelect={setDataValidade} initialFocus captionLayout="dropdown"/>
+                            </PopoverContent>
+                        </Popover>
+                    </div>
+
                     {/* SEÇÃO DE AJUSTE DE ESTOQUE */}
                     <div className="border-t pt-4 mt-2 space-y-4">
                         <h4 className="font-semibold text-md">Ajustar Estoque</h4>
@@ -165,10 +179,13 @@ export const DialogEditProduct = ({ itemProduct }: Props) => {
                         </div>
                     </div>
                 </div>
-                <DialogFooter className="gap-2 sm:gap-0">
-                    <ButtonTrash 
-                        deleteFunction={handleArchiveProduct}
+                <DialogFooter className="gap-2 sm:gap-0 mt-4 pt-4 border-t">
+                    {/* SUBSTITUINDO O BOTÃO ANTIGO PELO NOVO */}
+                    <ButtonArchive
+                        archiveFunction={handleArchiveProduct}
+                        itemName={itemProduct.nome}
                     />
+                    <div className="flex-grow"></div> {/* Empurra o botão de salvar para a direita */}
                     <Button onClick={handleEditProduct}>Salvar Alterações</Button>
                 </DialogFooter>
             </DialogContent>

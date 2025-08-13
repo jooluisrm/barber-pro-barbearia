@@ -133,20 +133,12 @@ export const putProduct = async (barbeariaId: string, produtoId: string, data: F
 export const deleteProduct = async (barbeariaId: string, produtoId: string) => {
     try {
         const response = await axiosInstance.delete(`/barbearia/${barbeariaId}/produtos/${produtoId}`);
-        toast.success(response.data.message, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
+        toast.success(response.data.message || "Produto arquivado com sucesso!");
     } catch (error: any) {
-        const errorMessage = error.response?.data?.error || "Erro ao editar produto";
-        toast.error(errorMessage, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
+        // CORRIGINDO A MENSAGEM DE ERRO
+        const errorMessage = error.response?.data?.error || "Erro ao arquivar o produto";
+        toast.error(errorMessage);
+        throw error; // Lança o erro para que o componente possa saber que falhou
     }
 }
 
