@@ -17,6 +17,7 @@ import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
 import { ButtonArchive } from "./ButtonArchive"
+import { AlertConfigStock } from "./alertConfigStock"
 
 type Props = {
     itemProduct: Products;
@@ -177,6 +178,7 @@ export const DialogEditProduct = ({ itemProduct }: Props) => {
                             <div className="flex-1"><label htmlFor="ajuste">Ajuste (+/-)</label><Input id="ajuste" type="number" placeholder="ex: 10 ou -2" value={ajusteEstoque} onChange={(e) => setAjusteEstoque(e.target.value)} /></div>
                             <div className="flex-1"><label htmlFor="motivo">Motivo do ajuste</label><Input id="motivo" placeholder="Venda, Perda..." value={motivoAjuste} onChange={(e) => setMotivoAjuste(e.target.value)} /></div>
                         </div>
+                        <AlertConfigStock />
                     </div>
                 </div>
                 <DialogFooter className="gap-2 sm:gap-0 mt-4 pt-4 border-t">

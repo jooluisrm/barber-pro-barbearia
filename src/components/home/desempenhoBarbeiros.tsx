@@ -70,7 +70,7 @@ export const DesempenhoBarbeiros = ({ barbeiros, agendamentos }: Props) => {
         <CardTitle>Pódio dos Barbeiros</CardTitle>
         <CardDescription>Ranking de agendamentos concluídos no mês.</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="flex flex-col gap-4">
         {/* A verificação agora é apenas para o caso de ter dados mas a lista estar vazia */}
         {dadosDesempenho.length > 0 ? (
           dadosDesempenho.map((barbeiro, index) => (
