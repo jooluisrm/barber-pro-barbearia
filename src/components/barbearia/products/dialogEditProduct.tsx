@@ -119,7 +119,7 @@ export const DialogEditProduct = ({ itemProduct }: Props) => {
 
     // --- RENDERIZAÇÃO ---
     return (
-        <Dialog open={open} onOpenChange={setOpen} modal={false}>
+        <Dialog open={open} onOpenChange={setOpen} >
             <DialogTrigger asChild>
                 <TooltipProvider>
                     <Tooltip>
@@ -156,7 +156,7 @@ export const DialogEditProduct = ({ itemProduct }: Props) => {
                     {/* Calendário */}
                     <div>
                         <label>Data de Validade</label>
-                        <Popover>
+                        <Popover modal={true}>
                             <PopoverTrigger asChild>
                                 <Button variant={"outline"} className={cn("w-full justify-start text-left font-normal", !dataValidade && "text-muted-foreground")}>
                                     <CalendarIcon className="mr-2 h-4 w-4" />

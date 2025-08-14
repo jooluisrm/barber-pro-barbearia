@@ -5,9 +5,11 @@ export type Products = {
     precoVenda: number; // MUDANÇA: de 'preco' para 'precoVenda'
     custo: number;
     quantidade: number;
-    status: 'ATIVO' | 'ARQUIVADO';
+    status: StatusProduto;
     tipo: string;
     imagemUrl?: string | null;
     alertaEstoqueBaixo?: number | null;
     dataValidade?: string | null; // A API retorna como string no JSON
 }
+
+export type StatusProduto = 'ATIVO' | 'ARQUIVADO';

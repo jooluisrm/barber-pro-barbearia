@@ -1,3 +1,4 @@
+import { StatusProduto } from "@/types/products";
 import axiosInstance from "@/utils/axiosInstance"
 import { toast } from "sonner";
 
@@ -78,14 +79,28 @@ export const deleteService = async (barbeariaId: string, servicoId: string) => {
     }
 }
 
-export const getProducts = async (barbeariaId: string) => {
+// Interface para os parâmetros
+interface GetProductsParams {
+    page?: number;
+    limit?: number;
+    q?: string;
+    status?: StatusProduto;
+}
+
+// ATUALIZADO: Função dinâmica que aceita parâmetros
+export const getProducts = async (barbeariaId: string, params: GetProductsParams = {}) => {
     try {
-        // A URL não precisa mais do barbeariaId, pois o backend usa o do token
-        const response = await axiosInstance.get(`/barbearia/qualquer-coisa/adm/produtos`);
+        // Constrói a query string dinamicamente
+        const queryParams = new URLSearchParams();
+        if (params.page) queryParams.append('page', String(params.page));
+        if (params.limit) queryParams.append('limit', String(params.limit));
+        if (params.q) queryParams.append('q', params.q);
+        if (params.status) queryParams.append('status', params.status);
+
+        const response = await axiosInstance.get(`/barbearia/${barbeariaId}/adm/produtos?${queryParams.toString()}`);
         return response.data;
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao Carregar produtos";
-        // É bom retornar o erro para que a interface possa reagir
         throw new Error(errorMessage);
     }
 }
