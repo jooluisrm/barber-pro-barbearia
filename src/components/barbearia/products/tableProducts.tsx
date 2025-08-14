@@ -12,6 +12,7 @@ import { DialogEditProduct } from "./dialogEditProduct";
 import { useProductContext } from "@/contexts/ProductsContext";
 import { formatarPreco } from "@/utils/formatarValores";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { DialogViewProduct } from "./dialogViewProduct";
 
 export const TableProducts = () => {
 
@@ -29,7 +30,7 @@ export const TableProducts = () => {
                     <TableHead></TableHead>
                     <TableHead className="w-[150px]">Produto</TableHead>
                     <TableHead>Descrição</TableHead>
-                    <TableHead>Tipo</TableHead>
+                    <TableHead>Estoque</TableHead>
                     <TableHead className="text-right">Preço</TableHead>
                     <TableHead className="text-right"></TableHead>
                 </TableRow>
@@ -46,10 +47,11 @@ export const TableProducts = () => {
                             </TableCell>
                             <TableCell className="font-medium">{item.nome}</TableCell>
                             <TableCell>{item?.descricao}</TableCell>
-                            <TableCell>{item.tipo}</TableCell>
+                            <TableCell className={`text-center font-extrabold ${item.alertaEstoqueBaixo === item.quantidade ? "text-red-500" : "text-green-500"}`}>{item.quantidade}</TableCell>
                             
                         <TableCell className="text-right">{formatarPreco(item.precoVenda.toString())}</TableCell>
                         <TableCell className="flex justify-end items-center">
+                            <DialogViewProduct itemProduct={item}/>
                             <DialogEditProduct itemProduct={item} />
                         </TableCell>
                         </TableRow>
