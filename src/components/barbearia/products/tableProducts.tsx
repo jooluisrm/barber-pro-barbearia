@@ -56,7 +56,9 @@ export const TableProducts = ({ currentPage, setCurrentPage }: TableProductsProp
                             </TableCell>
                             <TableCell className="font-medium">{item.nome}</TableCell>
                             <TableCell>{item?.descricao}</TableCell>
-                            <TableCell className={`text-center font-extrabold ${item.alertaEstoqueBaixo && (item.quantidade >= item.alertaEstoqueBaixo ? "text-red-500" : "text-green-500") }`}>{item.quantidade}</TableCell>
+                            <TableCell className={`text-center font-extrabold ${item.alertaEstoqueBaixo != null && (item.quantidade <= item.alertaEstoqueBaixo ? "text-red-500" : "text-green-500")}`}>
+                                {item.quantidade}
+                            </TableCell>
                             <TableCell className="text-right">{formatarPreco(item.precoVenda.toString())}</TableCell>
                             <TableCell className="flex justify-end items-center">
                                 <DialogViewProduct itemProduct={item} />
