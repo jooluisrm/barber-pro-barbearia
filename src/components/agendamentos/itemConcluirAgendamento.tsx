@@ -2,66 +2,63 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge"; 
-import { AgendamentoPendente } from "@/types/agendamentos";
+import { Agendamentos } from "@/types/agendamentos"; // Use o tipo correto
 import { formatarPreco } from "@/utils/formatarValores";
 import { CancelarAgendamentoPendente } from "./cancelarAgendamentoPendente";
-import { getAgendamentos, getAgendamentosPendentes, patchConcluirAgendamento } from "@/api/agendamentos/agendamentoServices";
+import { patchConcluirAgendamento } from "@/api/agendamentos/agendamentoServices";
 import { useAuth } from "@/contexts/AuthContext";
-import { loadItems } from "@/utils/loadItems";
-import { usePendingScheduleContext } from "@/contexts/PendingScheduleContext";
 import { useState } from "react";
 import { LoaderCircle } from "lucide-react";
-import { useScheduleContext } from "@/contexts/scheduleContext";
 
 type Props = {
-    item: AgendamentoPendente;
+    item: Agendamentos;
+    onActionSuccess: () => void; // Callback para avisar que uma ação foi concluída
 }
 
-export const ItemConcluirAgendamento = ({ item }: Props) => {
-    const {setAgendamentosPendentes} = usePendingScheduleContext();
-    const { setAgendamentos } = useScheduleContext();
-    const {barbearia} = useAuth();
-
+export const ItemConcluirAgendamento = ({ item, onActionSuccess }: Props) => {
+    const { barbearia } = useAuth();
     const [loading, setLoading] = useState(false);
 
     const handleDone = async () => {
-        if(!barbearia) return;
+        if (!barbearia) return;
         setLoading(true);
-        await patchConcluirAgendamento(barbearia.id, item.idAgendamento);
-        await loadItems(barbearia, getAgendamentosPendentes,setAgendamentosPendentes);
-        await loadItems(barbearia, getAgendamentos, setAgendamentos)
-        setLoading(false);
+        try {
+            // ATENÇÃO: Por enquanto, enviamos um corpo vazio. No futuro, aqui
+            // você poderá adicionar produtos/serviços de última hora.
+            await patchConcluirAgendamento(barbearia.id, item.id);
+            onActionSuccess(); // Chama o callback de sucesso
+        } catch (error) {
+            console.error("Erro ao concluir agendamento:", error);
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
-        <Card className="flex items-center justify-between w-full shadow-sm border border-muted bg-background px-4 py-2">
+        <Card className="flex items-center justify-between w-full shadow-sm border p-3">
             <div className="flex-1">
-                <CardHeader className="pb-1">
-                    <div className="flex items-center gap-2">
-                        <CardTitle className="text-sm sm:text-base text-foreground">
-                            {item.nomeCliente}
-                        </CardTitle>
-                        <Badge variant={"outline"} className="text-xs capitalize text-yellow-500">{item.status}</Badge>
-                    </div>
+                <CardHeader className="p-0 pb-2">
+                    <CardTitle className="text-sm sm:text-base">{item.nomeCliente}</CardTitle>
                     <p className="text-xs text-muted-foreground font-bold">
                         {item.data} • <span className="text-blue-500">{item.hora}</span>
                     </p>
                 </CardHeader>
 
-                <CardContent className="flex flex-col gap-4 items-start text-sm text-muted-foreground pt-1">
-                    <div className="space-y-1">
-                        <p><span className="font-medium text-foreground">Barbeiro:</span> {item.nomeBarbeiro}</p>
-                        <p><span className="font-medium text-foreground">Serviço:</span> {item.nomeServico}</p>
-                        <p><span className="font-medium text-foreground">Valor:</span> <span className="text-green-600">{formatarPreco(item.valor)}</span></p>
-                    </div>
+                <CardContent className="p-0 text-sm text-muted-foreground">
+                    <p>
+                        <span className="font-medium text-foreground">Serviços: </span>
+                        {/* Adicione o '?' antes do .map */}
+                        {item.servicosRealizados?.map(s => s.servico.nome).join(', ') || 'Nenhum serviço informado'}
+                    </p>
+                    <p><span className="font-medium text-foreground">Barbeiro:</span> {item.barbeiro.nome}</p>
+                    <p><span className="font-medium text-foreground">Valor:</span> <span className="text-green-600">{formatarPreco(item.valorTotal || "0")}</span></p>
                 </CardContent>
             </div>
 
-            <div className="flex flex-col-reverse gap-2 ml-4">
-                <CancelarAgendamentoPendente itemId={item.idAgendamento}/>
+            <div className="flex flex-col-reverse sm:flex-row gap-2 ml-4">
+                <CancelarAgendamentoPendente itemId={item.id} onActionSuccess={onActionSuccess} />
                 <Button size="sm" onClick={handleDone} disabled={loading}>
-                    {loading ? <LoaderCircle className="animate-spin"/> : "Concluir"}
+                    {loading ? <LoaderCircle className="animate-spin" /> : "Concluir"}
                 </Button>
             </div>
         </Card>

@@ -81,12 +81,20 @@ export const postAgendamento = async (data: DataNewAgendamento) => {
     }
 }
 
-export const getAgendamentosPendentes = async (barbeariaId: string) => {
+export const getPendingAppointments = async (barbeariaId: string, user: any) => {
     try {
-        const response = await axiosInstance.get(`/barbearia/agendamentos/pendente/${barbeariaId}`);
+        let response;
+        if (user?.role === 'ADMIN') {
+            response = await axiosInstance.get(`/barbearia/agendamentos/pendente/${barbeariaId}`);
+        } else if (user?.role === 'BARBEIRO' && user.perfilBarbeiro?.id) {
+            response = await axiosInstance.get(`/barbearia/agendamentos/pendente/barbeiro/${user.perfilBarbeiro.id}`);
+        } else {
+            return []; // Retorna vazio se não houver perfil válido
+        }
         return response.data;
     } catch (error: any) {
-        throw error.response?.data?.error;
+        console.error("Erro ao buscar agendamentos pendentes:", error);
+        throw error.response?.data?.error || "Erro ao carregar pendentes";
     }
 }
 

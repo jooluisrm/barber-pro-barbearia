@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { TableAgendamentos } from "./tableAgendamentos";
 import { AgendamentoPendente, Agendamentos } from "@/types/agendamentos";
 import { useAuth } from "@/contexts/AuthContext";
-import { getAgendamentos, getAgendamentosBarbeiro, getAgendamentosPendentes, getAgendamentosPendentesBarbeiro } from "@/api/agendamentos/agendamentoServices";
+import { getAgendamentos, getAgendamentosBarbeiro, getAgendamentosPendentesBarbeiro, getPendingAppointments } from "@/api/agendamentos/agendamentoServices";
 import { SelectFilterStatus } from "./selectFilterStatus";
 import { CalendarioFilter } from "./calendarioFilter";
 import { SelectFilterBarbeiro } from "./selectFilterBarbeiro";
@@ -32,6 +32,8 @@ export const MainAgendamentos = () => {
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [selectedStatus, setSelectedStatus] = useState("confirmado");
     const [selectedBarbeiro, setSelectedBarbeiro] = useState("todos");
+
+    const [pendingCount, setPendingCount] = useState(0);
 
     // --- LÓGICA DE CARREGAMENTO UNIFICADA ---
     useEffect(() => {
@@ -64,6 +66,25 @@ export const MainAgendamentos = () => {
         // Este useEffect reage a qualquer mudança nos filtros
     }, [barbearia, selectedDate, selectedStatus, selectedBarbeiro, usuario]);
 
+    // NOVO: useEffect para buscar a CONTAGEM de pendentes
+    useEffect(() => {
+        const fetchPendingCount = async () => {
+            if (!barbearia || !usuario) return;
+            try {
+                const pendingData = await getPendingAppointments(barbearia.id, usuario);
+                setPendingCount(pendingData.length || 0);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchPendingCount();
+        // Recarrega a contagem a cada 1 minuto (60000 ms) para manter o badge atualizado
+        const interval = setInterval(fetchPendingCount, 60000); 
+        return () => clearInterval(interval); // Limpa o intervalo ao desmontar
+
+    }, [barbearia, usuario, agendamentos]); // 'agendamentos' na dependência para forçar a recontagem após uma ação
+
     // Carrega a lista de barbeiros para o filtro (apenas para ADMINS)
     useEffect(() => {
         const carregarBarbeiros = async () => {
@@ -90,7 +111,19 @@ export const MainAgendamentos = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="gap-4 grid lg:grid-cols-3">
                         <DialogNovoAgendamento />
-                        <DialogConcluirAgendamento agendamentosPendentes={agendamentosPendentes} />
+                        <DialogConcluirAgendamento 
+                            pendingCount={pendingCount}
+                            onUpdate={() => {
+                                // Força a re-busca da lista principal e da contagem
+                                const fetchMainList = async () => {
+                                    if(barbearia) {
+                                        const data = await getAgendamentos(barbearia.id, { data: selectedDate, status: selectedStatus, barbeiroId: selectedBarbeiro });
+                                        setAgendamentos(data);
+                                    }
+                                }
+                                fetchMainList();
+                            }}
+                        />
                         {usuario && usuario.role === "BARBEIRO" && <DialogEditarHorarioBarbeiro barbeiro={usuario.perfilBarbeiro} />}
                     </div>
 
