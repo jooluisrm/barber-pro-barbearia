@@ -22,105 +22,58 @@ import { DialogEditarHorarioBarbeiro } from "./dialogEditarHorarioBarbeiro";
 export const MainAgendamentos = () => {
     const { barbearia, usuario } = useAuth();
     const { setAgendamentos, agendamentos } = useScheduleContext();
-    const { agendamentosPendentes, setAgendamentosPendentes } = usePendingScheduleContext();
+    const { agendamentosPendentes } = usePendingScheduleContext();
 
+    // Estado para os barbeiros (para o filtro)
     const [barbeiros, setBarbeiros] = useState<Barbeiro[] | null>(null);
-    const [agendamentosFiltrados, setAgendamentosFiltrados] = useState<Agendamentos[] | null>(null);
-    const [filtroSelecionadoStatus, setFiltroSelecionadoStatus] = useState("confirmado");
-    const [filtroSelecionadoBarbeiro, setFiltroSelecionadoBarbeiro] = useState("todos");
+    const [loading, setLoading] = useState(true);
 
-    const [date, setDate] = useState<Date>()
+    // --- ESTADO CENTRALIZADO PARA OS FILTROS ---
+    const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+    const [selectedStatus, setSelectedStatus] = useState("confirmado");
+    const [selectedBarbeiro, setSelectedBarbeiro] = useState("todos");
 
+    // --- LÓGICA DE CARREGAMENTO UNIFICADA ---
     useEffect(() => {
-        if (usuario && usuario.role === "ADMIN") {
-            loadItems(barbearia, getAgendamentos, setAgendamentos);
-        } else {
-            loadItems(usuario?.perfilBarbeiro, getAgendamentosBarbeiro, setAgendamentos);
-        }
+        const fetchAgendamentos = async () => {
+            if (!barbearia) return;
 
-    }, [barbearia, date]);
+            setLoading(true);
+            try {
+                // Se o usuário logado for um barbeiro, ele se torna o filtro padrão
+                const barbeiroFilter = usuario?.role === 'BARBEIRO'
+                    ? usuario.perfilBarbeiro?.id
+                    : selectedBarbeiro;
 
-    useEffect(() => {
-        if(usuario && usuario.role === "ADMIN") {
-            loadItems(barbearia, getAgendamentosPendentes, setAgendamentosPendentes);
-        } else {
-            loadItems(usuario?.perfilBarbeiro, getAgendamentosPendentesBarbeiro, setAgendamentosPendentes);
-        }
-    }, [barbearia, agendamentos]);
+                const data = await getAgendamentos(barbearia.id, {
+                    data: selectedDate,
+                    status: selectedStatus,
+                    barbeiroId: barbeiroFilter,
+                });
+                setAgendamentos(data);
+            } catch (error) {
+                console.error(error);
+                setAgendamentos([]); // Retorna array vazio em caso de erro
+            } finally {
+                setLoading(false);
+            }
+        };
 
+        fetchAgendamentos();
+
+        // Este useEffect reage a qualquer mudança nos filtros
+    }, [barbearia, selectedDate, selectedStatus, selectedBarbeiro, usuario]);
+
+    // Carrega a lista de barbeiros para o filtro (apenas para ADMINS)
     useEffect(() => {
         const carregarBarbeiros = async () => {
-            if (barbearia) {
+            if (barbearia && usuario?.role === "ADMIN") {
                 const dados = await getBarbeiros(barbearia.id);
                 setBarbeiros(dados);
             }
         }
-
         carregarBarbeiros();
-    }, [barbearia, date]);
-
-    const handleSelectStatus = (value: string) => {
-        if (value) {
-            setFiltroSelecionadoStatus(value);
-            //loadItems(barbearia, getAgendamentos, setAgendamentos);
-        }
-    }
-    const handleSelectBarbeiro = (value: string) => {
-        if (value) {
-            setFiltroSelecionadoBarbeiro(value);
-            //loadItems(barbearia, getAgendamentos, setAgendamentos);
-        }
-    }
-
-    useEffect(() => {
-        const filtrarAgendamentos = () => {
-            if (!agendamentos) return;
-            let agendamentosFiltrados = agendamentos;
-
-            // 🔹 Filtrar por data
-            if (date) {
-                agendamentosFiltrados = agendamentosFiltrados.filter((item) =>
-                    new Date(item.data).toDateString() === new Date(date).toDateString()
-                );
-            }
-
-            // 🔹 Filtrar por barbeiro
-            if (filtroSelecionadoBarbeiro && filtroSelecionadoBarbeiro !== "todos") {
-                agendamentosFiltrados = agendamentosFiltrados.filter(
-                    (item) => item.barbeiroId === filtroSelecionadoBarbeiro
-                );
-            }
-
-            // 🔹 Filtrar por status
-            switch (filtroSelecionadoStatus) {
-                case "confirmado":
-                    agendamentosFiltrados = agendamentosFiltrados.filter((item) => item.status === "Confirmado");
-                    break;
-                case "feito":
-                    agendamentosFiltrados = agendamentosFiltrados.filter((item) => item.status === "Feito");
-                    break;
-                case "cancelado":
-                    agendamentosFiltrados = agendamentosFiltrados.filter((item) => item.status === "Cancelado");
-                    break;
-                case "todos":
-                default:
-                    break;
-            }
-
-            // ✅ Ordenar pela hora (formato "HH:mm")
-            agendamentosFiltrados.sort((a, b) => {
-                const [aHour, aMinute] = a.hora.split(":").map(Number);
-                const [bHour, bMinute] = b.hora.split(":").map(Number);
-
-                return aHour * 60 + aMinute - (bHour * 60 + bMinute);
-            });
-
-            setAgendamentosFiltrados(agendamentosFiltrados);
-        };
-
-        filtrarAgendamentos();
-    }, [filtroSelecionadoStatus, filtroSelecionadoBarbeiro, agendamentos, date]);
-
+    }, [barbearia, usuario]);
 
     return (
         <main>
@@ -138,20 +91,28 @@ export const MainAgendamentos = () => {
                     <div className="gap-4 grid lg:grid-cols-3">
                         <DialogNovoAgendamento />
                         <DialogConcluirAgendamento agendamentosPendentes={agendamentosPendentes} />
-                        {usuario && usuario.role === "BARBEIRO" && <DialogEditarHorarioBarbeiro barbeiro={usuario.perfilBarbeiro}/>}
+                        {usuario && usuario.role === "BARBEIRO" && <DialogEditarHorarioBarbeiro barbeiro={usuario.perfilBarbeiro} />}
                     </div>
 
-                    {/* 🔹 Filtros - Organiza responsivamente */}
+                    {/* Filtros */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-center gap-4">
-                        <CalendarioFilter date={date} setDate={setDate} />
-                        {usuario && usuario.role === "ADMIN" && <SelectFilterBarbeiro handleSelect={handleSelectBarbeiro} barbeiros={barbeiros} />}
-                        <SelectFilterStatus handleSelect={handleSelectStatus} />
+                        <CalendarioFilter date={selectedDate} setDate={setSelectedDate} />
+                        {usuario?.role === "ADMIN" && (
+                            <SelectFilterBarbeiro
+                                handleSelect={setSelectedBarbeiro}
+                                barbeiros={barbeiros}
+                            />
+                        )}
+                        <SelectFilterStatus handleSelect={setSelectedStatus} />
                     </div>
                 </div>
 
-                {/* 🔹 Tabela de Agendamentos */}
+                {/* Tabela de Agendamentos */}
                 <div className="overflow-x-auto">
-                    <TableAgendamentos agendamentosFiltrados={agendamentosFiltrados} />
+                    <TableAgendamentos
+                        agendamentos={agendamentos}
+                        isLoading={loading}
+                    />
                 </div>
             </div>
         </main>

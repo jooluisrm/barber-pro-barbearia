@@ -1,125 +1,72 @@
 "use client"
 
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
+import { Table, TableBody, TableCaption, TableCell, TableRow, TableHeader, TableHead } from "@/components/ui/table"
 import { Agendamentos } from "@/types/agendamentos";
-import { formatarData, formatarPreco } from "@/utils/formatarValores";
-import { DialogEdit } from "./dialogEdit";
+import { formatarPreco } from "@/utils/formatarValores";
+import { DialogEdit } from "./dialogEdit"; // Supondo que este seja seu dialog de edição
 
 type Props = {
-    agendamentosFiltrados: Agendamentos[] | null;
+    agendamentos: Agendamentos[] | null;
+    isLoading: boolean;
 }
 
-export function TableAgendamentos({ agendamentosFiltrados }: Props) {
-
-    // --- LÓGICA DE FILTRAGEM E ORDENAÇÃO DENTRO DO PRÓPRIO COMPONENTE ---
+export function TableAgendamentos({ agendamentos, isLoading }: Props) {
+    // A tabela agora não filtra mais, apenas exibe o que recebe
     
-    // 1. Prepara as variáveis de data e hora atuais para comparação
-    const hoje = new Date();
-    // Formata a data de hoje como "YYYY-MM-DD" para bater com o formato da API
-    const hojeFormatado = hoje.toISOString().split('T')[0];
-    // Converte a hora atual para um total de minutos para uma comparação 100% precisa
-    const totalMinutosAtual = hoje.getHours() * 60 + hoje.getMinutes();
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <p className="text-muted-foreground">Carregando agendamentos...</p>
+            </div>
+        );
+    }
 
-    // 2. Processa a lista recebida para aplicar as regras de exibição
-    const agendamentosParaExibir = agendamentosFiltrados
-        ? agendamentosFiltrados
-            .filter((ag: any) => {
-                // Verifica se o agendamento é para hoje
-                const eHoje = ag.data.startsWith(hojeFormatado);
-
-                // ✨ REGRA PRINCIPAL ✨
-                // Se o agendamento for para hoje E o status for "Confirmado"...
-                if (eHoje && ag.status === 'Confirmado') {
-                    // ...então, verificamos o horário.
-                    const [horaAg, minutoAg] = ag.hora.split(':').map(Number);
-                    const totalMinutosAg = horaAg * 60 + minutoAg;
-                    
-                    // Mantém na lista apenas se a hora for futura ou a atual.
-                    return totalMinutosAg >= totalMinutosAtual;
-                }
-
-                // Para todos os outros casos (outros dias, outros status como "Feito"),
-                // o agendamento é sempre mantido na lista.
-                return true;
-            })
-            // A ordenação por hora é feita depois do filtro
-            .sort((a, b) => a.hora.localeCompare(b.hora))
-        : []; // Se a prop for nula, retorna um array vazio
-
+    if (!agendamentos || agendamentos.length === 0) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <p className="text-muted-foreground">Nenhum agendamento encontrado para os filtros selecionados.</p>
+            </div>
+        );
+    }
 
     return (
         <Table>
-            <TableCaption>Lista de Agendamentos</TableCaption>
+            <TableCaption>Lista de Agendamentos do Dia</TableCaption>
             <TableHeader>
                 <TableRow>
                     <TableHead>Cliente</TableHead>
                     <TableHead>Barbeiro</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Serviço</TableHead>
-                    <TableHead>Data</TableHead>
+                    <TableHead>Serviços</TableHead>
                     <TableHead>Hora</TableHead>
-                    <TableHead>Preço</TableHead>
+                    <TableHead className="text-right">Valor Total</TableHead>
                     <TableHead className="text-right"></TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {agendamentosFiltrados === null ? (
-                    <TableRow>
-                        <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
-                            Carregando...
+                {agendamentos.map((item) => (
+                    <TableRow key={item.id}>
+                        <TableCell className="font-medium">{item.nomeCliente}</TableCell>
+                        <TableCell>{item.barbeiro.nome}</TableCell>
+                        <TableCell>
+                            <span className={`font-bold ${item.status === "Confirmado" ? "text-yellow-500" : item.status === "Finalizado" ? "text-green-500" : item.status === "Cancelado" ? "text-red-500" : ""}`}>
+                                {item.status}
+                            </span>
+                        </TableCell>
+                        {/* Exibe a lista de serviços */}
+                        <TableCell>
+                            {item.servicosRealizados.map(s => s.servico.nome).join(', ')}
+                        </TableCell>
+                        <TableCell className="font-bold">{item.hora}</TableCell>
+                        <TableCell className="text-right font-bold text-green-600">
+                            {formatarPreco(item.valorTotal || "0")}
+                        </TableCell>
+                        <TableCell className="text-right">
+                            {/*<DialogEdit agendamentoSelecionado={item} /> */}
                         </TableCell>
                     </TableRow>
-                ) : agendamentosParaExibir.length > 0 ? (
-                    agendamentosParaExibir.map((item: any, index) => {
-                        // Lógica de destaque para o próximo agendamento do dia
-                        const isNextAppointment = index === 0 && item.data.startsWith(hojeFormatado);
-
-                        return (
-                            <TableRow 
-                                key={item.id}
-                                className={isNextAppointment ? "bg-blue-500/10 hover:bg-blue-500/20" : ""}
-                            >
-                                <TableCell className="font-medium">{item.usuario.nome}</TableCell>
-                                <TableCell>{item.barbeiro.nome}</TableCell>
-                                <TableCell
-                                    className={`font-bold ${item.status === "Confirmado" ? "text-yellow-500" : item.status === "Feito" ? "text-green-500" : item.status === "Cancelado" ? "text-red-500" : ""}`}
-                                >
-                                    {item.status}
-                                </TableCell>
-                                <TableCell>{item.servico.nome}</TableCell>
-                                <TableCell className="font-medium">{formatarData(item.data)}</TableCell>
-                                <TableCell className={`font-bold ${isNextAppointment ? 'text-blue-600 dark:text-blue-400' : ''}`}>
-                                    {item.hora}
-                                </TableCell>
-                                <TableCell className="text-green-600 font-bold">{formatarPreco(item.servico.preco)}</TableCell>
-                                <TableCell className="flex justify-end items-center pt-4"><DialogEdit agendamentoSelecionado={item}/></TableCell>
-                            </TableRow>
-                        );
-                    })
-                ) : (
-                    <TableRow>
-                        <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
-                            Nenhum agendamento para exibir.
-                        </TableCell>
-                    </TableRow>
-                )}
+                ))}
             </TableBody>
-            <TableFooter>
-                <TableRow>
-                    <TableCell colSpan={7}>Total de Agendamentos Visíveis</TableCell>
-                    {/* O total agora reflete a lista JÁ FILTRADA */}
-                    <TableCell className="text-right">{agendamentosParaExibir.length}</TableCell>
-                </TableRow>
-            </TableFooter>
         </Table>
     )
 }

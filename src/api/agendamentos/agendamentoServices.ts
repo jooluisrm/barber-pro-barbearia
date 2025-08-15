@@ -1,14 +1,39 @@
 import axiosInstance from "@/utils/axiosInstance"
+import { format } from "date-fns";
 import { toast } from "sonner";
 
-export const getAgendamentos = async (barbeariaId: string) => {
+interface AgendamentoFilters {
+    data?: Date | null;
+    barbeiroId?: string | null;
+    status?: string | null;
+}
+
+// Função UNIFICADA para buscar agendamentos
+export const getAgendamentos = async (barbeariaId: string, filters: AgendamentoFilters) => {
+    const queryParams = new URLSearchParams();
+
+    if (filters.data) {
+        queryParams.append('data', format(filters.data, 'yyyy-MM-dd'));
+    }
+    if (filters.barbeiroId && filters.barbeiroId !== 'todos') {
+        queryParams.append('barbeiroId', filters.barbeiroId);
+    }
+    if (filters.status && filters.status !== 'todos') {
+        // O backend espera o status capitalizado
+        const statusCapitalized = filters.status.charAt(0).toUpperCase() + filters.status.slice(1);
+        queryParams.append('status', statusCapitalized);
+    }
+
     try {
-        const response = await axiosInstance.get(`/barbearia/agendamentos/${barbeariaId}`);
+        // A rota que busca todos os agendamentos da barbearia
+        const response = await axiosInstance.get(`/barbearia/agendamentos/${barbeariaId}?${queryParams.toString()}`);
         return response.data;
     } catch (error: any) {
-        throw error.response?.data?.error;
+        console.error("Erro ao buscar agendamentos:", error);
+        throw error.response?.data?.error || "Erro ao carregar agendamentos";
     }
 }
+
 export const getAgendamentosBarbeiro = async (barbeiroId: string) => {
     try {
         const response = await axiosInstance.get(`/barbearia/agendamentos/barbeiro/${barbeiroId}`);
