@@ -7,7 +7,7 @@ import { formatarPreco } from "@/utils/formatarValores";
 import { CancelarAgendamentoPendente } from "./cancelarAgendamentoPendente";
 import { patchConcluirAgendamento } from "@/api/agendamentos/agendamentoServices";
 import { useAuth } from "@/contexts/AuthContext";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { LoaderCircle, ShoppingBasket } from "lucide-react";
 import { DialogConcluirComanda } from "./DialogConcluirComanda";
 
@@ -17,6 +17,19 @@ type Props = {
 }
 
 export const ItemConcluirAgendamento = ({ item, onActionSuccess }: Props) => {
+
+    const valorCalculado = useMemo(() => {
+        // Se o agendamento já foi finalizado, use o valorTotal salvo
+        if (item.valorTotal) {
+            return Number(item.valorTotal);
+        }
+
+        // Se não, calcula o valor com base nos itens atuais
+        const valorServicos = item.servicosRealizados?.reduce((acc, s) => acc + Number(s.precoNoMomento || 0), 0) || 0;
+        const valorProdutos = item.produtosConsumidos?.reduce((acc, p) => acc + (Number(p.precoVendaNoMomento || 0) * p.quantidade), 0) || 0;
+
+        return valorServicos + valorProdutos;
+    }, [item]); // Recalcula apenas se o 'item' mudar
 
     return (
         <Card className="flex items-center justify-between w-full shadow-sm border p-3">
@@ -50,8 +63,8 @@ export const ItemConcluirAgendamento = ({ item, onActionSuccess }: Props) => {
                     </p>
                     <p>
                         <span className="font-medium text-foreground">Valor: </span>
-                        <span className="text-green-600">
-                            {formatarPreco(item.valorTotal || "0")}
+                        <span className="text-green-600 font-bold">
+                            {formatarPreco(valorCalculado.toFixed(2))}
                         </span>
                     </p>
                 </CardContent>

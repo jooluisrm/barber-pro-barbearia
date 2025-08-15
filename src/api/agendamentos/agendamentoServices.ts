@@ -107,18 +107,22 @@ export const getAgendamentosPendentesBarbeiro = async (barbeiroId: string) => {
     }
 }
 
-export const patchConcluirAgendamento = async (barbeariaId: string, agendamentoId: string) => {
+export interface AddItemsComandaPayload {
+    servicosAdicionais?: { servicoId: string }[];
+    produtosConsumidos?: { produtoId: string; quantidade: number }[];
+}
+
+// ATUALIZADO: A função agora aceita o payload
+export const patchConcluirAgendamento = async (barbeariaId: string, agendamentoId: string, payload: AddItemsComandaPayload) => {
     try {
-        const response = await axiosInstance.patch(`/barbearia/${barbeariaId}/agendamentos/${agendamentoId}/concluir`);
-        toast.success(`O status do agendamento foi atualizado.`, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            }
-        });
+        // Envia o payload no corpo da requisição PATCH
+        const response = await axiosInstance.patch(`/barbearia/${barbeariaId}/agendamentos/${agendamentoId}/concluir`, payload);
+        toast.success(`Agendamento concluído com sucesso!`);
         return response.data;
     } catch (error: any) {
-        throw error.response?.data?.error || "Erro ao concluir o agendamento";
+        const errorMessage = error.response?.data?.error || "Erro ao concluir o agendamento";
+        toast.error(errorMessage);
+        throw error;
     }
 };
 

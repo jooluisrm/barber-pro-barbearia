@@ -15,6 +15,7 @@ import { Services as ServicoDisponivel } from "@/types/services";
 import { AddItemsComandaPayload, getProducts } from "@/api/barbearia/barbeariaServices";
 import { getServices } from "@/api/barbearia/barbeariaServices"; // Supondo que exista
 import { useDebounce } from "@/hooks/useDebounce";
+import { patchConcluirAgendamento } from "@/api/agendamentos/agendamentoServices";
 
 
 type Props = {
@@ -35,8 +36,8 @@ export const DialogConcluirComanda = ({ item, onActionSuccess }: Props) => {
 
     const { barbearia, usuario } = useAuth();
     const [open, setOpen] = useState(false);
-    const [loadingData, setLoadingData] = useState(false); // Loading para a lista de itens
-    const [loadingAction, setLoadingAction] = useState(false); // Loading para o botão de concluir
+    const [loadingData, setLoadingData] = useState(false);
+    const [loadingAction, setLoadingAction] = useState(false);
 
     const [availableProducts, setAvailableProducts] = useState<ProdutoDisponivel[]>([]);
     const [availableServices, setAvailableServices] = useState<ServicoDisponivel[]>([]);
@@ -45,7 +46,6 @@ export const DialogConcluirComanda = ({ item, onActionSuccess }: Props) => {
     const [searchTerm, setSearchTerm] = useState("");
     const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-    // --- LÓGICA DE BUSCA DE DADOS ---
     useEffect(() => {
         const fetchData = async () => {
             if (open && barbearia) {
@@ -63,9 +63,10 @@ export const DialogConcluirComanda = ({ item, onActionSuccess }: Props) => {
         fetchData();
     }, [open, barbearia, debouncedSearchTerm]);
 
-    // --- LÓGICA DO CARRINHO ---
     const handleAddService = (service: ServicoDisponivel) => {
-        if (!newServices.some(s => s.id === service.id) && !item.servicosRealizados.some(s => s.servico.id === service.id)) {
+        const isAlreadyInComanda = item.servicosRealizados?.some(s => s.servico.id === service.id);
+        const isAlreadyInCart = newServices.some(s => s.id === service.id);
+        if (!isAlreadyInComanda && !isAlreadyInCart) {
             setNewServices([...newServices, service]);
         }
     };
@@ -79,8 +80,7 @@ export const DialogConcluirComanda = ({ item, onActionSuccess }: Props) => {
                 return currentCart.filter(item => item.produtoId !== product.id);
             }
             if (newQuantity > product.quantidade) {
-                // TODO: Adicionar toast de erro "Estoque insuficiente"
-                return currentCart;
+                return currentCart; // Estoque insuficiente
             }
             if (existingItem) {
                 return currentCart.map(item => item.produtoId === product.id ? { ...item, quantidade: newQuantity } : item);
@@ -88,22 +88,6 @@ export const DialogConcluirComanda = ({ item, onActionSuccess }: Props) => {
             return [...currentCart, { produtoId: product.id, nome: product.nome, precoVenda: product.precoVenda, quantidade: 1, estoqueDisponivel: product.quantidade }];
         });
     };
-
-    const valorTotal = useMemo(() => {
-        // Converte o valor existente para número
-        const valorExistente = Number(item.valorTotal || 0);
-
-        // Soma os preços dos novos serviços
-        const valorServicosNovos = newServices.reduce((acc, s) => acc + Number(s.preco), 0);
-
-        // Soma os preços dos novos produtos (preço * quantidade)
-        const valorProdutosNovos = newProducts.reduce((acc, p) => acc + (Number(p.precoVenda) * p.quantidade), 0);
-
-        // Soma tudo
-        return valorExistente + valorServicosNovos + valorProdutosNovos;
-    }, [item.valorTotal, newServices, newProducts]);
-
-    const [apiLoading, setApiLoading] = useState(false);
 
     const handleConcluirComanda = async () => {
         if (!barbearia || !usuario) return;
@@ -114,19 +98,26 @@ export const DialogConcluirComanda = ({ item, onActionSuccess }: Props) => {
                 servicosAdicionais: newServices.map(s => ({ servicoId: s.id })),
             };
 
-            // TODO: Atualizar a rota `patchConcluirAgendamento` no backend para aceitar este payload
             await patchConcluirAgendamento(barbearia.id, item.id, payload);
 
             onActionSuccess();
             setOpen(false);
-            setNewProducts([]); // Limpa o carrinho
-            setNewServices([]); // Limpa o carrinho
+            setNewProducts([]);
+            setNewServices([]);
         } catch (error) {
             console.error("Erro ao concluir comanda:", error);
         } finally {
             setLoadingAction(false);
         }
     };
+
+    const valorTotalCalculado = useMemo(() => {
+        const valorServicosExistentes = item.servicosRealizados?.reduce((acc, s) => acc + Number(s.precoNoMomento || 0), 0) || 0;
+        const valorProdutosExistentes = item.produtosConsumidos?.reduce((acc, p) => acc + (Number(p.precoVendaNoMomento || 0) * p.quantidade), 0) || 0;
+        const valorServicosNovos = newServices.reduce((acc, s) => acc + Number(s.preco), 0);
+        const valorProdutosNovos = newProducts.reduce((acc, p) => acc + (Number(p.precoVenda) * p.quantidade), 0);
+        return valorServicosExistentes + valorProdutosExistentes + valorServicosNovos + valorProdutosNovos;
+    }, [item, newServices, newProducts]);
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -183,34 +174,49 @@ export const DialogConcluirComanda = ({ item, onActionSuccess }: Props) => {
                     <div className="flex flex-col bg-muted/50 border-l">
                         <div className="p-6 border-b"><h3 className="font-semibold text-lg">Resumo da Comanda</h3></div>
                         <div className="flex-1 space-y-3 p-6 overflow-y-auto">
-                            {item.servicosRealizados.map((item, index) => (<div key={`serv-exist-${index}`} className="flex justify-between items-center text-sm opacity-60"><p className="flex items-center gap-2"><Tag className="w-4 h-4" /> {item.servico.nome}</p><p>{formatarPreco(item.servico.preco || "0")}</p></div>))}
-                            {item.produtosConsumidos.map((item, index) => (<div key={`prod-exist-${index}`} className="flex justify-between items-center text-sm opacity-60"><p className="flex items-center gap-2"><Beer className="w-4 h-4" /> {item.produto.nome} <span className="text-muted-foreground">x{item.quantidade}</span></p><p>{formatarPreco(String(Number(item.produto.precoVenda) * item.quantidade))}</p></div>))}
-
+                            {/* CORREÇÃO: Variáveis com nomes claros e usando o preço histórico */}
+                            {item.servicosRealizados.map((servicoRealizado) => (
+                                <div key={`serv-exist-${servicoRealizado.id}`} className="flex justify-between items-center text-sm opacity-70">
+                                    <p className="flex items-center gap-2"><Tag className="w-4 h-4" /> {servicoRealizado.servico.nome}</p>
+                                    <p>{formatarPreco(servicoRealizado.precoNoMomento || "0")}</p>
+                                </div>
+                            ))}
+                            {item.produtosConsumidos.map((produtoConsumido) => (
+                                <div key={`prod-exist-${produtoConsumido.id}`} className="flex justify-between items-center text-sm opacity-70">
+                                    <p className="flex items-center gap-2"><Beer className="w-4 h-4" /> {produtoConsumido.produto.nome} <span className="text-muted-foreground">x{produtoConsumido.quantidade}</span></p>
+                                    <p>{formatarPreco(String(Number(produtoConsumido.precoVendaNoMomento || 0) * produtoConsumido.quantidade))}</p>
+                                </div>
+                            ))}
+                            
                             {(item.servicosRealizados.length > 0 || item.produtosConsumidos.length > 0) && (newProducts.length > 0 || newServices.length > 0) && (<div className="border-b my-3"></div>)}
 
-                            {newServices.map((item) => (<div key={`serv-new-${item.id}`} className="flex justify-between items-center text-sm"><p className="flex items-center gap-2"><Tag className="w-4 h-4" /> {item.nome}</p><p className="font-semibold">{formatarPreco(item.preco)}</p></div>))}
-                            {newProducts.map((item) => (
-                                <div key={`prod-new-${item.produtoId}`} className="flex justify-between items-center text-sm">
-                                    <p className="flex items-center gap-2"><Beer className="w-4 h-4" /> {item.nome}</p>
+                            {newServices.map((novoServico) => (
+                                <div key={`serv-new-${novoServico.id}`} className="flex justify-between items-center text-sm">
+                                    <p className="flex items-center gap-2"><Tag className="w-4 h-4 text-green-500" /> {novoServico.nome}</p>
+                                    <p className="font-semibold">{formatarPreco(novoServico.preco)}</p>
+                                </div>
+                            ))}
+                            {newProducts.map((novoProduto) => (
+                                <div key={`prod-new-${novoProduto.produtoId}`} className="flex justify-between items-center text-sm">
+                                    <p className="flex items-center gap-2"><Beer className="w-4 h-4 text-green-500" /> {novoProduto.nome}</p>
                                     <div className="flex items-center gap-2">
-                                        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleUpdateProductQuantity({ id: item.produtoId, quantidade: item.estoqueDisponivel } as ProdutoDisponivel, -1)}><MinusCircle className="w-4 h-4 text-red-500" /></Button>
-                                        <span className="font-semibold w-4 text-center">{item.quantidade}</span>
-                                        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleUpdateProductQuantity({ id: item.produtoId, quantidade: item.estoqueDisponivel } as ProdutoDisponivel, 1)}><PlusCircle className="w-4 h-4 text-green-500" /></Button>
+                                        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleUpdateProductQuantity({ id: novoProduto.produtoId, quantidade: novoProduto.estoqueDisponivel } as ProdutoDisponivel, -1)}><MinusCircle className="w-4 h-4 text-red-500" /></Button>
+                                        <span className="font-semibold w-4 text-center">{novoProduto.quantidade}</span>
+                                        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleUpdateProductQuantity({ id: novoProduto.produtoId, quantidade: novoProduto.estoqueDisponivel } as ProdutoDisponivel, 1)}><PlusCircle className="w-4 h-4 text-green-500" /></Button>
                                     </div>
                                 </div>
                             ))}
-
                             {(newProducts.length === 0 && newServices.length === 0) && <p className="text-center text-sm text-muted-foreground py-10">Selecione itens na lista ao lado.</p>}
                         </div>
                         <div className="p-6 border-t mt-auto flex justify-between font-bold text-lg bg-muted/80">
                             <p>Valor Total</p>
-                            <p>{formatarPreco(valorTotal.toString())}</p>
+                            <p>{formatarPreco(valorTotalCalculado.toFixed(2))}</p>
                         </div>
                     </div>
                 </div>
 
                 <DialogFooter className="p-6 border-t flex justify-between items-center">
-                    <p className="text-sm text-muted-foreground">Valor Total: <span className="font-bold text-lg text-green-600">{formatarPreco(String(valorTotal))}</span></p>
+                    <p className="text-sm text-muted-foreground">Total: <span className="font-bold text-lg text-green-600">{formatarPreco(valorTotalCalculado.toFixed(2))}</span></p>
                     <div>
                         <Button variant="ghost" onClick={() => setOpen(false)}>Cancelar</Button>
                         <Button onClick={handleConcluirComanda} disabled={loadingAction}>
