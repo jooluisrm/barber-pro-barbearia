@@ -388,3 +388,24 @@ export const putBarberShop= async (data: FormData) => {
         throw error;
     }
 };
+
+// Adicione esta nova interface e função ao seu arquivo de serviços
+
+// Interface para o payload da nova rota
+export interface AddItemsComandaPayload {
+    servicosAdicionais?: { servicoId: string }[];
+    produtosConsumidos?: { produtoId: string; quantidade: number }[];
+}
+
+// TODO: Criar a rota PATCH /agendamentos/:id/adicionar-itens no backend
+export const addItemsToComanda = async (agendamentoId: string, data: AddItemsComandaPayload) => {
+    try {
+        const response = await axiosInstance.patch(`/agendamentos/${agendamentoId}/adicionar-itens`, data);
+        toast.success("Itens adicionados com sucesso!");
+        return response.data;
+    } catch (error: any) {
+        const errorMessage = error.response?.data?.error || "Erro ao adicionar itens";
+        toast.error(errorMessage);
+        throw error;
+    }
+}
