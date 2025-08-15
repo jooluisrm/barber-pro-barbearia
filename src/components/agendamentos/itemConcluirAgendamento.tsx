@@ -8,7 +8,8 @@ import { CancelarAgendamentoPendente } from "./cancelarAgendamentoPendente";
 import { patchConcluirAgendamento } from "@/api/agendamentos/agendamentoServices";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, ShoppingBasket } from "lucide-react";
+import { DialogAddProductsAndServices } from "./dialogAddProductsAndServices";
 
 type Props = {
     item: Agendamentos;
@@ -40,23 +41,45 @@ export const ItemConcluirAgendamento = ({ item, onActionSuccess }: Props) => {
                 <CardHeader className="p-0 pb-2">
                     <CardTitle className="text-sm sm:text-base">{item.nomeCliente}</CardTitle>
                     <p className="text-xs text-muted-foreground font-bold">
-                        {item.data} • <span className="text-blue-500">{item.hora}</span>
+                        {new Date(item.data).toLocaleDateString('pt-BR')} • <span className="text-blue-500">{item.hora}</span>
                     </p>
                 </CardHeader>
 
-                <CardContent className="p-0 text-sm text-muted-foreground">
-                    <p>
-                        <span className="font-medium text-foreground">Serviços: </span>
-                        {/* Adicione o '?' antes do .map */}
-                        {item.servicosRealizados?.map(s => s.servico.nome).join(', ') || 'Nenhum serviço informado'}
+                <CardContent className="p-0 text-sm text-muted-foreground overflow-hidden">
+                    <div className="flex items-center justify-between">
+                        <p className="truncate text-nowrap max-w-60">
+                            <span className="font-medium text-foreground">Serviços: </span>
+                            {item.servicosRealizados?.map(s => s.servico.nome).join(', ') || 'Nenhum serviço informado'}
+                        </p>
+
+                    </div>
+
+                    <div className="flex items-center justify-between mt-1">
+                        <p className="truncate text-nowrap max-w-60">
+                            <span className="font-medium text-foreground">Produtos: </span>
+                            {item.produtosConsumidos?.map(p => p.produto.nome).join(', ') || 'Nenhum produto'}
+                        </p>
+
+                    </div>
+
+                    <p className="mt-1">
+                        <span className="font-medium text-foreground">Barbeiro:</span> {item.barbeiro.nome}
                     </p>
-                    <p><span className="font-medium text-foreground">Barbeiro:</span> {item.barbeiro.nome}</p>
-                    <p><span className="font-medium text-foreground">Valor:</span> <span className="text-green-600">{formatarPreco(item.valorTotal || "0")}</span></p>
+                    <p>
+                        <span className="font-medium text-foreground">Valor: </span>
+                        <span className="text-green-600">
+                            {formatarPreco(item.valorTotal || "0")}
+                        </span>
+                    </p>
                 </CardContent>
             </div>
 
             <div className="flex flex-col-reverse sm:flex-row gap-2 ml-4">
                 <CancelarAgendamentoPendente itemId={item.id} onActionSuccess={onActionSuccess} />
+
+                {/* Passe o 'item' (agendamento) e a função de callback */}
+                <DialogAddProductsAndServices agendamento={item} onComandaUpdate={onActionSuccess} />
+
                 <Button size="sm" onClick={handleDone} disabled={loading}>
                     {loading ? <LoaderCircle className="animate-spin" /> : "Concluir"}
                 </Button>

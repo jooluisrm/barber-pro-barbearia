@@ -45,7 +45,7 @@ export const CancelarAgendamentoPendente = ({ itemId, onActionSuccess }: Props) 
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="outline" size="sm" disabled={loading}>
+                <Button variant="destructive" size="sm" disabled={loading}>
                     Cancelar
                 </Button>
             </AlertDialogTrigger>

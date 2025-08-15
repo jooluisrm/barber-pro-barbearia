@@ -46,10 +46,10 @@ export function TableAgendamentos({ agendamentos, isLoading }: Props) {
             <TableBody>
                 {agendamentos.map((item) => (
                     <TableRow key={item.id}>
-                        <TableCell className="font-medium">{item.nomeCliente}</TableCell>
+                        <TableCell className="font-medium max-w-[100px] overflow-hidden md:text-nowrap truncate">{item.nomeCliente}</TableCell>
                         <TableCell>{item.barbeiro.nome}</TableCell>
                         <TableCell>
-                            <span className={`font-bold ${item.status === "Confirmado" ? "text-yellow-500" : item.status === "Finalizado" ? "text-green-500" : item.status === "Cancelado" ? "text-red-500" : ""}`}>
+                            <span className={`font-bold ${item.status === "Confirmado" ? "text-yellow-500" : item.status === "Feito" ? "text-green-500" : item.status === "Cancelado" ? "text-red-500" : ""}`}>
                                 {item.status}
                             </span>
                         </TableCell>
