@@ -12,7 +12,7 @@ type Props = {
 
 export function TableAgendamentos({ agendamentos, isLoading }: Props) {
     // A tabela agora não filtra mais, apenas exibe o que recebe
-    
+
     if (isLoading) {
         return (
             <div className="flex justify-center items-center h-64">
@@ -39,33 +39,49 @@ export function TableAgendamentos({ agendamentos, isLoading }: Props) {
                     <TableHead>Status</TableHead>
                     <TableHead>Serviços</TableHead>
                     <TableHead>Hora</TableHead>
-                    <TableHead className="text-right">Valor Total</TableHead>
+                    <TableHead className="text-right">Valor</TableHead>
                     <TableHead className="text-right"></TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {agendamentos.map((item) => (
-                    <TableRow key={item.id}>
-                        <TableCell className="font-medium max-w-[100px] overflow-hidden md:text-nowrap truncate">{item.nomeCliente}</TableCell>
-                        <TableCell>{item.barbeiro.nome}</TableCell>
-                        <TableCell>
-                            <span className={`font-bold ${item.status === "Confirmado" ? "text-yellow-500" : item.status === "Feito" ? "text-green-500" : item.status === "Cancelado" ? "text-red-500" : ""}`}>
-                                {item.status}
-                            </span>
-                        </TableCell>
-                        {/* Exibe a lista de serviços */}
-                        <TableCell>
-                            {item.servicosRealizados.map(s => s.servico.nome).join(', ')}
-                        </TableCell>
-                        <TableCell className="font-bold">{item.hora}</TableCell>
-                        <TableCell className="text-right font-bold text-green-600">
-                            {formatarPreco(item.valorTotal || "0")}
-                        </TableCell>
-                        <TableCell className="text-right">
-                            {/*<DialogEdit agendamentoSelecionado={item} /> */}
-                        </TableCell>
-                    </TableRow>
-                ))}
+                {agendamentos.map((item) => {
+                    // --- NOVA LÓGICA CONDICIONAL PARA O VALOR ---
+                    let valorParaExibir = 0;
+
+                    if (item.status === 'Feito') {
+                        // Se o agendamento foi concluído, usa o valorTotal final salvo no banco.
+                        valorParaExibir = Number(item.valorTotal || 0);
+                    } else if (item.status === 'Confirmado') {
+                        // Se está confirmado, calcula um valor provisório com base nos itens da comanda.
+                        const valorServicos = item.servicosRealizados?.reduce((acc, s) => acc + Number(s.precoNoMomento || 0), 0) || 0;
+                        const valorProdutos = item.produtosConsumidos?.reduce((acc, p) => acc + (Number(p.precoVendaNoMomento || 0) * p.quantidade), 0) || 0;
+                        valorParaExibir = valorServicos + valorProdutos;
+                    }
+                    // Para outros status (ex: Cancelado), o valor continuará 0.
+
+                    return (
+                        <TableRow key={item.id}>
+                            <TableCell className="font-medium max-w-[100px] overflow-hidden md:text-nowrap truncate">{item.nomeCliente}</TableCell>
+                            <TableCell>{item.barbeiro.nome}</TableCell>
+                            <TableCell>
+                                <span className={`font-bold ${item.status === "Confirmado" ? "text-yellow-500" : item.status === "Feito" ? "text-green-500" : item.status === "Cancelado" ? "text-red-500" : ""}`}>
+                                    {item.status}
+                                </span>
+                            </TableCell>
+                            <TableCell className="max-w-[150px] truncate">
+                                {item.servicosRealizados.map(s => s.servico.nome).join(', ')}
+                            </TableCell>
+                            <TableCell className="font-bold">{item.hora}</TableCell>
+                            <TableCell className="text-right font-bold text-green-600">
+                                {/* Usa a variável calculada e a formata */}
+                                {formatarPreco(valorParaExibir.toFixed(2))}
+                            </TableCell>
+                            <TableCell className="text-right">
+                                {/* <DialogEdit agendamentoSelecionado={item} /> */}
+                            </TableCell>
+                        </TableRow>
+                    );
+                })}
             </TableBody>
         </Table>
     )
