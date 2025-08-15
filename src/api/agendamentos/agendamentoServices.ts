@@ -64,25 +64,20 @@ export type DataNewAgendamento = {
     servicoId: string;
     data: string;
     hora: string;
+    nomeVisitante: string; // NOVO
+    telefoneVisitante?: string; // NOVO
 }
 
+// A função continua a mesma, mas agora recebe o novo tipo de 'data'
 export const postAgendamento = async (data: DataNewAgendamento) => {
     try {
         const response = await axiosInstance.post(`/barbearia/agendamentos/visitante`, data);
-        toast.success(`O agendamento foi feito com sucesso!.`, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            }
-        });
+        toast.success(`O agendamento foi feito com sucesso!`);
+        return response.data; // Retornar os dados pode ser útil
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || "Erro ao criar novo agendamento!";
-        toast.error(errorMessage, {
-            action: {
-                label: "Fechar",
-                onClick: () => console.log("Fechar"),
-            },
-        });
+        toast.error(errorMessage);
+        throw error; // Lança o erro para o componente poder tratar (ex: parar o loading)
     }
 }
 

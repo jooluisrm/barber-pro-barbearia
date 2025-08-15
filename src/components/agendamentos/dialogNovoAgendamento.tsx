@@ -1,292 +1,198 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
-import { CalendarioNovoAgendamento } from "./calendarioNovoAgendamento"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useEffect, useState } from "react"
 import { useAuth } from "@/contexts/AuthContext"
-import { loadItems } from "@/utils/loadItems"
 import { getServices } from "@/api/barbearia/barbeariaServices"
 import { Services } from "@/types/services"
 import { ItemService } from "./itemService"
-import { Barbeiro, HorariosDeTrabalho, HorariosDisponiveis } from "@/types/barbeiros"
+import { Barbeiro, HorariosDisponiveis } from "@/types/barbeiros"
 import { getBarbeiros, getHorariosDisponiveis } from "@/api/barbeiros/barbeirosServices"
 import { ItemBarbeiro } from "./itemBarbeiro"
-import { AlertSelectBarber } from "./alertSelectBarber"
 import { ItemHorario } from "./itemHorario"
 import { DataNewAgendamento, getAgendamentos, postAgendamento } from "@/api/agendamentos/agendamentoServices"
-import { handleConfetti } from "@/utils/confetti"
 import { useScheduleContext } from "@/contexts/scheduleContext"
-import { LoaderCircle } from "lucide-react"
+import { LoaderCircle, User, Calendar, Scissors, Clock, Phone } from "lucide-react"
+import { format, parse } from "date-fns"
+import { ptBR } from "date-fns/locale"
+import { Calendar as CalendarComponent } from "@/components/ui/calendar"
+import { Input } from "../ui/input"
+import InputMask from "react-input-mask";
 
 export function DialogNovoAgendamento() {
     const { barbearia, usuario } = useAuth();
     const { setAgendamentos } = useScheduleContext();
 
-    const [date, setDate] = useState<string>("");
+    // Estados do formulário
+    const [nomeVisitante, setNomeVisitante] = useState("");
+    const [telefoneVisitante, setTelefoneVisitante] = useState("");
+    const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+    const [selectedService, setSelectedService] = useState("");
+    const [selectedBarbeiro, setSelectedBarbeiro] = useState("");
+    const [selectedHorario, setSelectedHorario] = useState("");
+
+    // Estados de controle e dados
+    const [open, setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [services, setServices] = useState<Services[] | null>(null);
     const [barbeiros, setBarbeiros] = useState<Barbeiro[] | null>(null);
     const [horariosDisponiveis, setHorariosDisponiveis] = useState<HorariosDisponiveis[] | null>(null);
 
-    const [selectBarbeiro, setSelectBarbeiro] = useState("");
-    const [selectService, setSelectService] = useState("");
-    const [selectHorario, setSelectHorario] = useState("");
-
-    const [loading, setLoading] = useState(false);
-
-    const [open, setOpen] = useState(false);
-
+    // Carrega dados iniciais (serviços e barbeiros)
     useEffect(() => {
         if (!barbearia) return;
-        const carregarServicos = async () => {
-            const dados = await getServices(barbearia.id);
-            if (dados) {
-                setServices(dados);
-            }
-        }
-        const carregarBarbeiros = async () => {
-            const dados = await getBarbeiros(barbearia.id);
-            if (dados) {
-                setBarbeiros(dados);
-            }
-        }
+        getServices(barbearia.id).then(setServices);
         if (usuario?.role === "ADMIN") {
-            carregarBarbeiros();
+            getBarbeiros(barbearia.id).then(setBarbeiros);
         }
-        carregarServicos();
+    }, [barbearia, usuario, open]); // 'open' para recarregar se necessário
 
-    }, [barbearia, usuario]);
-
-
+    // Carrega horários disponíveis quando a data ou o barbeiro mudam
     useEffect(() => {
-        if (usuario?.role === "ADMIN") {
-            if (selectBarbeiro) {
-                carregarHorarios();
-            }
-        } else {
-            if(!date) return;
-            carregarHorarios();
-        }
-    }, [selectBarbeiro, date]);
-
-
-    const carregarHorarios = async () => {
-        const horaAtual = getHoraAtual();
-
-        if (usuario?.role === "ADMIN") {
-            const dados = await getHorariosDisponiveis(selectBarbeiro, date, horaAtual);
-            if (dados) {
-                setHorariosDisponiveis(dados);
-                console.log(dados);
-            } else {
+        const carregarHorarios = async () => {
+            const barbeiroId = usuario?.role === "ADMIN" ? selectedBarbeiro : usuario?.perfilBarbeiro?.id;
+            if (!barbeiroId || !selectedDate) {
                 setHorariosDisponiveis([]);
-            }
-        } else {
-            if (!usuario?.perfilBarbeiro) return;
-            const dados = await getHorariosDisponiveis(usuario.perfilBarbeiro.id, date, horaAtual);
-            if (dados) {
-                setHorariosDisponiveis(dados);
-                console.log(dados);
-            } else {
-                setHorariosDisponiveis([]);
-            }
-        }
+                return;
+            };
 
-    };
+            setHorariosDisponiveis(null);
+            const dataFormatada = format(selectedDate, "yyyy-MM-dd");
 
-    // Retorna a hora atual no formato: "14:59"
-    function getHoraAtual(): string {
-        const agora = new Date();
-        const horas = agora.getHours().toString().padStart(2, '0');
-        const minutos = agora.getMinutes().toString().padStart(2, '0');
-        return `${horas}:${minutos}`;
-    }
+            // --- CORREÇÃO AQUI ---
+            // 1. Obter a hora atual no formato "HH:mm"
+            const horaAtual = new Date().toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+            });
+
+            // 2. Passar a hora atual como terceiro argumento
+            const dados = await getHorariosDisponiveis(barbeiroId, dataFormatada, horaAtual);
+            // --- FIM DA CORREÇÃO ---
+
+            setHorariosDisponiveis(dados || []);
+        };
 
 
-    const handleSelectBarbeiro = (value: string) => {
-        if (value === selectBarbeiro) {
-            setSelectBarbeiro("");
-            setHorariosDisponiveis([]); // limpa os horários quando deselecionar
-        } else {
-            setSelectBarbeiro(value);
-            setSelectHorario("");
-        }
-    };
+        carregarHorarios();
+    }, [selectedBarbeiro, selectedDate, usuario]);
 
-    const handleSelectService = (value: string) => {
-        if (value === selectService) {
-            setSelectService("");
-        } else {
-            setSelectService(value);
-        }
-    };
-
-    const handleHorarioService = (value: string) => {
-        if (value === selectHorario) {
-            setSelectHorario("");
-        } else {
-            setSelectHorario(value);
-        }
-    }
-
+    // Função para criar o agendamento
     const handleNewAgendamento = async () => {
-        setLoading(true);
-        if (usuario && usuario.role === "ADMIN") {
-            if (!barbearia || !selectBarbeiro || !selectHorario || !selectService || !date) return;
-            try {
-                const data: DataNewAgendamento = {
-                    barbeariaId: barbearia.id,
-                    barbeiroId: selectBarbeiro,
-                    data: date,
-                    hora: selectHorario,
-                    servicoId: selectService
-                }
-                await postAgendamento(data);
-                await loadItems(barbearia, getAgendamentos, setAgendamentos);
-                carregarHorarios();
-                setSelectHorario("");
-                setSelectService("");
-                setSelectBarbeiro("");
-                handleConfetti();
-                setLoading(false);
-                setOpen(false);
-
-            } catch (error: any) {
-                console.log(error);
-            }
-        } else {
-            if (!barbearia || !selectHorario || !selectService || !date || !usuario?.perfilBarbeiro) return;
-            try {
-                const data: DataNewAgendamento = {
-                    barbeariaId: barbearia.id,
-                    barbeiroId: usuario.perfilBarbeiro.id,
-                    data: date,
-                    hora: selectHorario,
-                    servicoId: selectService
-                }
-                await postAgendamento(data);
-                await loadItems(barbearia, getAgendamentos, setAgendamentos);
-                carregarHorarios();
-                setSelectHorario("");
-                setSelectService("");
-                setSelectBarbeiro("");
-                handleConfetti();
-                setLoading(false);
-                setOpen(false);
-            } catch (error: any) {
-                console.log(error);
-                setLoading(false);
-            }
+        const barbeiroId = usuario?.role === "ADMIN" ? selectedBarbeiro : usuario?.perfilBarbeiro?.id;
+        if (!barbearia || !barbeiroId || !selectedHorario || !selectedService || !selectedDate || !nomeVisitante) {
+            // Adicionar toast de erro aqui
+            return;
         }
 
-    }
+        setLoading(true);
+        try {
+            const data: DataNewAgendamento = {
+                barbeariaId: barbearia.id,
+                barbeiroId: barbeiroId,
+                data: format(selectedDate, "yyyy-MM-dd"),
+                hora: selectedHorario,
+                servicoId: selectedService,
+                nomeVisitante: nomeVisitante,
+                telefoneVisitante: telefoneVisitante,
+            };
 
+            await postAgendamento(data);
+            // Recarrega a lista principal de agendamentos
+            const agendamentosAtualizados = await getAgendamentos(barbearia.id, { data: new Date() });
+            setAgendamentos(agendamentosAtualizados);
+
+            // Reset e fecha o dialog
+            setOpen(false);
+            setNomeVisitante("");
+            setTelefoneVisitante("");
+            setSelectedService("");
+            setSelectedHorario("");
+
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     return (
-        <Dialog open={open} onOpenChange={setOpen} >
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button
-                    variant="default"
-                    className="font-bold truncate"
-                    onClick={() => setOpen(true)}
-                >Criar Agendamento</Button>
+                <Button variant="default" className="font-bold truncate">Criar Agendamento</Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                    <DialogTitle>Criar Novo Agendamento</DialogTitle>
+            <DialogContent className="max-w-lg p-0 overflow-hidden max-h-[90vh] flex flex-col">
+                <DialogHeader className="p-6 border-b">
+                    <DialogTitle className="text-xl">Novo Agendamento para Visitante</DialogTitle>
                     <DialogDescription>
-                        Crie um agendamento para Visitantes.
+                        Preencha os dados para criar um novo horário na agenda.
                     </DialogDescription>
                 </DialogHeader>
-                <div>
-                    <div className="py-3">
-                        <h1>Selecione o dia:</h1>
-                        <CalendarioNovoAgendamento
-                            date={date}
-                            setDate={setDate}
-                            setSelectHorario={setSelectHorario}
-                        />
+
+                {/* Corpo Rolável */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                    {/* Dados do Cliente */}
+                    <div className="space-y-4 border rounded-lg p-4">
+                        <label className="font-semibold flex items-center gap-2"><User className="w-4 h-4" /> Dados do Cliente</label>
+                        <Input placeholder="Nome do Cliente*" value={nomeVisitante} onChange={(e) => setNomeVisitante(e.target.value)} />
+                        <InputMask
+                            mask="(99) 99999-9999"
+                            value={telefoneVisitante}
+                            onChange={(e) => setTelefoneVisitante(e.target.value)}
+                        >
+                            {(inputProps: any) => <Input {...inputProps} placeholder="Telefone (Opcional)" />}
+                        </InputMask>
                     </div>
 
-                    <div className="py-3">
-                        <h1>Selecione um Serviço:</h1>
-                        <div className="flex flex-wrap gap-2 py-2">
-                            {
-                                services && services.map((item) => (
-                                    <ItemService
-                                        key={item.id}
-                                        item={item}
-                                        onClick={handleSelectService}
-                                        isSelected={selectService === item.id}
-                                    />
-                                ))
-                            }
+                    {/* Seleção de Serviço */}
+                    <div className="space-y-2 border rounded-lg p-4">
+                        <label className="font-semibold flex items-center gap-2"><Scissors className="w-4 h-4" /> Selecione o Serviço*</label>
+                        <div className="flex flex-wrap gap-2 pt-2">
+                            {services?.map((item) => (
+                                <ItemService key={item.id} item={item} onClick={setSelectedService} isSelected={selectedService === item.id} />
+                            ))}
                         </div>
                     </div>
 
-                    {
-                        usuario?.role === "ADMIN" && (
-                            <div>
-                                <h1>Selecione um Barbeiro:</h1>
-                                <div className="flex flex-wrap gap-2 py-2">
-                                    {barbeiros && barbeiros.map((item) => (
-                                        <ItemBarbeiro
-                                            key={item.id}
-                                            item={item}
-                                            onClick={handleSelectBarbeiro}
-                                            isSelected={selectBarbeiro === item.id}
-                                        />
-                                    ))}
-                                </div>
+                    {/* Seleção de Barbeiro (Apenas para ADMIN) */}
+                    {usuario?.role === "ADMIN" && (
+                        <div className="space-y-2 border rounded-lg p-4">
+                            <label className="font-semibold">Selecione o Barbeiro*</label>
+                            <div className="flex flex-wrap gap-2 pt-2">
+                                {barbeiros?.map((item) => (
+                                    <ItemBarbeiro key={item.id} item={item} onClick={setSelectedBarbeiro} isSelected={selectedBarbeiro === item.id} />
+                                ))}
                             </div>
-                        )
-                    }
+                        </div>
+                    )}
 
-                    <div>
-                        <h1>Selecione um Horário:</h1>
-                        <div className="flex flex-wrap gap-2 py-2">
-                            {(!selectBarbeiro && usuario?.role === "ADMIN") && <AlertSelectBarber />}
-                            {(usuario?.role === "ADMIN") && selectBarbeiro && horariosDisponiveis === null && <p className="dark:text-gray-400 text-gray-500">Carregando horários...</p>}
-                            {(usuario?.role === "BARBEIRO") && horariosDisponiveis === null && <p className="dark:text-gray-400 text-gray-500">Carregando horários...</p>}
-                            {(usuario?.role === "ADMIN") && selectBarbeiro && horariosDisponiveis && horariosDisponiveis.length > 0 && horariosDisponiveis.map((item) => (
-                                <ItemHorario
-                                    key={item.id}
-                                    item={item}
-                                    onClick={handleHorarioService}
-                                    isSelected={selectHorario === item.hora}
-                                />
-                            ))}
-                            {(usuario?.role === "BARBEIRO") && horariosDisponiveis && horariosDisponiveis.length > 0 && horariosDisponiveis.map((item) => (
-                                <ItemHorario
-                                    key={item.id}
-                                    item={item}
-                                    onClick={handleHorarioService}
-                                    isSelected={selectHorario === item.hora}
-                                />
-                            ))}
-                            {(usuario?.role === "ADMIN") && selectBarbeiro && horariosDisponiveis && horariosDisponiveis.length === 0 && <p className="dark:text-gray-400 text-gray-500">Sem horário disponível</p>}
-                            {(usuario?.role === "BARBEIRO") && horariosDisponiveis && horariosDisponiveis.length === 0 && <p className="dark:text-gray-400 text-gray-500">Sem horário disponível</p>}
+                    {/* Data e Hora */}
+                    <div className="space-y-4 border rounded-lg p-4">
+                        <div className="space-y-2">
+                            <label className="font-semibold flex items-center gap-2"><Calendar className="w-4 h-4" /> Selecione o Dia*</label>
+                            <CalendarComponent mode="single" selected={selectedDate} onSelect={setSelectedDate}  className="rounded-md border" />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="font-semibold flex items-center gap-2"><Clock className="w-4 h-4" /> Selecione o Horário*</label>
+                            <div className="flex flex-wrap gap-2 pt-2">
+                                {horariosDisponiveis === null ? <p className="text-sm text-muted-foreground">Selecione um barbeiro e uma data.</p>
+                                    : horariosDisponiveis.length > 0 ? horariosDisponiveis.map((item) => (
+                                        <ItemHorario key={item.id} item={item} onClick={setSelectedHorario} isSelected={selectedHorario === item.hora} />
+                                    ))
+                                        : <p className="text-sm text-muted-foreground">Nenhum horário disponível.</p>}
+                            </div>
                         </div>
                     </div>
-
                 </div>
-                <DialogFooter>
+
+                <DialogFooter className="p-6 border-t flex justify-end">
                     <Button
                         onClick={handleNewAgendamento}
-                        disabled={
-                            usuario?.role === "ADMIN" ? (!selectBarbeiro || !selectHorario || !selectService || !date) : (
-                                !selectHorario || !selectService || !date
-                            )}
+                        disabled={loading || !nomeVisitante || !selectedService || !selectedDate || !selectedHorario || (usuario?.role === 'ADMIN' && !selectedBarbeiro)}
                     >
-                        {loading ? <LoaderCircle className="animate-spin" /> : "Criar"}
+                        {loading ? <LoaderCircle className="animate-spin" /> : "Criar Agendamento"}
                     </Button>
                 </DialogFooter>
             </DialogContent>
