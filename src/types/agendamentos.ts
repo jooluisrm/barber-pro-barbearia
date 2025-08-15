@@ -3,7 +3,7 @@ export type Agendamentos = {
     data: string;
     hora: string;
     status: string;
-    valorTotal: string | null; // Vem como Decimal do Prisma
+    valorTotal: string | null;
     nomeCliente: string;
     telefoneVisitante: string | null;
     barbeiro: {
@@ -11,27 +11,25 @@ export type Agendamentos = {
         nome: string;
     };
     servicosRealizados: {
+        id: string;                 // ADICIONADO
+        precoNoMomento: string;     // ADICIONADO
         servico: {
+            id: string;             // ADICIONADO
             nome: string;
             preco: string | null;
         }
     }[];
     produtosConsumidos: {
+        id: string;                 // ADICIONADO
         quantidade: number;
+        precoVendaNoMomento: string; // ADICIONADO
         produto: {
+            id: string;             // ADICIONADO
             nome: string;
             precoVenda: string | null;
         }
     }[];
 }
 
-export type AgendamentoPendente = {
-  idAgendamento: string;
-  status: string;
-  data: string;         // formato: "YYYY-MM-DD"
-  hora: string;         // formato: "HH:MM"
-  valor: string;        // pode ser alterado para number se for numérico
-  nomeCliente: string;
-  nomeBarbeiro: string;
-  nomeServico: string;
-};
+// Você pode manter ou remover este tipo, já que 'Agendamentos' agora serve para ambos os casos
+export type AgendamentoPendente = Agendamentos;
