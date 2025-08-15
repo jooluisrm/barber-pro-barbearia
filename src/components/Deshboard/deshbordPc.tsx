@@ -14,10 +14,10 @@ type Props = {
     token: string | null;
     usuario: Usuario | null;
     rotaAtual: string;
-    agendamentosPendentes: AgendamentoPendente[] | null;
+    pendingCount: number;
 }
 
-export const DeshboardPc = ({ token, rotaAtual, agendamentosPendentes, usuario }: Props) => {
+export const DeshboardPc = ({ token, rotaAtual, usuario, pendingCount }: Props) => {
 
     return (
         <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 border-r bg-background sm:flex flex-col">
@@ -62,20 +62,20 @@ export const DeshboardPc = ({ token, rotaAtual, agendamentosPendentes, usuario }
                                 className={`
                                     relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground 
                                     ${rotaAtual === `/agendamentos` && "dark:text-white text-black"}
-                                    `}
+                                `}
                             >
                                 <NotebookPen className="h-5 w-5" />
-                                <span
-                                    className={`
-                                    absolute -top-1 -right-1 w-5 h-5 bg-red-600 rounded-full
-                                    flex items-center justify-center text-[10px] text-white
-                                    ${rotaAtual === `/agendamentos` && "hidden"}
-                                    ${agendamentosPendentes === null && "hidden"}
-                                    ${agendamentosPendentes && agendamentosPendentes.length <= 0 && "hidden"}
-                                    `}
-                                >
-                                    {agendamentosPendentes && (agendamentosPendentes.length > 9 ? "9+" : agendamentosPendentes.length)}
-                                </span>
+                                
+                                {/* LÓGICA DO BADGE ATUALIZADA */}
+                                {pendingCount > 0 && (
+                                    <span className={`
+                                        absolute -top-1 -right-1 w-5 h-5 bg-red-600 rounded-full
+                                        flex items-center justify-center text-[10px] text-white
+                                        ${rotaAtual === `/agendamentos` && "hidden"}
+                                    `}>
+                                        {pendingCount > 9 ? "9+" : pendingCount}
+                                    </span>
+                                )}
                                 <span className="sr-only">Agendamentos</span>
                             </Link>
                         </TooltipTrigger>

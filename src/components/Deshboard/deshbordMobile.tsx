@@ -13,10 +13,10 @@ type Props = {
     token: string | null;
     usuario: Usuario | null;
     rotaAtual: string;
-    agendamentosPendentes: AgendamentoPendente[] | null;
+    pendingCount: number;
 }
 
-export const DeshboardMobile = ({ token, rotaAtual, agendamentosPendentes, usuario }: Props) => {
+export const DeshboardMobile = ({ token, rotaAtual, usuario, pendingCount }: Props) => {
     return (
         <div className="sm:hidden flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
             <header className="sticky top-0 z-30 flex h-14 items-center px-4 border-b bg-background gap-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
@@ -57,24 +57,23 @@ export const DeshboardMobile = ({ token, rotaAtual, agendamentosPendentes, usuar
                             <Link
                                 href={"/agendamentos"}
                                 className={`
-                                    relative flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground transition-all
-                                    ${rotaAtual === "/agendamentos" && "dark:text-white text-black"}
-                                    `}
-                                prefetch={false}
+                        relative flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground transition-all
+                        ${rotaAtual === "/agendamentos" && "dark:text-white text-black"}
+                    `}
                             >
                                 <NotebookPen className="h-5 w-5" />
-                                <span
-                                    className={`
-                                    absolute -right-1 w-5 h-5 bg-red-600 rounded-full
-                                    flex items-center justify-center text-[10px] text-white
-                                    ${rotaAtual === "/agendamentos" && "hidden"}
-                                    ${agendamentosPendentes === null && "hidden"}
-                                    ${agendamentosPendentes && agendamentosPendentes.length <= 0 && "hidden"}
-                                    `}
-                                >
-                                    {agendamentosPendentes && (agendamentosPendentes.length > 9 ? "9+" : agendamentosPendentes.length)}
-                                </span>
                                 Agendamentos
+
+                                {/* LÓGICA DO BADGE ATUALIZADA */}
+                                {pendingCount > 0 && (
+                                    <span className={`
+                            absolute right-2 w-5 h-5 bg-red-600 rounded-full
+                            flex items-center justify-center text-[10px] text-white
+                            ${rotaAtual === "/agendamentos" && "hidden"}
+                         `}>
+                                        {pendingCount > 9 ? "9+" : pendingCount}
+                                    </span>
+                                )}
                             </Link>
 
                             {
