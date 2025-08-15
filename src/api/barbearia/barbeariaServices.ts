@@ -400,7 +400,7 @@ export interface AddItemsComandaPayload {
 // TODO: Criar a rota PATCH /agendamentos/:id/adicionar-itens no backend
 export const addItemsToComanda = async (agendamentoId: string, data: AddItemsComandaPayload) => {
     try {
-        const response = await axiosInstance.patch(`/agendamentos/${agendamentoId}/adicionar-itens`, data);
+        const response = await axiosInstance.patch(`/barbearia/agendamentos/${agendamentoId}/adicionar-itens`, data);
         toast.success("Itens adicionados com sucesso!");
         return response.data;
     } catch (error: any) {

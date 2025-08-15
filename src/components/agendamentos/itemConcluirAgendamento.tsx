@@ -9,7 +9,7 @@ import { patchConcluirAgendamento } from "@/api/agendamentos/agendamentoServices
 import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
 import { LoaderCircle, ShoppingBasket } from "lucide-react";
-import { DialogAddProductsAndServices } from "./dialogAddProductsAndServices";
+import { DialogConcluirComanda } from "./DialogConcluirComanda";
 
 type Props = {
     item: Agendamentos;
@@ -17,23 +17,6 @@ type Props = {
 }
 
 export const ItemConcluirAgendamento = ({ item, onActionSuccess }: Props) => {
-    const { barbearia } = useAuth();
-    const [loading, setLoading] = useState(false);
-
-    const handleDone = async () => {
-        if (!barbearia) return;
-        setLoading(true);
-        try {
-            // ATENÇÃO: Por enquanto, enviamos um corpo vazio. No futuro, aqui
-            // você poderá adicionar produtos/serviços de última hora.
-            await patchConcluirAgendamento(barbearia.id, item.id);
-            onActionSuccess(); // Chama o callback de sucesso
-        } catch (error) {
-            console.error("Erro ao concluir agendamento:", error);
-        } finally {
-            setLoading(false);
-        }
-    }
 
     return (
         <Card className="flex items-center justify-between w-full shadow-sm border p-3">
@@ -78,11 +61,8 @@ export const ItemConcluirAgendamento = ({ item, onActionSuccess }: Props) => {
                 <CancelarAgendamentoPendente itemId={item.id} onActionSuccess={onActionSuccess} />
 
                 {/* Passe o 'item' (agendamento) e a função de callback */}
-                <DialogAddProductsAndServices agendamento={item} onComandaUpdate={onActionSuccess} />
+                <DialogConcluirComanda item={item} onActionSuccess={onActionSuccess} />
 
-                <Button size="sm" onClick={handleDone} disabled={loading}>
-                    {loading ? <LoaderCircle className="animate-spin" /> : "Concluir"}
-                </Button>
             </div>
         </Card>
     );
