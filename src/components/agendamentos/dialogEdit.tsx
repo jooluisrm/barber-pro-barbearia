@@ -91,7 +91,7 @@ export function DialogEdit({ agendamentoSelecionado }: Props) {
                     <div className="grid grid-cols-2 gap-4 text-sm">
                         <div className="space-y-1">
                             <p className="text-muted-foreground">Cliente</p>
-                            <p className="font-medium">{agendamentoSelecionado.usuario.nome}</p>
+                            <p className="font-medium">{agendamentoSelecionado.nomeCliente}</p>
                         </div>
 
                         <div className="space-y-1">
@@ -101,18 +101,18 @@ export function DialogEdit({ agendamentoSelecionado }: Props) {
 
                         <div className="space-y-1">
                             <p className="text-muted-foreground">Serviço</p>
-                            <p className="font-medium">{agendamentoSelecionado.servico.nome}</p>
+                            <p className="font-medium"></p>
                         </div>
 
                         <div className="space-y-1">
                             <p className="text-muted-foreground">Valor</p>
-                            <p className="font-medium text-green-500">{formatarPreco(agendamentoSelecionado.servico.preco)}</p>
+                            <p className="font-medium text-green-500">{agendamentoSelecionado?.valorTotal && formatarPreco(agendamentoSelecionado.valorTotal)}</p>
                         </div>
 
                         <div className="space-y-1 col-span-2">
                             <p className="text-muted-foreground">Data e Hora</p>
                             <p className="font-medium">
-                                {formatarData(agendamentoSelecionado.data)} • {agendamentoSelecionado.hora}
+                                 • {agendamentoSelecionado.hora}
                             </p>
                         </div>
                     </div>
@@ -127,11 +127,8 @@ export function DialogEdit({ agendamentoSelecionado }: Props) {
                 </div>
 
                 <DialogFooter>
-                    <Button
-                        onClick={() => editarStatusAgendamento(agendamentoSelecionado.id, statusSelecionado)}
-                        className="w-full sm:w-auto bg-primary hover:bg-primary/90"
-                    >
-                        Salvar Alterações
+                    <Button>
+                        Salvar Alteração
                     </Button>
                 </DialogFooter>
             </DialogContent>
