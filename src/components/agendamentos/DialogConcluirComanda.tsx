@@ -16,6 +16,12 @@ import { AddItemsComandaPayload, getProducts } from "@/api/barbearia/barbeariaSe
 import { getServices } from "@/api/barbearia/barbeariaServices"; // Supondo que exista
 import { useDebounce } from "@/hooks/useDebounce";
 import { patchConcluirAgendamento } from "@/api/agendamentos/agendamentoServices";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 
 
 type Props = {
@@ -119,6 +125,50 @@ export const DialogConcluirComanda = ({ item, onActionSuccess }: Props) => {
         return valorServicosExistentes + valorProdutosExistentes + valorServicosNovos + valorProdutosNovos;
     }, [item, newServices, newProducts]);
 
+    const ComandaSummary = () => (
+        <div className="flex flex-col h-full">
+            <div className="p-6 border-b md:border-b-0 md:border-l"><h3 className="font-semibold text-lg">Resumo da Comanda</h3></div>
+            <div className="flex-1 space-y-3 p-6 overflow-y-auto">
+                {item.servicosRealizados.map((servicoRealizado) => (
+                    <div key={`serv-exist-${servicoRealizado.id}`} className="flex justify-between items-center text-sm opacity-70">
+                        <p className="flex items-center gap-2"><Tag className="w-4 h-4" /> {servicoRealizado.servico.nome}</p>
+                        <p>{formatarPreco(servicoRealizado.precoNoMomento || "0")}</p>
+                    </div>
+                ))}
+                {item.produtosConsumidos.map((produtoConsumido) => (
+                    <div key={`prod-exist-${produtoConsumido.id}`} className="flex justify-between items-center text-sm opacity-70">
+                        <p className="flex items-center gap-2"><Beer className="w-4 h-4" /> {produtoConsumido.produto.nome} <span className="text-muted-foreground">x{produtoConsumido.quantidade}</span></p>
+                        <p>{formatarPreco(String(Number(produtoConsumido.precoVendaNoMomento || 0) * produtoConsumido.quantidade))}</p>
+                    </div>
+                ))}
+
+                {(item.servicosRealizados.length > 0 || item.produtosConsumidos.length > 0) && (newProducts.length > 0 || newServices.length > 0) && (<div className="border-b my-3"></div>)}
+
+                {newServices.map((novoServico) => (
+                    <div key={`serv-new-${novoServico.id}`} className="flex justify-between items-center text-sm">
+                        <p className="flex items-center gap-2"><Tag className="w-4 h-4 text-green-500" /> {novoServico.nome}</p>
+                        <p className="font-semibold">{formatarPreco(novoServico.preco)}</p>
+                    </div>
+                ))}
+                {newProducts.map((novoProduto) => (
+                    <div key={`prod-new-${novoProduto.produtoId}`} className="flex justify-between items-center text-sm">
+                        <p className="flex items-center gap-2"><Beer className="w-4 h-4 text-green-500" /> {novoProduto.nome}</p>
+                        <div className="flex items-center gap-2">
+                            <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleUpdateProductQuantity({ id: novoProduto.produtoId, quantidade: novoProduto.estoqueDisponivel } as ProdutoDisponivel, -1)}><MinusCircle className="w-4 h-4 text-red-500" /></Button>
+                            <span className="font-semibold w-4 text-center">{novoProduto.quantidade}</span>
+                            <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleUpdateProductQuantity({ id: novoProduto.produtoId, quantidade: novoProduto.estoqueDisponivel } as ProdutoDisponivel, 1)}><PlusCircle className="w-4 h-4 text-green-500" /></Button>
+                        </div>
+                    </div>
+                ))}
+                {(newProducts.length === 0 && newServices.length === 0) && <p className="text-center text-sm text-muted-foreground py-10">Selecione itens na lista ao lado.</p>}
+            </div>
+            <div className="p-6 border-t mt-auto flex justify-between font-bold text-lg bg-muted/80">
+                <p>Valor Total</p>
+                <p>{formatarPreco(valorTotalCalculado.toFixed(2))}</p>
+            </div>
+        </div>
+    );
+
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -171,48 +221,23 @@ export const DialogConcluirComanda = ({ item, onActionSuccess }: Props) => {
                     </div>
 
                     {/* Coluna da Direita: Resumo da Comanda Fixo */}
-                    <div className="flex flex-col bg-muted/50 border-l">
-                        <div className="p-6 border-b"><h3 className="font-semibold text-lg">Resumo da Comanda</h3></div>
-                        <div className="flex-1 space-y-3 p-6 overflow-y-auto">
-                            {/* CORREÇÃO: Variáveis com nomes claros e usando o preço histórico */}
-                            {item.servicosRealizados.map((servicoRealizado) => (
-                                <div key={`serv-exist-${servicoRealizado.id}`} className="flex justify-between items-center text-sm opacity-70">
-                                    <p className="flex items-center gap-2"><Tag className="w-4 h-4" /> {servicoRealizado.servico.nome}</p>
-                                    <p>{formatarPreco(servicoRealizado.precoNoMomento || "0")}</p>
-                                </div>
-                            ))}
-                            {item.produtosConsumidos.map((produtoConsumido) => (
-                                <div key={`prod-exist-${produtoConsumido.id}`} className="flex justify-between items-center text-sm opacity-70">
-                                    <p className="flex items-center gap-2"><Beer className="w-4 h-4" /> {produtoConsumido.produto.nome} <span className="text-muted-foreground">x{produtoConsumido.quantidade}</span></p>
-                                    <p>{formatarPreco(String(Number(produtoConsumido.precoVendaNoMomento || 0) * produtoConsumido.quantidade))}</p>
-                                </div>
-                            ))}
-                            
-                            {(item.servicosRealizados.length > 0 || item.produtosConsumidos.length > 0) && (newProducts.length > 0 || newServices.length > 0) && (<div className="border-b my-3"></div>)}
-
-                            {newServices.map((novoServico) => (
-                                <div key={`serv-new-${novoServico.id}`} className="flex justify-between items-center text-sm">
-                                    <p className="flex items-center gap-2"><Tag className="w-4 h-4 text-green-500" /> {novoServico.nome}</p>
-                                    <p className="font-semibold">{formatarPreco(novoServico.preco)}</p>
-                                </div>
-                            ))}
-                            {newProducts.map((novoProduto) => (
-                                <div key={`prod-new-${novoProduto.produtoId}`} className="flex justify-between items-center text-sm">
-                                    <p className="flex items-center gap-2"><Beer className="w-4 h-4 text-green-500" /> {novoProduto.nome}</p>
-                                    <div className="flex items-center gap-2">
-                                        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleUpdateProductQuantity({ id: novoProduto.produtoId, quantidade: novoProduto.estoqueDisponivel } as ProdutoDisponivel, -1)}><MinusCircle className="w-4 h-4 text-red-500" /></Button>
-                                        <span className="font-semibold w-4 text-center">{novoProduto.quantidade}</span>
-                                        <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleUpdateProductQuantity({ id: novoProduto.produtoId, quantidade: novoProduto.estoqueDisponivel } as ProdutoDisponivel, 1)}><PlusCircle className="w-4 h-4 text-green-500" /></Button>
-                                    </div>
-                                </div>
-                            ))}
-                            {(newProducts.length === 0 && newServices.length === 0) && <p className="text-center text-sm text-muted-foreground py-10">Selecione itens na lista ao lado.</p>}
-                        </div>
-                        <div className="p-6 border-t mt-auto flex justify-between font-bold text-lg bg-muted/80">
-                            <p>Valor Total</p>
-                            <p>{formatarPreco(valorTotalCalculado.toFixed(2))}</p>
-                        </div>
+                    <div className="hidden md:flex flex-col bg-muted/50 border-l">
+                        <ComandaSummary />
                     </div>
+                </div>
+                {/* Resumo da Comanda (Mobile): Dentro de um Accordion */}
+                <div className="md:hidden p-6 border-t">
+                     <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="item-1">
+                            <AccordionTrigger className="font-semibold">Ver Resumo da Comanda</AccordionTrigger>
+                            <AccordionContent>
+                                {/* Reutilizamos o mesmo componente de resumo */}
+                                <div className="max-h-64 overflow-y-auto">
+                                   <ComandaSummary />
+                                </div>
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
                 </div>
 
                 <DialogFooter className="p-6 border-t flex justify-between items-center">
