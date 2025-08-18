@@ -4,6 +4,7 @@ import { Table, TableBody, TableCaption, TableCell, TableRow, TableHeader, Table
 import { Agendamentos } from "@/types/agendamentos";
 import { formatarPreco } from "@/utils/formatarValores";
 import { DialogEdit } from "./dialogEdit"; // Supondo que este seja seu dialog de edição
+import { DialogViewAgendamento } from "./dialogViewAgendamento";
 
 type Props = {
     agendamentos: Agendamentos[] | null;
@@ -91,6 +92,7 @@ export function TableAgendamentos({ agendamentos, isLoading }: Props) {
                             </TableCell>
                             <TableCell className="text-right">
                                 {/* <DialogEdit agendamentoSelecionado={item} /> */}
+                                <DialogViewAgendamento item={item}/>
                             </TableCell>
                         </TableRow>
                     );

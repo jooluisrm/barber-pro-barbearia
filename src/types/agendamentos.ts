@@ -4,11 +4,17 @@ export type Agendamentos = {
     hora: string;
     status: string;
     valorTotal: string | null;
-    nomeCliente: string;
-    telefoneVisitante: string | null;
+    
+    // CAMPOS DE CLIENTE UNIFICADOS
+    nomeCliente: string | null;
+    emailCliente: string | null;
+    telefoneCliente: string | null;
+    fotoPerfilCliente: string | null;
+
     barbeiro: {
         id: string;
         nome: string;
+        fotoPerfil: string | null;
     };
     servicosRealizados: {
         id: string;                 // ADICIONADO
