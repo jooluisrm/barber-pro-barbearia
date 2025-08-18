@@ -217,7 +217,7 @@ export const DialogEditBarberShop = ({ infosBarbearia }: Props) => {
                                                         {(inputProps: any) => (
                                                             <Input
                                                                 {...inputProps}
-                                                                placeholder="Digite um telefone fixo..."
+                                                                placeholder="Telefone Fixo"
                                                             />
                                                         )}
                                                     </InputMask>
@@ -248,7 +248,7 @@ export const DialogEditBarberShop = ({ infosBarbearia }: Props) => {
                                                         {(inputProps: any) => (
                                                             <Input
                                                                 {...inputProps}
-                                                                placeholder="Digite o celular principal..."
+                                                                placeholder="Celular"
                                                             />
                                                         )}
                                                     </InputMask>

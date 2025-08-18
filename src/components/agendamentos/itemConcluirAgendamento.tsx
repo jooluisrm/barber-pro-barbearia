@@ -37,7 +37,7 @@ export const ItemConcluirAgendamento = ({ item, onActionSuccess }: Props) => {
                 <CardHeader className="p-0 pb-2">
                     <CardTitle className="text-sm sm:text-base">{item.nomeCliente}</CardTitle>
                     <p className="text-xs text-muted-foreground font-bold">
-                        {new Date(item.data).toLocaleDateString('pt-BR')} • <span className="text-blue-500">{item.hora}</span>
+                        {new Date(item.data.replace(/-/g, '/')).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })} • <span className="text-blue-500">{item.hora}</span>
                     </p>
                 </CardHeader>
 

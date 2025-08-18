@@ -149,7 +149,7 @@ export function DialogNovoAgendamento() {
                     {/* Seleção de Serviço */}
                     <div className="space-y-2 border rounded-lg p-4">
                         <label className="font-semibold flex items-center gap-2"><Scissors className="w-4 h-4" /> Selecione o Serviço*</label>
-                        <div className="flex flex-wrap gap-2 pt-2">
+                        <div className="flex flex-wrap justify-between gap-2 pt-2">
                             {services?.map((item) => (
                                 <ItemService key={item.id} item={item} onClick={setSelectedService} isSelected={selectedService === item.id} />
                             ))}
@@ -160,7 +160,7 @@ export function DialogNovoAgendamento() {
                     {usuario?.role === "ADMIN" && (
                         <div className="space-y-2 border rounded-lg p-4">
                             <label className="font-semibold">Selecione o Barbeiro*</label>
-                            <div className="flex flex-wrap gap-2 pt-2">
+                            <div className="flex flex-wrap justify-between gap-2 pt-2">
                                 {barbeiros?.map((item) => (
                                     <ItemBarbeiro key={item.id} item={item} onClick={setSelectedBarbeiro} isSelected={selectedBarbeiro === item.id} />
                                 ))}
@@ -172,7 +172,14 @@ export function DialogNovoAgendamento() {
                     <div className="space-y-4 border rounded-lg p-4">
                         <div className="space-y-2">
                             <label className="font-semibold flex items-center gap-2"><Calendar className="w-4 h-4" /> Selecione o Dia*</label>
-                            <CalendarComponent mode="single" selected={selectedDate} onSelect={setSelectedDate}  className="rounded-md border" />
+                            <CalendarComponent
+                                mode="single"
+                                selected={selectedDate}
+                                onSelect={setSelectedDate}
+                                className="rounded-md border mx-auto"
+                                // 2. Adicione a propriedade 'disabled'
+                                disabled={{ before: new Date() }} // Bloqueia todos os dias ANTES de hoje
+                            />
                         </div>
                         <div className="space-y-2">
                             <label className="font-semibold flex items-center gap-2"><Clock className="w-4 h-4" /> Selecione o Horário*</label>

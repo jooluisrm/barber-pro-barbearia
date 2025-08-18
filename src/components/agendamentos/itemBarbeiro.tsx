@@ -1,5 +1,6 @@
 import { Barbeiro } from "@/types/barbeiros";
 import { Button } from "../ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 type Props = {
     item: Barbeiro;
@@ -12,9 +13,15 @@ export const ItemBarbeiro = ({ item, onClick, isSelected }: Props) => {
         <Button
             onClick={() => onClick(item.id)}
             variant={isSelected ? "default" : "outline"}
-            className={isSelected ? "bg-primary text-white dark:text-black" : ""}
+            className={`h-fit w-28 ${isSelected ? "bg-primary text-white dark:text-black" : ""}`}
         >
-            {item.nome}
+            <div className="overflow-hidden truncate">
+                <Avatar className="mx-auto">
+                    <AvatarImage src={`${item?.fotoPerfil || "/favicon.png"}`}/>
+                    <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                <span className="truncate">{item.nome}</span>
+            </div>
         </Button>
     );
 };

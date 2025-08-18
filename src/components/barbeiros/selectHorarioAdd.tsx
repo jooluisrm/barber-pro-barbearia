@@ -32,7 +32,7 @@ export const SelectHorarioAdd = ({ value, setValue }: Props) => {
     const horariosDisponiveis = gerarHorarios("08:00", "18:00", 30);
 
     return (
-        <Popover open={open} onOpenChange={setOpen}>
+        <Popover modal={true}>
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"

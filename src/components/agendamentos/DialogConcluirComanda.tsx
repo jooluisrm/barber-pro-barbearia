@@ -17,10 +17,10 @@ import { getServices } from "@/api/barbearia/barbeariaServices"; // Supondo que 
 import { useDebounce } from "@/hooks/useDebounce";
 import { patchConcluirAgendamento } from "@/api/agendamentos/agendamentoServices";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
 } from "@/components/ui/accordion"
 
 
@@ -144,10 +144,17 @@ export const DialogConcluirComanda = ({ item, onActionSuccess }: Props) => {
 
                 {(item.servicosRealizados.length > 0 || item.produtosConsumidos.length > 0) && (newProducts.length > 0 || newServices.length > 0) && (<div className="border-b my-3"></div>)}
 
+                {/* Itens novos (com o botão de remover) */}
                 {newServices.map((novoServico) => (
                     <div key={`serv-new-${novoServico.id}`} className="flex justify-between items-center text-sm">
                         <p className="flex items-center gap-2"><Tag className="w-4 h-4 text-green-500" /> {novoServico.nome}</p>
-                        <p className="font-semibold">{formatarPreco(novoServico.preco)}</p>
+                        <div className="flex items-center gap-2">
+                            {/* --- BOTÃO DE REMOVER SERVIÇO ADICIONADO AQUI --- */}
+                            <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleRemoveService(novoServico.id)}>
+                                <MinusCircle className="w-4 h-4 text-red-500" />
+                            </Button>
+                            <span className="font-semibold">{formatarPreco(novoServico.preco)}</span>
+                        </div>
                     </div>
                 ))}
                 {newProducts.map((novoProduto) => (
@@ -168,6 +175,12 @@ export const DialogConcluirComanda = ({ item, onActionSuccess }: Props) => {
             </div>
         </div>
     );
+
+    const handleRemoveService = (serviceId: string) => {
+        setNewServices(currentServices =>
+            currentServices.filter(s => s.id !== serviceId)
+        );
+    };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -227,13 +240,13 @@ export const DialogConcluirComanda = ({ item, onActionSuccess }: Props) => {
                 </div>
                 {/* Resumo da Comanda (Mobile): Dentro de um Accordion */}
                 <div className="md:hidden p-6 border-t">
-                     <Accordion type="single" collapsible className="w-full">
+                    <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="item-1">
                             <AccordionTrigger className="font-semibold">Ver Resumo da Comanda</AccordionTrigger>
                             <AccordionContent>
                                 {/* Reutilizamos o mesmo componente de resumo */}
                                 <div className="max-h-64 overflow-y-auto">
-                                   <ComandaSummary />
+                                    <ComandaSummary />
                                 </div>
                             </AccordionContent>
                         </AccordionItem>
@@ -242,10 +255,10 @@ export const DialogConcluirComanda = ({ item, onActionSuccess }: Props) => {
 
                 <DialogFooter className="p-6 border-t flex justify-between items-center">
                     <p className="text-sm text-muted-foreground">Total: <span className="font-bold text-lg text-green-600">{formatarPreco(valorTotalCalculado.toFixed(2))}</span></p>
-                    <div>
-                        <Button variant="ghost" onClick={() => setOpen(false)}>Cancelar</Button>
+                    <div className="space-x-2">
+                        <Button variant="ghost" onClick={() => setOpen(false)}>Voltar</Button>
                         <Button onClick={handleConcluirComanda} disabled={loadingAction}>
-                            {loadingAction ? <LoaderCircle className="animate-spin h-4 w-4" /> : "Confirmar e Concluir"}
+                            {loadingAction ? <LoaderCircle className="animate-spin h-4 w-4" /> : "Concluir"}
                         </Button>
                     </div>
                 </DialogFooter>
