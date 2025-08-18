@@ -25,10 +25,10 @@ type Props = {
 export const DialogViewAgendamento = ({ item }: Props) => {
     const [open, setOpen] = useState(false);
 
-    const valorTotal = item.status === 'Feito' 
+    const valorTotal = item.status === 'Feito'
         ? Number(item.valorTotal || 0)
-        : (item.servicosRealizados?.reduce((acc, s) => acc + Number(s.precoNoMomento || 0), 0) || 0) + 
-          (item.produtosConsumidos?.reduce((acc, p) => acc + (Number(p.precoVendaNoMomento || 0) * p.quantidade), 0) || 0);
+        : (item.servicosRealizados?.reduce((acc, s) => acc + Number(s.precoNoMomento || 0), 0) || 0) +
+        (item.produtosConsumidos?.reduce((acc, p) => acc + (Number(p.precoVendaNoMomento || 0) * p.quantidade), 0) || 0);
 
     const statusColors = {
         'Feito': 'bg-green-500 text-green-500',
@@ -36,6 +36,14 @@ export const DialogViewAgendamento = ({ item }: Props) => {
         'Cancelado': 'bg-red-500 text-red-500',
     };
     const colorClass = statusColors[item.status as keyof typeof statusColors] || 'bg-gray-400 text-muted-foreground';
+
+    // NOVO: Função para criar o link do WhatsApp
+    const formatWhatsAppLink = (phone: string | null | undefined): string | undefined => {
+        if (!phone) return undefined;
+        // Remove todos os caracteres não numéricos e adiciona o código do Brasil (55)
+        const numeroLimpo = phone.replace(/\D/g, '');
+        return `https://wa.me/55${numeroLimpo}`;
+    };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -74,7 +82,7 @@ export const DialogViewAgendamento = ({ item }: Props) => {
                             </div>
                         </div>
                         <div className="flex items-center gap-3 border rounded-lg p-3">
-                             <Avatar className="h-10 w-10">
+                            <Avatar className="h-10 w-10">
                                 <AvatarImage src={item.barbeiro.fotoPerfil || undefined} />
                                 <AvatarFallback><Scissors /></AvatarFallback>
                             </Avatar>
@@ -84,29 +92,48 @@ export const DialogViewAgendamento = ({ item }: Props) => {
                             </div>
                         </div>
                     </div>
-                    
-                    {/* NOVO: Informações de Contato do Cliente (condicional) */}
+
+                    {/* Informações de Contato do Cliente (agora com links) */}
                     {(item.telefoneCliente || item.emailCliente) && (
                         <div className="space-y-2">
                             <h3 className="font-semibold text-sm">Informações de Contato</h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {item.telefoneCliente && <ItemInfo icon={<Phone className="w-5 h-5" />} label="Telefone" value={item.telefoneCliente} />}
-                                {item.emailCliente && <ItemInfo icon={<MailIcon className="w-5 h-5" />} label="Email" value={item.emailCliente} />}
+
+                                {item.telefoneCliente && (
+                                    <ItemInfo
+                                        icon={<Phone className="w-5 h-5" />}
+                                        label="Telefone"
+                                        value={item.telefoneCliente}
+                                        href={formatWhatsAppLink(item.telefoneCliente)}
+                                        valueClassName="text-blue-500"
+                                    />
+                                )}
+
+                                {item.emailCliente && (
+                                    <ItemInfo
+                                        icon={<Mail className="w-5 h-5" />}
+                                        label="Email"
+                                        value={item.emailCliente}
+                                        href={`mailto:${item.emailCliente}`}
+                                        valueClassName="text-blue-500"
+                                    />
+                                )}
+
                             </div>
                         </div>
                     )}
-                    
+
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <ItemInfo icon={<Calendar className="w-5 h-5" />} label="Data" value={new Date(item.data).toLocaleDateString('pt-BR', {timeZone: 'UTC'})} />
+                        <ItemInfo icon={<Calendar className="w-5 h-5" />} label="Data" value={new Date(item.data).toLocaleDateString('pt-BR', { timeZone: 'UTC' })} />
                         <ItemInfo icon={<Clock className="w-5 h-5" />} label="Hora" value={item.hora} />
-                        <ItemInfo 
-                            icon={<div className={`w-2 h-2 rounded-full mt-1 ${colorClass.split(' ')[0]}`} />} 
-                            label="Status" 
+                        <ItemInfo
+                            icon={<div className={`w-2 h-2 rounded-full mt-1 ${colorClass.split(' ')[0]}`} />}
+                            label="Status"
                             value={item.status}
                             valueClassName={colorClass.split(' ')[1]}
                         />
                     </div>
-                    
+
                     <div className="space-y-2">
                         <h3 className="font-semibold flex items-center gap-2"><Tag className="w-4 h-4" /> Serviços Realizados</h3>
                         <div className="border rounded-lg p-3 space-y-2">
@@ -121,7 +148,7 @@ export const DialogViewAgendamento = ({ item }: Props) => {
 
                     <div className="space-y-2">
                         <h3 className="font-semibold flex items-center gap-2"><Beer className="w-4 h-4" /> Produtos Consumidos</h3>
-                         <div className="border rounded-lg p-3 space-y-2">
+                        <div className="border rounded-lg p-3 space-y-2">
                             {item.produtosConsumidos.length > 0 ? item.produtosConsumidos.map(p => (
                                 <div key={p.id} className="flex justify-between text-sm">
                                     <span>{p.produto.nome} <span className="text-muted-foreground/70">x{p.quantidade}</span></span>
