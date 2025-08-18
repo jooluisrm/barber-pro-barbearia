@@ -57,14 +57,27 @@ export function TableAgendamentos({ agendamentos, isLoading }: Props) {
                         const valorProdutos = item.produtosConsumidos?.reduce((acc, p) => acc + (Number(p.precoVendaNoMomento || 0) * p.quantidade), 0) || 0;
                         valorParaExibir = valorServicos + valorProdutos;
                     }
-                    // Para outros status (ex: Cancelado), o valor continuará 0.
+                    let valorColorClass = '';
+                    switch (item.status) {
+                        case 'Feito':
+                            valorColorClass = 'text-green-600';
+                            break;
+                        case 'Confirmado':
+                            valorColorClass = 'text-yellow-500';
+                            break;
+                        case 'Cancelado':
+                            valorColorClass = 'text-red-500';
+                            break;
+                        default:
+                            valorColorClass = 'text-muted-foreground';
+                    }
 
                     return (
                         <TableRow key={item.id}>
                             <TableCell className="font-medium max-w-[100px] overflow-hidden md:text-nowrap truncate">{item.nomeCliente}</TableCell>
                             <TableCell>{item.barbeiro.nome}</TableCell>
                             <TableCell>
-                                <span className={`font-bold ${item.status === "Confirmado" ? "text-yellow-500" : item.status === "Feito" ? "text-green-500" : item.status === "Cancelado" ? "text-red-500" : ""}`}>
+                                <span className={`font-bold ${valorColorClass}`}>
                                     {item.status}
                                 </span>
                             </TableCell>
@@ -72,7 +85,7 @@ export function TableAgendamentos({ agendamentos, isLoading }: Props) {
                                 {item.servicosRealizados.map(s => s.servico.nome).join(', ')}
                             </TableCell>
                             <TableCell className="font-bold">{item.hora}</TableCell>
-                            <TableCell className="text-right font-bold text-green-600">
+                            <TableCell className={`text-right font-bold ${valorColorClass}`}>
                                 {/* Usa a variável calculada e a formata */}
                                 {formatarPreco(valorParaExibir.toFixed(2))}
                             </TableCell>
