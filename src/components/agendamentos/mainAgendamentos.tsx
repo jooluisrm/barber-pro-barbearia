@@ -18,6 +18,8 @@ import { DialogConcluirAgendamento } from "./dialogConcluirAgendamento";
 import { usePendingScheduleContext } from "@/contexts/PendingScheduleContext";
 import { HeaderPage } from "../reultilizar/headerPage";
 import { DialogEditarHorarioBarbeiro } from "./dialogEditarHorarioBarbeiro";
+import { RefreshCcw } from "lucide-react";
+import { isToday } from "date-fns";
 
 export const MainAgendamentos = () => {
     const { barbearia, usuario } = useAuth();
@@ -80,7 +82,7 @@ export const MainAgendamentos = () => {
 
         fetchPendingCount();
         // Recarrega a contagem a cada 1 minuto (60000 ms) para manter o badge atualizado
-        const interval = setInterval(fetchPendingCount, 60000); 
+        const interval = setInterval(fetchPendingCount, 60000);
         return () => clearInterval(interval); // Limpa o intervalo ao desmontar
 
     }, [barbearia, usuario, agendamentos]); // 'agendamentos' na dependência para forçar a recontagem após uma ação
@@ -95,6 +97,10 @@ export const MainAgendamentos = () => {
         }
         carregarBarbeiros();
     }, [barbearia, usuario]);
+
+    const setToday = () => {
+        setSelectedDate(new Date());
+    }
 
     return (
         <main>
@@ -111,12 +117,12 @@ export const MainAgendamentos = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="gap-4 grid lg:grid-cols-3">
                         <DialogNovoAgendamento />
-                        <DialogConcluirAgendamento 
+                        <DialogConcluirAgendamento
                             pendingCount={pendingCount}
                             onUpdate={() => {
                                 // Força a re-busca da lista principal e da contagem
                                 const fetchMainList = async () => {
-                                    if(barbearia) {
+                                    if (barbearia) {
                                         const data = await getAgendamentos(barbearia.id, { data: selectedDate, status: selectedStatus, barbeiroId: selectedBarbeiro });
                                         setAgendamentos(data);
                                     }
@@ -129,6 +135,9 @@ export const MainAgendamentos = () => {
 
                     {/* Filtros */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-center gap-4">
+                        <Button onClick={setToday} disabled={loading}>
+                            {(selectedDate && isToday(selectedDate)) ? <RefreshCcw className={`${loading && "animate-spin"}`}/> : "Hoje"}
+                        </Button>
                         <CalendarioFilter date={selectedDate} setDate={setSelectedDate} />
                         {usuario?.role === "ADMIN" && (
                             <SelectFilterBarbeiro
