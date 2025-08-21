@@ -39,7 +39,7 @@ export const MainBarbeiros = () => {
                                 <DialogAddBarbeiro />
                             </TooltipTrigger>
                             <TooltipContent>
-                                Criar Barbeiro
+                                <p>Criar Barbeiro</p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
